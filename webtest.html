@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCG Marketplace — eBay Seller Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060610;--bg2:#0c0c1e;--bg3:#101028;--bd:#1c1c3a;--bd2:#2a2a50;--tx:#e4e4f0;--dim:#6a6a88;--ac:#e84118;--ac2:#ff6348;--acG:rgba(232,65,24,.15);--grn:#22c55e;--ylw:#f59e0b}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:14px}
+button{font-family:inherit;cursor:pointer}input,select,textarea{font-family:inherit}a{color:var(--ac)}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.hdr{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--bd);background:rgba(6,6,16,.95);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
+.hdr-logo{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e84118,#c23616);font-size:22px;color:#fff;box-shadow:0 4px 20px rgba(232,65,24,.35);flex-shrink:0}
+.hdr-t{font-weight:800;font-size:19px;letter-spacing:-.4px}.hdr-s{font-size:11px;color:var(--dim);letter-spacing:.3px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.ebay-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;background:var(--bg3);border:1px solid var(--bd);font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;transition:.15s}
+.ebay-btn:hover{border-color:var(--ac)}.ebay-btn.connected{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--grn)}
+.ebay-btn.expired{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--ylw)}
+.layout{display:flex;flex:1}.side{display:flex;flex-direction:column;gap:3px;padding:14px 10px;width:200px;min-width:200px;border-right:1px solid var(--bd);background:var(--bg2);position:sticky;top:71px;height:calc(100vh - 71px);overflow-y:auto;align-self:flex-start}
+.side button{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--dim);font-weight:500;font-size:13.5px;text-align:left;transition:.15s;width:100%}
+.side button:hover{background:rgba(255,255,255,.03)}.side button.on{background:var(--acG);border-color:rgba(232,65,24,.25);color:var(--ac);font-weight:700}
+.side .ico{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.main{flex:1;padding:28px;overflow-y:auto}
+.inp{padding:10px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);font-size:14px;outline:none;transition:.15s;width:100%}
+.inp:focus{border-color:var(--ac)}.inp::placeholder{color:var(--dim)}.inp-big{font-size:17px;font-weight:600;padding:12px 16px}
+.btn{padding:10px 22px;border-radius:8px;border:none;font-weight:700;font-size:14px;transition:.15s;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn:disabled{opacity:.4;cursor:default}.btn-ac{background:var(--ac);color:#fff}.btn-ac:hover:not(:disabled){background:var(--ac2)}
+.btn-grn{background:var(--grn);color:#fff}.btn-dng{background:#dc2626;color:#fff}
+.btn-out{background:var(--bg2);color:var(--tx);border:1px solid var(--bd)}.btn-out:hover{border-color:var(--bd2)}
+.btn-sm{padding:5px 14px;border-radius:6px;border:none;font-size:12px;font-weight:700;background:var(--ac);color:#fff;cursor:pointer}
+.btn-back{margin-bottom:16px;padding:8px 16px;border-radius:8px;background:transparent;border:1px solid var(--bd);color:var(--dim);font-size:13px;cursor:pointer}
+.btn-back:hover{border-color:var(--bd2);color:var(--tx)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}.mb{margin-bottom:20px}
+.card{background:var(--bg2);border-radius:12px;padding:20px;border:1px solid var(--bd);margin-bottom:16px}
+.dim{color:var(--dim)}.hd{font-size:22px;font-weight:700;margin-bottom:20px}.hd3{font-size:15px;font-weight:700;margin-bottom:14px}
+.tg{display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--bd)}
+.tg button{padding:10px 16px;background:var(--bg2);color:var(--dim);border:none;font-size:13px;font-weight:600;transition:.15s}
+.tg button.on{background:var(--ac);color:#fff}
+.sts{font-size:12px;color:var(--dim);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.live-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:8px}
+.live-card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:8px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;text-align:center}
+.live-card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 20px rgba(232,65,24,.2)}
+.live-card .iw{width:100%;aspect-ratio:.716;background:#000;border-radius:6px;overflow:hidden;margin-bottom:6px}
+.live-card img{width:100%;height:100%;object-fit:cover;display:block}
+.live-card .n{font-weight:700;font-size:12px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-card .s{font-size:10px;color:var(--dim);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-card .p{font-size:12px;color:var(--ac);font-weight:700}
+.live-sec{font-size:12px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin:20px 0 10px}.live-sec:first-child{margin-top:0}
+.det-grid{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
+.det-iw{position:sticky;top:90px}.det-img{width:100%;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6);background:var(--bg3);cursor:zoom-in;transition:.15s}
+.det-img:hover{opacity:.9}
+.det-t{font-size:21px;font-weight:700;margin-bottom:4px}.det-m{font-size:13px;color:var(--dim);margin-bottom:18px;line-height:1.6}
+.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
+.st-l{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}.st-v{font-weight:700;font-size:18px}.st-vb{font-weight:700;font-size:26px}
+.ext-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:13px}
+.desc-t{margin-top:10px;font-size:13px;color:var(--dim);line-height:1.6;border-top:1px solid var(--bd);padding-top:10px}
+.code-blk{padding:14px;border-radius:8px;background:#08081a;border:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:12px;color:#a5b4fc;cursor:pointer;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto;line-height:1.7;transition:.15s}
+.code-blk:hover{border-color:var(--ac)}
+.tbl-w{background:var(--bg2);border-radius:12px;border:1px solid var(--bd);overflow:hidden}
+table{width:100%;border-collapse:collapse}th{padding:12px 16px;text-align:left;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--bd)}
+td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-align:top}tr:last-child td{border-bottom:none}
+.empty{text-align:center;padding:48px 20px;color:var(--dim);line-height:1.8}
+.err{color:#fca5a5;padding:14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;margin-top:10px}
+.info-bar{color:#93c5fd;padding:12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;margin-bottom:14px;font-size:13px;line-height:1.5}
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 22px;border-radius:10px;color:#fff;font-weight:600;font-size:14px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.4);animation:slideUp .25s ease;pointer-events:none;max-width:400px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:160px;flex:1}
+.field label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px}
+.badge-card{background:rgba(232,65,24,.15);color:var(--ac)}.badge-don{background:rgba(245,158,11,.15);color:var(--ylw)}.badge-sealed{background:rgba(34,197,94,.15);color:var(--grn)}
+.link-card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:10px}
+.link-title{font-weight:700;font-size:14px;margin-bottom:6px}.link-sub{font-size:12px;color:var(--dim);line-height:1.6}
+.link-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease;cursor:zoom-out}
+.modal{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;cursor:default}
+.modal-t{font-size:18px;font-weight:700;margin-bottom:16px}
+.lightbox-img{max-width:90vw;max-height:85vh;border-radius:12px;box-shadow:0 12px 60px rgba(0,0,0,.8);cursor:default}
+.img-btns{display:flex;gap:8px;margin-top:10px;justify-content:center}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+@media(max-width:800px){
+.layout{flex-direction:column}.side{flex-direction:row;width:100%!important;min-width:0!important;padding:10px!important;overflow-x:auto;border-right:none;border-bottom:1px solid var(--bd)}
+.side button{flex-shrink:0;font-size:12px;padding:9px 12px;white-space:nowrap}.main{padding:16px}
+.det-grid{grid-template-columns:1fr!important}.det-iw{position:static;max-width:240px}
+.st-grid{grid-template-columns:1fr 1fr}.ext-grid{grid-template-columns:1fr}
+.hdr-right .ebay-btn span{display:none}.live-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-logo">⚓</div>
+    <div><div class="hdr-t">TCG Marketplace</div><div class="hdr-s">One Piece · eBay Seller Tools</div></div>
+    <div class="hdr-right"><button class="ebay-btn" id="ebay-btn" onclick="switchTab('ebay')"></button></div>
+  </header>
+  <div class="layout">
+    <nav class="side" id="sidebar"></nav>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+<div id="toast-container"></div>
+<div id="modal-root"></div>
+
+<script>
+/* ═══ STATE ═══ */
+var DB=null,LINKED_LISTINGS={},BOX_PRESETS=[],USER_ZIP='',EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''},scrapeStatus='';
+
+function loadStorage(){
+  try{LINKED_LISTINGS=JSON.parse(localStorage.getItem('ll')||'{}');}catch(e){}
+  try{BOX_PRESETS=JSON.parse(localStorage.getItem('bp')||'[]');}catch(e){}
+  try{EBAY_AUTH=JSON.parse(localStorage.getItem('ea')||'{}');}catch(e){}
+  if(!EBAY_AUTH.accessToken)EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};
+  USER_ZIP=localStorage.getItem('uz')||'';
+}
+function saveStorage(){
+  localStorage.setItem('ll',JSON.stringify(LINKED_LISTINGS));
+  localStorage.setItem('bp',JSON.stringify(BOX_PRESETS));
+  localStorage.setItem('ea',JSON.stringify(EBAY_AUTH));
+  localStorage.setItem('uz',USER_ZIP);
+}
+
+/* ═══ CALCULATOR ═══ */
+function calcListing(net,cs){
+  var D=1-0.1325-0.1325*0.1011,S=0.1325+0.1325*0.1011,b=cs!=null?cs:0.74;
+  for(var i=0;i<10;i++){
+    var aL=(net+0.3+S*b)/D,tot=aL+b+0.1011*(aL+b),a,c;
+    if(tot>=10.01){c=0.4;a=(net+0.4+S*b)/D;}else{c=0.3;a=aL;}
+    if(cs!=null)return{lp:a,ship:b,c:c,cat:'CUSTOM',rule:'Custom $'+b.toFixed(2)};
+    var need=a<=20?0.74:5.89;
+    if(Math.abs(b-need)<0.001)return{lp:a,ship:b,c:c,cat:a<=20?'LOW':'HIGH',rule:a<=20?'≤$20 → $0.74':'> $20 → $5.89'};
+    b=need;
+  }
+  return null;
+}
+function vNet(a,b,c){return a*(1-0.1325-0.1325*0.1011)-c-(0.1325+0.1325*0.1011)*b;}
+function tcgImg(pid){return'https://tcgplayer-cdn.tcgplayer.com/product/'+pid+'_in_1000x1000.jpg';}
+function applyMod(p,m){switch(m){case 2:return Math.ceil(p*10)/10;case 3:return Math.ceil(p);case 4:return Math.ceil(p/5)*5;default:return p;}}
+function modName(m){return['Skip','Near 10¢','Near $1','Near $5'][m-1]||'?';}
+function finalPrice(mkt,opt,mod,disp,sp){
+  var o=opt===1?mkt:calcListing(mkt,sp).lp,mn=Math.max(0.99,o),md=applyMod(mn,mod);
+  if(disp){var d='$'+md.toFixed(2);if(o<0.99)d+=' (min $0.99)';else if(mn!==md)d+=' (orig $'+o.toFixed(2)+')';return d;}return md;
+}
+
+/* ═══ ROBUST CSV PARSER — handles quoted newlines ═══ */
+function parseCSV(text){
+  var rows = [];
+  var row = [];
+  var field = '';
+  var inQuotes = false;
+  for (var i = 0; i < text.length; i++) {
+    var ch = text[i];
+    var next = text[i+1];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (next === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        field += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        row.push(field);
+        field = '';
+      } else if (ch === '\n' || ch === '\r') {
+        // Handle Windows \r\n
+        if (ch === '\r' && next === '\n') i++;
+        row.push(field);
+        if (row.length > 0 && row.some(function(v){ return v !== ''; })) {
+          rows.push(row);
+        }
+        row = [];
+        field = '';
+      } else {
+        field += ch;
+      }
+    }
+  }
+  // Last field / row
+  if (field || row.length) {
+    row.push(field);
+    if (row.some(function(v){ return v !== ''; })) rows.push(row);
+  }
+  if (rows.length === 0) return [];
+  var headers = rows[0];
+  var result = [];
+  for (var r = 1; r < rows.length; r++) {
+    var obj = {};
+    headers.forEach(function(h, idx){
+      obj[h.trim()] = (rows[r][idx] || '').trim();
+    });
+    result.push(obj);
+  }
+  return result;
+}
+
+/* ═══ CARD NAME ENGINE ═══ */
+function hasSub(a,b){a=a.toUpperCase().replace(/[^A-Z0-9]/g,'');b=b.toUpperCase().replace(/[^A-Z0-9]/g,'');for(var l=3;l<=Math.min(a.length,b.length);l++)for(var i=0;i<=a.length-l;i++)if(b.indexOf(a.substring(i,i+l))>=0)return true;return false;}
+function parseCardName(card){
+  var ext=card.extendedData||[],fn=(card.name||'').trim(),pC=[],pO=[],pR=/\s*\(([^)]+)\)\s*$/,m;
+  while((m=fn.match(pR))){pO.unshift(m[1].trim());pC.unshift(m[1].trim().toUpperCase());fn=fn.replace(pR,'').trim();}
+  var sfn='',sR=/\s*-\s*([A-Z0-9-]+)$/,sm=fn.match(sR);if(sm){sfn=sm[1].trim();fn=fn.replace(sR,'').trim();}
+  var bn=fn.trim(),numE=ext.find(function(e){return e.name==='Number';}),num=numE?numE.value.trim():(sfn||'');
+  var vars=[],ends=[],suf=[];
+  pC.forEach(function(pc,i){var orig=pO[i];if(hasSub(pc,num))return;if(pc.indexOf('REPRINT')>=0)ends.push(' (REPRINT)');else if(pc.indexOf('ALTERNATE ART')>=0||pc.indexOf('PARALLEL')>=0)vars.push('ALT ART ');else if(pc==='FULL ART')vars.push('FULL ART ');else if(pc==='MANGA')vars.push('MANGA ');else if(pc==='SP')vars.push('SP ');else if(pc.indexOf('WANTED POSTER')>=0){vars.push('SP ');suf.push(' ('+orig+')');}else if(/^\d+$/.test(pc)||pc.indexOf('OP-')>=0||pc.indexOf('ST-')>=0||pc.indexOf('P-')>=0){}else suf.push(' ('+orig+')');});
+  bn=bn.replace(/\s*\(([^)]+)\)/g,function(m2,c){var pc=c.trim().toUpperCase();if(hasSub(pc,num)||/^\d+$/.test(pc)||pc.indexOf('OP-')>=0||pc.indexOf('ST-')>=0||pc.indexOf('P-')>=0)return '';return m2;}).trim().replace(/-\s*[A-Z0-9-]+\s*$/g,'').trim();
+  var colE=ext.find(function(e){return e.name==='Color';}),col=colE?colE.value.toUpperCase():'';
+  return{bn:bn,suf:suf,vars:vars,ends:ends,num:num,col:col};
+}
+function shortName(c){var p=parseCardName(c);return p.bn+p.suf.join('')+' English ('+p.col+') '+p.vars.join('')+p.num+p.ends.join('');}
+function autoTitle(c){var p=parseCardName(c);return p.bn+p.suf.join('')+' English ('+p.col+') '+p.vars.join('')+p.num+' card One Piece CCG'+p.ends.join('');}
+function autoBodyCard(c,t){var ext=c.extendedData||[],eD=ext.find(function(e){return e.name==='Description';}),eff=eD?eD.value:'',sp='';ext.forEach(function(e){if(e.name!=='Description'&&e.value&&e.value.trim())sp+='* '+(e.displayName||e.name)+': '+e.value+'<br>';});return'<div><b>'+t+'</b></div><div><br></div><b>Card Specifications:</b><br>'+(eff?eff+'<br>':'')+sp+'<div><br><b>Shipping:</b><br>This card will be sleeved, sandwiched between cardboard, and sealed in a bag. The item will be shipped in an envelope during transport.</div>';}
+function autoBodyDon(p,t){var ext=p.extendedData||[],eD=ext.find(function(e){return e.name==='Description';}),eff=eD?eD.value:'',sp='';ext.forEach(function(e){if(e.name!=='Description'&&e.value&&e.value.trim())sp+='* '+(e.displayName||e.name)+': '+e.value+'<br>';});var d=(eff||sp)?'<b>Card Specifications:</b><br>'+(eff?'* Description: '+eff+'<br>':'')+sp:'';return'<div><b>'+t+'</b></div><div><br></div>'+(d?d+'<div><br></div>':'')+'<div><b>Shipping:</b><br>This card will be sleeved, sandwiched between cardboard, and sealed in a bag. The item will be shipped in an envelope during transport.</div>';}
+function autoBodySealed(p,t){var sl=p.setName?'* Set: '+p.setName+'<br>':'';return'<div><b>'+t+'</b></div><div><br></div>'+(sl?'<b>Product Details:</b><br>'+sl+'<div><br></div>':'')+'<div><b>Shipping:</b><br>This item will be securely packaged to prevent damage during transport.</div>';}
+
+/* ═══ FETCH ═══ */
+var PROXY='https://corsproxy.io/?';
+async function fetchP(url){try{var r=await fetch(url);if(r.ok)return await r.text();}catch(e){}var r2=await fetch(PROXY+encodeURIComponent(url));if(!r2.ok)throw new Error('HTTP '+r2.status);return await r2.text();}
+
+/* ═══ TCGPLAYER PRICE SCRAPER — uses internal JSON API (mpapi.tcgplayer.com) ═══ */
+/* Reason: HTML page scraping fails because (a) tcgplayer blocks most CORS proxies
+   and (b) prices are Vue-rendered client-side so they're not in the SSR HTML.
+   The mpapi.tcgplayer.com/v2/product/{id}/pricepoints endpoint returns JSON
+   with marketPrice directly — same endpoint tcgplayer's own site uses. */
+
+var SCRAPE_PROXIES=[
+  function(u){return'https://corsproxy.io/?'+encodeURIComponent(u);},
+  function(u){return'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
+  function(u){return'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u);}
+];
+var proxyFails=[0,0,0],PROXY_DEAD_AT=6;
+
+async function fetchViaProxy(url){
+  for(var i=0;i<SCRAPE_PROXIES.length;i++){
+    if(proxyFails[i]>=PROXY_DEAD_AT)continue;
+    try{
+      var ctrl=new AbortController();
+      var tid=setTimeout(function(){ctrl.abort();},12000);
+      var r=await fetch(SCRAPE_PROXIES[i](url),{signal:ctrl.signal});
+      clearTimeout(tid);
+      if(r.ok){var txt=await r.text();if(txt&&txt.length>10){proxyFails[i]=Math.max(0,proxyFails[i]-1);return txt;}}
+      proxyFails[i]++;
+    }catch(e){proxyFails[i]++;}
+  }
+  return null;
+}
+
+async function scrapeTcgPrice(productId){
+  // PRIMARY: JSON pricepoints API — returns array of {productId, lowPrice, midPrice, highPrice, marketPrice, directLowPrice, subTypeName}
+  try{
+    var apiUrl='https://mpapi.tcgplayer.com/v2/product/'+productId+'/pricepoints';
+    var txt=await fetchViaProxy(apiUrl);
+    if(txt){
+      var data=JSON.parse(txt);
+      if(Array.isArray(data)&&data.length>0){
+        // Prefer "Normal" variant, else first with a usable price
+        var normal=data.find(function(p){return p.subTypeName==='Normal';});
+        var pick=normal||data[0];
+        var pr=pick.marketPrice||pick.midPrice||pick.lowPrice||pick.directLowPrice||pick.highPrice||0;
+        if(pr>0)return pr;
+        // Try any other entry with a price
+        for(var j=0;j<data.length;j++){
+          var x=data[j],xp=x.marketPrice||x.midPrice||x.lowPrice||x.directLowPrice||x.highPrice||0;
+          if(xp>0)return xp;
+        }
+      }
+    }
+  }catch(e){}
+  // FALLBACK: HTML scrape for near-mint-table__price span
+  try{
+    var htmlUrl='https://www.tcgplayer.com/product/'+productId+'?Language=English';
+    var html=await fetchViaProxy(htmlUrl);
+    if(html){
+      var m=html.match(/class="near-mint-table__price"[^>]*>\s*\$?([\d,]+\.\d{2})/);
+      if(m)return parseFloat(m[1].replace(/,/g,''));
+    }
+  }catch(e){}
+  return 0;
+}
+
+async function scrapeMissingPrices(data,onP){
+  var all=data.allCards.concat(data.sealed).concat(data.don);
+  var missing=all.filter(function(p){return !p.marketPrice||p.marketPrice<=0;});
+  if(!missing.length){onP('');return;}
+  proxyFails=[0,0,0]; // reset on every full scrape run
+  var CONC=12,done=0,found=0,firstErr=null;
+  onP('Scraping '+missing.length+' missing prices via TCGPlayer API...');
+  console.log('[scrape] Starting scrape for '+missing.length+' products');
+  for(var i=0;i<missing.length;i+=CONC){
+    var batch=missing.slice(i,i+CONC);
+    await Promise.allSettled(batch.map(function(p){
+      return scrapeTcgPrice(p.productId).then(function(price){
+        done++;
+        if(price>0){p.marketPrice=price;found++;}
+      }).catch(function(e){done++;if(!firstErr)firstErr=e.message;});
+    }));
+    onP('Scraping prices: '+done+'/'+missing.length+' ('+found+' recovered)');
+    // If all 3 proxies are dead, bail out early — no point hammering dead endpoints
+    if(proxyFails[0]>=PROXY_DEAD_AT&&proxyFails[1]>=PROXY_DEAD_AT&&proxyFails[2]>=PROXY_DEAD_AT){
+      console.warn('[scrape] All proxies dead, aborting. Fails:',proxyFails);
+      onP('Scrape aborted — all proxies blocked. Check console.');
+      break;
+    }
+  }
+  console.log('[scrape] Done. Recovered '+found+'/'+missing.length+'. Proxy failure counts:',proxyFails);
+  onP('Price scrape complete: '+found+'/'+missing.length+' recovered');
+  setTimeout(function(){scrapeStatus='';var el=document.getElementById('sts-txt');if(el&&DB&&currentTab==='search'){el.textContent='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';}},4000);
+}
+
+/* ═══ DB LOADER — complete fetch with robust parsing ═══ */
+var DNAMES={CardType:'Card Type',Subtypes:'Subtype(s)',Counterplus:'Counter+',CardEffect:'Effect',BlockIcon:'Block',FlavorText:'Flavor Text'};
+var SERIAL_PATTERN=/\b((?:OP|ST|EB|P|PRB)\d{0,2}-\d{3,}[A-Z]?)\b/i;
+
+async function loadDB(onP){
+  var gTxt=await fetchP('https://tcgcsv.com/tcgplayer/68/Groups.csv');
+  var gRows=parseCSV(gTxt);
+  var sets=gRows.filter(function(r){return r.groupId&&r.name;}).map(function(r){return{id:parseInt(r.groupId),name:r.name};});
+  onP('Found '+sets.length+' sets...');
+  var cMap=new Map(),byId=new Map(),sealed=[],don=[],allCards=[];
+  for(var i=0;i<sets.length;i+=6){
+    var batch=sets.slice(i,i+6);
+    var results=await Promise.allSettled(batch.map(function(s){
+      return fetchP('https://tcgcsv.com/tcgplayer/68/'+s.id+'/ProductsAndPrices.csv').then(function(t){return{t:t,sn:s.name};});
+    }));
+    results.forEach(function(res){
+      if(res.status!=='fulfilled')return;
+      var rows=parseCSV(res.value.t);
+      rows.forEach(function(row){
+        if(!row.name||!row.name.trim())return;
+
+        var mp=parseFloat(row.marketPrice)||0;
+        if(mp<=0)mp=parseFloat(row.midPrice)||0;
+        if(mp<=0)mp=parseFloat(row.lowPrice)||0;
+        if(mp<=0)mp=parseFloat(row.directLowPrice)||0;
+        if(mp<=0)mp=parseFloat(row.highPrice)||0;
+
+        var ext=[];
+        for(var ck in row){
+          if(ck.indexOf('ext')===0&&ck.length>3&&row[ck]&&row[ck].trim()){
+            var fn=ck.substring(3);
+            ext.push({name:fn,displayName:DNAMES[fn]||fn.replace(/([A-Z])/g,' $1').trim(),value:row[ck].trim()});
+          }
+        }
+
+        var nm=row.name.trim();
+        var serial=row.extNumber&&row.extNumber.trim()?row.extNumber.trim():'';
+        if(!serial){var nE=ext.find(function(e){return e.name==='Number';});if(nE)serial=nE.value.trim();}
+        if(!serial){var sm=nm.match(SERIAL_PATTERN);if(sm)serial=sm[1];}
+
+        if(serial){
+          var num=serial.toUpperCase();
+          var rE=ext.find(function(e){return e.name==='Rarity';});
+          var card={productId:parseInt(row.productId)||0,name:nm,
+            rarity:row.extRarity||(rE?rE.value:'')||'',
+            number:num,marketPrice:mp,extendedData:ext,setName:res.value.sn,type:'card'};
+          if(!cMap.has(num))cMap.set(num,[]);
+          cMap.get(num).push(card);byId.set(card.productId,card);allCards.push(card);
+        } else if(nm.toUpperCase().indexOf('DON!!')>=0){
+          var dp={productId:parseInt(row.productId)||0,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'don'};
+          don.push(dp);byId.set(dp.productId,dp);
+        } else {
+          var sp={productId:parseInt(row.productId)||0,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'sealed'};
+          sealed.push(sp);byId.set(sp.productId,sp);
+        }
+      });
+    });
+    onP('Loaded '+Math.min(i+6,sets.length)+'/'+sets.length+' sets ('+cMap.size+' serials, '+sealed.length+' sealed, '+don.length+' DON!!)');
+  }
+  return{cardMap:cMap,byId:byId,sealed:sealed,don:don,allCards:allCards};
+}
+function getById(pid){pid=parseInt(pid);return DB&&DB.byId?DB.byId.get(pid)||null:null;}
+
+/* ═══ UTILS ═══ */
+function $(id){return document.getElementById(id);}
+function h(t,c,i){var e=document.createElement(t);if(c)e.className=c;if(i!=null)e.innerHTML=i;return e;}
+function esc(s){if(s==null)return'';var d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+function showToast(m,ok){var t=h('div','toast',m);t.style.background=ok?'#16a34a':'#dc2626';$('toast-container').appendChild(t);setTimeout(function(){t.remove();},3000);}
+function copyTxt(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){showToast('Copied!',true);}).catch(function(){fbCp(t);});else fbCp(t);}
+function fbCp(t){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Copied!',true);}
+function openModal(c){var mr=$('modal-root');mr.innerHTML='';var bg=h('div','modal-bg');var m=h('div','modal');m.innerHTML=c;bg.appendChild(m);bg.onclick=function(e){if(e.target===bg)closeModal();};mr.appendChild(bg);return m;}
+function closeModal(){$('modal-root').innerHTML='';}
+function debounce(fn,ms){var t;return function(){var a=arguments,th=this;clearTimeout(t);t=setTimeout(function(){fn.apply(th,a);},ms);};}
+
+/* ═══ IMAGE LIGHTBOX ═══ */
+function openLightbox(imgSrc){
+  var mr=$('modal-root');mr.innerHTML='';
+  var bg=h('div','modal-bg');bg.style.cursor='zoom-out';
+  var img=document.createElement('img');img.src=imgSrc;img.className='lightbox-img';img.style.cursor='default';
+  bg.appendChild(img);bg.onclick=function(e){if(e.target===bg)mr.innerHTML='';};
+  mr.appendChild(bg);
+}
+
+/* ═══ SAVE IMAGE ═══ */
+async function saveImage(imgSrc, name){
+  showToast('Downloading...',true);
+  var blob=null;
+  try{
+    var r=await fetch(imgSrc,{mode:'cors'});
+    if(r.ok)blob=await r.blob();
+  }catch(e){}
+  if(!blob){
+    try{
+      var r2=await fetch(PROXY+encodeURIComponent(imgSrc));
+      if(r2.ok)blob=await r2.blob();
+    }catch(e){}
+  }
+  if(!blob){showToast('Download failed — check network',false);return;}
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download=(name||'card')+'.jpg';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},200);
+  showToast('Downloaded!',true);
+}
+
+/* ═══ EBAY BADGE ═══ */
+function renderEbayBtn(){
+  var el=$('ebay-btn');if(!el)return;
+  var c=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt>Date.now(),x=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt<=Date.now();
+  if(c){el.className='ebay-btn connected';el.innerHTML='<span class="dot" style="background:#22c55e"></span><span>eBay: '+esc(EBAY_AUTH.username||'Connected')+'</span>';}
+  else if(x){el.className='ebay-btn expired';el.innerHTML='<span class="dot" style="background:#f59e0b"></span><span>Token Expired</span>';}
+  else{el.className='ebay-btn';el.innerHTML='<span>🔐</span><span>Sign in with eBay</span>';}
+}
+
+/* ═══ TABS ═══ */
+var TABS=[{id:'search',label:'Card Search',icon:'🔍'},{id:'linked',label:'Linked Listings',icon:'🔗'},{id:'presets',label:'Box Presets',icon:'📦'},{id:'calc',label:'Calculator',icon:'🧮'},{id:'quick',label:'Quick Calc',icon:'⚡'},{id:'batch',label:'Batch',icon:'📊'},{id:'ebay',label:'eBay Auth',icon:'🔐'},{id:'settings',label:'Settings',icon:'⚙️'},{id:'info',label:'Fee Info',icon:'📋'}];
+var currentTab='search';
+
+function initSidebar(){var sb=$('sidebar');sb.innerHTML='';TABS.forEach(function(t){var b=h('button',t.id===currentTab?'on':'','<span class="ico">'+t.icon+'</span> '+t.label);b.onclick=function(){switchTab(t.id);};sb.appendChild(b);});}
+function switchTab(id){currentTab=id;initSidebar();var m=$('main');m.innerHTML='';
+  ({search:renderSearch,linked:renderLinked,presets:renderPresets,calc:renderCalc,quick:renderQuick,batch:renderBatch,ebay:renderEbay,settings:renderSettings,info:renderInfo})[id](m);
+}
+
+/* ═══ SEARCH TAB ═══ */
+var searchQ='',searchStatus='idle',searchSel=null,searchCustShip='';
+
+function renderSearch(m){
+  var stColor=searchStatus==='ready'?'#22c55e':searchStatus.indexOf('Error')>=0?'#ef4444':'#eab308';
+  var baseText=searchStatus==='ready'?'One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)':searchStatus;
+  var stText=baseText+(searchStatus==='ready'&&scrapeStatus?' · '+scrapeStatus:'');
+  var html='<div class="sts"><span class="dot" style="background:'+stColor+'"></span><span id="sts-txt">'+esc(stText)+'</span></div>';
+
+  if(!searchSel){
+    html+='<input class="inp inp-big" id="sq" placeholder="Type a serial (e.g. OP05-) or name..." autocomplete="off" value="'+esc(searchQ)+'" style="margin-bottom:20px">';
+  }
+  html+='<div id="search-content"></div>';
+  m.innerHTML=html;
+
+  if(!searchSel){
+    var sqEl=$('sq');
+    var debUp=debounce(function(){searchQ=sqEl.value;renderLiveGrid();},120);
+    sqEl.oninput=function(){searchQ=this.value;debUp();};
+    sqEl.onkeydown=function(e){if(e.key==='Escape'){this.value='';searchQ='';renderLiveGrid();}};
+    sqEl.focus();
+  }
+
+  if(searchSel)renderDetail($('search-content'));
+  else renderLiveGrid();
+}
+
+function renderLiveGrid(){
+  var el=$('search-content');if(!el)return;
+  if(!DB||searchStatus!=='ready'){el.innerHTML='<div class="empty"><span class="spinner"></span> Loading database...</div>';return;}
+  var q=searchQ.trim().toUpperCase();
+  if(!q){el.innerHTML='<div class="empty">Start typing above to see cards with images.<br><br>Examples: <code>OP05-</code> shows all OP05 cards, <code>Luffy</code> shows all Luffy cards.</div>';return;}
+  var qL=q.toLowerCase(),cardMatches=[],seenPids={};
+  DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)===0)cards.forEach(function(c){if(!seenPids[c.productId]){seenPids[c.productId]=1;cardMatches.push(c);}});});
+  if(cardMatches.length===0)DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)>=0)cards.forEach(function(c){if(!seenPids[c.productId]){seenPids[c.productId]=1;cardMatches.push(c);}});});
+  if(cardMatches.length<80)for(var i=0;i<DB.allCards.length&&cardMatches.length<80;i++){var c=DB.allCards[i];if(!seenPids[c.productId]&&c.name.toLowerCase().indexOf(qL)>=0){seenPids[c.productId]=1;cardMatches.push(c);}}
+  cardMatches.sort(function(a,b){var ak=a.number.toUpperCase(),bk=b.number.toUpperCase();if(ak!==bk)return ak.localeCompare(bk);return b.marketPrice-a.marketPrice;});
+  cardMatches=cardMatches.slice(0,80);
+  var sealedM=DB.sealed.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}).slice(0,12);
+  var donM=DB.don.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}).slice(0,12);
+  var total=cardMatches.length+sealedM.length+donM.length;
+  if(total===0){el.innerHTML='<div class="empty">No results for "'+esc(searchQ)+'"</div>';return;}
+  var html='';
+  if(cardMatches.length>0){
+    html+='<div class="live-sec">🃏 Cards ('+cardMatches.length+(cardMatches.length>=80?'+':'')+')</div><div class="live-grid">';
+    cardMatches.forEach(function(c){html+='<div class="live-card" data-pid="'+c.productId+'"><div class="iw"><img src="'+tcgImg(c.productId)+'" onerror="this.style.opacity=0.2" loading="lazy"></div><div class="n" title="'+esc(c.name)+'">'+esc(c.number)+'</div><div class="s" title="'+esc(c.name)+'">'+esc(c.name)+'</div><div class="p">'+(c.marketPrice>0?'$'+c.marketPrice.toFixed(2):'<span class="dim">no price</span>')+'</div></div>';});
+    html+='</div>';
+  }
+  if(donM.length>0){
+    html+='<div class="live-sec">🃏 DON!! ('+donM.length+')</div><div class="live-grid">';
+    donM.forEach(function(p){html+='<div class="live-card" data-pid="'+p.productId+'"><div class="iw"><img src="'+tcgImg(p.productId)+'" onerror="this.style.opacity=0.2" loading="lazy"></div><div class="n">'+esc(p.name)+'</div><div class="s">'+esc(p.setName)+'</div><div class="p">'+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'no price')+'</div></div>';});
+    html+='</div>';
+  }
+  if(sealedM.length>0){
+    html+='<div class="live-sec">📦 Sealed ('+sealedM.length+')</div><div class="live-grid">';
+    sealedM.forEach(function(p){html+='<div class="live-card" data-pid="'+p.productId+'"><div class="iw"><img src="'+tcgImg(p.productId)+'" onerror="this.style.opacity=0.2" loading="lazy"></div><div class="n">'+esc(p.name)+'</div><div class="s">'+esc(p.setName)+'</div><div class="p">'+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'no price')+'</div></div>';});
+    html+='</div>';
+  }
+  el.innerHTML=html;
+  el.querySelectorAll('[data-pid]').forEach(function(card){
+    card.onclick=function(){var p=getById(this.getAttribute('data-pid'));if(p){searchSel=p;searchCustShip='';renderSearch($('main'));window.scrollTo({top:0,behavior:'smooth'});}};
+  });
+}
+
+function renderDetail(el){
+  var s=searchSel;if(!s)return;
+  var mp=s.marketPrice;
+  var shipN=searchCustShip!==''&&!isNaN(parseFloat(searchCustShip))?parseFloat(searchCustShip):null;
+  var calc=mp>0?calcListing(mp,shipN):null,vn=calc?vNet(calc.lp,calc.ship,calc.c):0;
+  var linked=LINKED_LISTINGS[s.productId]||[];
+  var imgSrc=tcgImg(s.productId);
+  var aT,aB;
+  if(s.type==='card'){aT=autoTitle(s);aB=autoBodyCard(s,aT);}else if(s.type==='don'){aT=s.name+' One Piece CCG';aB=autoBodyDon(s,aT);}else{aT=s.name+' One Piece CCG (SEALED)';aB=autoBodySealed(s,aT);}
+  var aP=calc?calc.lp.toFixed(2):'—';
+
+  var html='<div style="animation:fadeIn .2s ease">';
+  html+='<button class="btn-back" id="det-back">← Back to Search Results</button>';
+  html+='<div class="det-grid"><div class="det-iw">';
+  html+='<img src="'+imgSrc+'" class="det-img" id="det-img" onerror="this.style.opacity=0.3">';
+  html+='<div class="img-btns"><button class="btn btn-out" style="padding:8px 18px;font-size:13px" id="img-save">💾 Save Image</button></div>';
+  html+='</div><div>';
+
+  var tb=s.type==='card'?'<span class="badge badge-card">CARD</span>':s.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
+  html+='<div class="det-t">'+tb+' '+esc(s.name)+'</div>';
+  html+='<div class="det-m">';
+  if(s.type==='card')html+='Serial: '+esc(s.number)+' · Rarity: '+esc(s.rarity)+' · ';
+  html+='Set: '+esc(s.setName)+'</div>';
+
+  html+='<div class="card" id="price-card">';
+  html+=buildPriceCardInner(mp,calc,vn,shipN);
+  html+='</div>';
+
+  var ext=s.extendedData||[];
+  if(ext.length>0){
+    html+='<div class="card"><div class="hd3">📋 Details</div><div class="ext-grid">';
+    ext.filter(function(e){return e.name!=='Description';}).forEach(function(e){html+='<div><span class="dim">'+(e.displayName||e.name)+':</span> <b>'+esc(e.value)+'</b></div>';});
+    html+='</div>';var dE=ext.find(function(e){return e.name==='Description';});if(dE)html+='<div class="desc-t">'+esc(dE.value)+'</div>';html+='</div>';
+  }
+
+  html+='<div class="card"><div class="hd3">📝 Auto List Format</div>';
+  var fields=[{label:'Title',value:aT},{label:'Listing Price',value:aP},{label:'Body (HTML)',value:aB}];
+  fields.forEach(function(f,i){
+    html+='<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:12px;font-weight:700">'+f.label+'</span><button class="btn-sm" data-cp="'+i+'">Copy</button></div><div class="code-blk" data-cp="'+i+'">'+esc(f.value)+'</div></div>';
+  });
+  html+='</div>';
+
+  html+='<div class="card"><div class="hd3">🔗 Linked Listings '+(linked.length>0?'('+linked.length+')':'')+'</div>';
+  if(linked.length===0)html+='<div class="dim" style="font-size:13px;margin-bottom:14px">Link eBay listings to this product for auto price updates.</div>';
+  else linked.forEach(function(l,li){
+    var fp=finalPrice(s.marketPrice,l.option,l.modifier,true,l.shippingPrice);
+    html+='<div class="link-card"><div class="link-title">Listing #'+(li+1)+': <a href="https://www.ebay.com/itm/'+l.itemId+'" target="_blank">'+esc(l.itemId)+'</a></div>';
+    html+='<div class="link-sub">Price: '+fp+'<br>Shipping: '+(l.shippingPrice!=null?'$'+l.shippingPrice.toFixed(2)+(l.service?' via '+esc(l.service):''):'<i>not set</i>')+'<br>';
+    html+='Option: '+(l.option===1?'Market':'Calculated')+' · Mod: '+modName(l.modifier)+'</div>';
+    html+='<div class="link-actions"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-link-edit="'+li+'">✏️ Edit</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-link-del="'+li+'">🗑️ Delete</button></div></div>';
+  });
+  html+='<button class="btn btn-ac" style="margin-top:6px" id="link-new">➕ Add Linked Listing</button></div>';
+
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">';
+  html+='<a href="https://www.tcgplayer.com/product/'+s.productId+'" target="_blank" class="btn btn-out">TCGPlayer ↗</a>';
+  html+='<a href="https://www.ebay.com/sch/i.html?_nkw='+encodeURIComponent(s.name)+'" target="_blank" class="btn btn-out">eBay Search ↗</a>';
+  if(s.type==='card')html+='<a href="https://onepiece.limitlesstcg.com/cards/'+s.number.toUpperCase()+'" target="_blank" class="btn btn-out">Limitless ↗</a>';
+  html+='</div></div></div></div>';
+  el.innerHTML=html;
+
+  $('det-back').onclick=function(){searchSel=null;renderSearch($('main'));};
+  $('img-save').onclick=function(){saveImage(imgSrc,s.name.replace(/[^a-zA-Z0-9]/g,'_'));};
+  $('det-img').onclick=function(){openLightbox(imgSrc);};
+
+  var shipInp=$('det-ship');
+  if(shipInp)shipInp.oninput=function(){
+    searchCustShip=this.value;
+    var sN=searchCustShip!==''&&!isNaN(parseFloat(searchCustShip))?parseFloat(searchCustShip):null;
+    var c2=mp>0?calcListing(mp,sN):null,v2=c2?vNet(c2.lp,c2.ship,c2.c):0;
+    var pc=$('price-card');
+    if(pc){
+      var inner=buildPriceCardInner(mp,c2,v2,sN);
+      var statsEl=$('price-stats');
+      if(statsEl){
+        var tempDiv=document.createElement('div');tempDiv.innerHTML=inner;
+        var newStats=tempDiv.querySelector('#price-stats');
+        if(newStats)statsEl.innerHTML=newStats.innerHTML;
+      }
+    }
+  };
+
+  var fields2=[{label:'Title',value:aT},{label:'Listing Price',value:aP},{label:'Body (HTML)',value:aB}];
+  el.querySelectorAll('[data-cp]').forEach(function(btn){btn.onclick=function(){copyTxt(fields2[parseInt(this.getAttribute('data-cp'))].value);};});
+  $('link-new').onclick=function(){openLinkModal(s,null);};
+  el.querySelectorAll('[data-link-edit]').forEach(function(btn){btn.onclick=function(){openLinkModal(s,parseInt(this.getAttribute('data-link-edit')));};});
+  el.querySelectorAll('[data-link-del]').forEach(function(btn){
+    btn.onclick=function(){var li=parseInt(this.getAttribute('data-link-del'));if(!confirm('Delete this linked listing?'))return;LINKED_LISTINGS[s.productId].splice(li,1);if(LINKED_LISTINGS[s.productId].length===0)delete LINKED_LISTINGS[s.productId];saveStorage();showToast('Deleted',true);renderDetail(el);};
+  });
+}
+
+function buildPriceCardInner(mp,calc,vn,shipN){
+  var html='<div class="hd3">💰 Price Breakdown</div><div class="st-grid" id="price-stats">';
+  html+=stat('Market Price',mp>0?'$'+mp.toFixed(2):'N/A','',true);
+  html+=stat('List At',calc?'$'+calc.lp.toFixed(2):'—','var(--ac)',true);
+  html+=stat('Shipping',calc?'$'+calc.ship.toFixed(2):'—');
+  html+=stat('eBay Fee',calc?'$'+calc.c.toFixed(2):'—','var(--ylw)');
+  html+=stat('Net Return',calc?'$'+vn.toFixed(2):'—','var(--grn)');
+  html+=stat('Rule',calc?calc.rule:'—');
+  html+='</div>';
+  html+='<div style="margin-top:12px;display:flex;gap:8px;align-items:center"><span class="dim">Custom shipping $:</span><input class="inp" style="width:90px" id="det-ship" placeholder="auto" value="'+esc(searchCustShip)+'"></div>';
+  return html;
+}
+function stat(l,v,c,big){return'<div><div class="st-l">'+l+'</div><div class="'+(big?'st-vb':'st-v')+'" style="'+(c?'color:'+c:'')+'">'+v+'</div></div>';}
+
+/* ═══ LINK MODAL ═══ */
+function openLinkModal(product,editIdx){
+  var existing=editIdx!=null?LINKED_LISTINGS[product.productId][editIdx]:null,isEdit=editIdx!=null;
+  var html='<div class="modal-t">'+(isEdit?'Edit':'Add')+' Linked Listing</div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>eBay Item ID or URL</label><input class="inp" id="m-url" placeholder="1234567890" value="'+esc(existing?existing.itemId:'')+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Pricing Option</label><select class="inp" id="m-opt"><option value="1"'+(existing&&existing.option===1?' selected':'')+'>Market Price</option><option value="2"'+(!existing||existing.option===2?' selected':'')+'>Calculated</option></select></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Modifier</label><select class="inp" id="m-mod">';
+  [1,2,3,4].forEach(function(mi){html+='<option value="'+mi+'"'+(existing&&existing.modifier===mi?' selected':'')+'>'+modName(mi)+'</option>';});
+  html+='</select></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Shipping $ (optional)</label><input class="inp" id="m-ship" placeholder="0.74" value="'+esc(existing&&existing.shippingPrice!=null?existing.shippingPrice:'')+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Service (optional)</label><input class="inp" id="m-svc" placeholder="USPS Ground" value="'+esc(existing&&existing.service?existing.service:'')+'"></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-out" id="m-cancel">Cancel</button><button class="btn btn-ac" id="m-save">'+(isEdit?'Save':'Add')+'</button></div>';
+  openModal(html);
+  $('m-cancel').onclick=closeModal;
+  $('m-save').onclick=function(){
+    var url=$('m-url').value.trim(),itemId='',match=url.match(/\/itm\/(\d+)/);
+    if(match)itemId=match[1];else if(/^\d+$/.test(url))itemId=url;else{showToast('Invalid eBay URL/ID',false);return;}
+    var e={itemId:itemId,option:parseInt($('m-opt').value),modifier:parseInt($('m-mod').value),shippingPrice:isNaN(parseFloat($('m-ship').value))?null:parseFloat($('m-ship').value),service:$('m-svc').value.trim()||null};
+    if(!LINKED_LISTINGS[product.productId])LINKED_LISTINGS[product.productId]=[];
+    if(isEdit)LINKED_LISTINGS[product.productId][editIdx]=e;else LINKED_LISTINGS[product.productId].push(e);
+    saveStorage();showToast(isEdit?'Updated!':'Added!',true);closeModal();
+    if(currentTab==='search')renderDetail($('search-content'));else if(currentTab==='linked')renderLinked($('main'));
+  };
+}
+
+/* ═══ LINKED LISTINGS TAB ═══ */
+var lSort='high-low',lFilter='all';
+function renderLinked(m){
+  var pids=Object.keys(LINKED_LISTINGS).map(Number),total=pids.reduce(function(a,p){return a+(LINKED_LISTINGS[p]||[]).length;},0);
+  var filtered=pids;
+  if(lFilter==='cards')filtered=pids.filter(function(p){var x=getById(p);return x&&x.type==='card';});
+  else if(lFilter==='don')filtered=pids.filter(function(p){var x=getById(p);return x&&x.type==='don';});
+  else if(lFilter==='sealed')filtered=pids.filter(function(p){var x=getById(p);return x&&x.type==='sealed';});
+  var sortable=filtered.map(function(pid){var p=getById(pid);return{pid:pid,name:p?(p.type==='card'?shortName(p):p.name).toLowerCase():'',price:p?p.marketPrice:0};});
+  if(lSort==='alpha')sortable.sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(lSort==='high-low')sortable.sort(function(a,b){return b.price-a.price;});
+  else sortable.sort(function(a,b){return a.price-b.price;});
+  var html='<div class="hd">🔗 Linked Listings <span class="dim" style="font-size:14px;font-weight:500">'+total+' across '+pids.length+' products</span></div>';
+  html+='<div class="row mb"><div class="field"><label>Sort</label><select class="inp" id="l-sort"><option value="alpha"'+(lSort==='alpha'?' selected':'')+'>Alphabetical</option><option value="high-low"'+(lSort==='high-low'?' selected':'')+'>Price High→Low</option><option value="low-high"'+(lSort==='low-high'?' selected':'')+'>Price Low→High</option></select></div>';
+  html+='<div class="field"><label>Filter</label><select class="inp" id="l-filter"><option value="all"'+(lFilter==='all'?' selected':'')+'>All</option><option value="cards"'+(lFilter==='cards'?' selected':'')+'>Cards</option><option value="don"'+(lFilter==='don'?' selected':'')+'>DON!!</option><option value="sealed"'+(lFilter==='sealed'?' selected':'')+'>Sealed</option></select></div></div>';
+  if(total===0)html+='<div class="empty">No linked listings yet.</div>';
+  else if(sortable.length===0)html+='<div class="empty">No listings match filter.</div>';
+  else sortable.forEach(function(s){
+    var p=getById(s.pid);if(!p)return;var ls=LINKED_LISTINGS[s.pid]||[];
+    var tb=p.type==='card'?'<span class="badge badge-card">CARD</span>':p.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
+    html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div><div style="font-weight:700;font-size:15px">'+tb+' '+esc(p.type==='card'?shortName(p):p.name)+'</div><div class="dim" style="font-size:12px">Market: '+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'N/A')+'</div></div><button class="btn-sm" data-goto="'+s.pid+'">View →</button></div>';
+    ls.forEach(function(l,li){
+      var fp=finalPrice(p.marketPrice,l.option,l.modifier,true,l.shippingPrice);
+      html+='<div class="link-card"><div class="link-title"><a href="https://www.ebay.com/itm/'+l.itemId+'" target="_blank">'+esc(l.itemId)+'</a></div>';
+      html+='<div class="link-sub">Price: '+fp+' · '+modName(l.modifier);if(l.shippingPrice!=null)html+=' · Ship $'+l.shippingPrice.toFixed(2);html+='</div>';
+      html+='<div class="link-actions"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-ll-edit="'+s.pid+'_'+li+'">✏️</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-ll-del="'+s.pid+'_'+li+'">🗑️</button></div></div>';
+    });
+    html+='</div>';
+  });
+  m.innerHTML=html;
+  $('l-sort').onchange=function(){lSort=this.value;renderLinked(m);};
+  $('l-filter').onchange=function(){lFilter=this.value;renderLinked(m);};
+  m.querySelectorAll('[data-goto]').forEach(function(b){b.onclick=function(){searchSel=getById(this.getAttribute('data-goto'));searchCustShip='';searchQ=searchSel?(searchSel.number||searchSel.name):'';switchTab('search');};});
+  m.querySelectorAll('[data-ll-edit]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-edit').split('_');openLinkModal(getById(ps[0]),parseInt(ps[1]));};});
+  m.querySelectorAll('[data-ll-del]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-del').split('_'),pid=parseInt(ps[0]),li=parseInt(ps[1]);if(!confirm('Delete?'))return;LINKED_LISTINGS[pid].splice(li,1);if(!LINKED_LISTINGS[pid].length)delete LINKED_LISTINGS[pid];saveStorage();showToast('Deleted',true);renderLinked(m);};});
+}
+
+/* ═══ BOX PRESETS ═══ */
+function renderPresets(m){
+  var html='<div class="hd">📦 Box Size Presets</div><button class="btn btn-ac mb" id="p-new">➕ Create New</button>';
+  if(!BOX_PRESETS.length)html+='<div class="empty">No presets yet.</div>';
+  else BOX_PRESETS.forEach(function(p,i){
+    html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:start"><div><b>'+esc(p.name)+'</b><br><span class="dim" style="font-size:13px">'+p.lengthIn+'" × '+p.widthIn+'" × '+p.heightIn+'" · '+p.weightLbs+'lb '+p.weightOz+'oz</span></div>';
+    html+='<div style="display:flex;gap:6px"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-pe="'+i+'">✏️</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-pd="'+i+'">🗑️</button></div></div></div>';
+  });
+  m.innerHTML=html;
+  $('p-new').onclick=function(){openPresetModal(null);};
+  m.querySelectorAll('[data-pe]').forEach(function(b){b.onclick=function(){openPresetModal(parseInt(this.getAttribute('data-pe')));};});
+  m.querySelectorAll('[data-pd]').forEach(function(b){b.onclick=function(){var i=parseInt(this.getAttribute('data-pd'));if(!confirm('Delete "'+BOX_PRESETS[i].name+'"?'))return;BOX_PRESETS.splice(i,1);saveStorage();renderPresets(m);showToast('Deleted',true);};});
+}
+function openPresetModal(ei){
+  var ex=ei!=null?BOX_PRESETS[ei]:null,isE=ei!=null;
+  var html='<div class="modal-t">'+(isE?'Edit':'Create')+' Preset</div>';
+  html+='<div class="field" style="margin-bottom:10px"><label>Name</label><input class="inp" id="p-name" value="'+esc(ex?ex.name:'')+'"></div>';
+  html+='<div class="row" style="margin-bottom:10px"><div class="field"><label>Length"</label><input class="inp" id="p-l" value="'+esc(ex?ex.lengthIn:'')+'"></div><div class="field"><label>Width"</label><input class="inp" id="p-w" value="'+esc(ex?ex.widthIn:'')+'"></div><div class="field"><label>Height"</label><input class="inp" id="p-h" value="'+esc(ex?ex.heightIn:'')+'"></div></div>';
+  html+='<div class="row" style="margin-bottom:16px"><div class="field"><label>Lbs</label><input class="inp" id="p-wl" value="'+esc(ex?ex.weightLbs:'')+'"></div><div class="field"><label>Oz</label><input class="inp" id="p-wo" value="'+esc(ex?ex.weightOz:'')+'"></div></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-out" id="p-cancel">Cancel</button><button class="btn btn-ac" id="p-save">'+(isE?'Save':'Create')+'</button></div>';
+  openModal(html);$('p-cancel').onclick=closeModal;
+  $('p-save').onclick=function(){
+    var n=$('p-name').value.trim(),l=parseFloat($('p-l').value),w=parseFloat($('p-w').value),hh=parseFloat($('p-h').value),wl=parseInt($('p-wl').value),wo=parseFloat($('p-wo').value);
+    if(!n){showToast('Name required',false);return;}if(isNaN(l)||isNaN(w)||isNaN(hh)||l<=0||w<=0||hh<=0){showToast('Invalid dims',false);return;}
+    if(isNaN(wl)||isNaN(wo)||wl<0||wo<0||wo>=16){showToast('Invalid weight',false);return;}if(wl===0&&wo===0){showToast('Weight=0',false);return;}
+    var e={name:n,lengthIn:l,widthIn:w,heightIn:hh,weightLbs:wl,weightOz:wo};if(isE)BOX_PRESETS[ei]=e;else BOX_PRESETS.push(e);
+    saveStorage();showToast(isE?'Updated':'Created',true);closeModal();renderPresets($('main'));
+  };
+}
+
+/* ═══ CALC / QUICK / BATCH ═══ */
+function renderCalc(m){
+  m.innerHTML='<div class="hd">🧮 eBay Price Calculator</div><div class="tg mb"><button class="on" id="cm-a">Auto Shipping</button><button id="cm-c">Custom Shipping</button></div><div class="row mb" style="align-items:flex-end"><div class="field"><label>Desired Net ($)</label><input class="inp inp-big" id="cn" placeholder="0.00"></div><div class="field" id="csw" style="display:none"><label>Shipping ($)</label><input class="inp inp-big" id="cs" placeholder="0.00"></div><button class="btn btn-ac" style="padding:12px 32px" id="cgo">Calculate</button></div><div id="cr"></div>';
+  var mode='auto';$('cm-a').onclick=function(){mode='auto';this.className='on';$('cm-c').className='';$('csw').style.display='none';};$('cm-c').onclick=function(){mode='custom';this.className='on';$('cm-a').className='';$('csw').style.display='';};
+  function go(){var n=parseFloat($('cn').value),el=$('cr');if(!n||n<=0){el.innerHTML='<div class="err">❌ Enter net &gt; 0</div>';return;}var s=mode==='custom'?parseFloat($('cs').value):null;if(mode==='custom'&&(isNaN(s)||s<0)){el.innerHTML='<div class="err">❌ Enter shipping ≥ 0</div>';return;}var r=calcListing(n,s);if(!r){el.innerHTML='<div class="err">❌ Error</div>';return;}var v=vNet(r.lp,r.ship,r.c);el.innerHTML='<div class="card" style="animation:fadeIn .2s"><div class="st-grid">'+stat('Desired','$'+n.toFixed(2),'',1)+stat('List At','$'+r.lp.toFixed(2),'var(--ac)',1)+stat('Shipping','$'+r.ship.toFixed(2))+stat('Fee','$'+r.c.toFixed(2),'var(--ylw)')+stat('Net','$'+v.toFixed(2),'var(--grn)')+stat('Rule',r.rule)+'</div></div>';}
+  $('cn').onkeydown=function(e){if(e.key==='Enter')go();};$('cs').onkeydown=function(e){if(e.key==='Enter')go();};$('cgo').onclick=go;
+}
+function renderQuick(m){
+  m.innerHTML='<div class="hd">⚡ Quick Calc</div><p class="dim" style="margin-bottom:14px">Live results as you type.</p><input class="inp inp-big" style="max-width:280px;margin-bottom:20px" id="qn" placeholder="Desired net $"><div id="qr"></div>';
+  $('qn').oninput=function(){var n=parseFloat(this.value),el=$('qr');if(!n||n<=0){el.innerHTML='';return;}var r=calcListing(n);if(!r){el.innerHTML='';return;}var v=vNet(r.lp,r.ship,r.c);el.innerHTML='<div class="card" style="font-size:15px;line-height:2.4"><div><span class="dim">Desired:</span> <b>$'+n.toFixed(2)+'</b></div><div><span class="dim">List at:</span> <b style="color:var(--ac)">$'+r.lp.toFixed(2)+'</b></div><div><span class="dim">Shipping:</span> <b>$'+r.ship.toFixed(2)+'</b> '+(r.cat==='LOW'?'📦':'🚚')+'</div><div><span class="dim">Fee:</span> <b style="color:var(--ylw)">$'+r.c.toFixed(2)+'</b></div><div><span class="dim">Net:</span> <b style="color:var(--grn)">$'+v.toFixed(2)+'</b></div><div><span class="dim">Rule:</span> '+r.rule+'</div></div>';};
+  $('qn').focus();
+}
+function renderBatch(m){
+  m.innerHTML='<div class="hd">📊 Batch Calculator</div><div class="row mb"><input class="inp" style="flex:1" id="bi" placeholder="5, 10, 15, 20, 50"><button class="btn btn-ac" id="bgo">Calculate</button></div><div id="br"></div>';
+  function go(){var ns=$('bi').value.split(',').map(function(s){return parseFloat(s.trim());}).filter(function(n){return n>0;});if(!ns.length)return;var rows=ns.map(function(n){var r=calcListing(n);if(!r)return{d:n,err:1};return{d:n,lp:r.lp,sh:r.ship,v:vNet(r.lp,r.ship,r.c),cat:r.cat};});var html='<div class="tbl-w"><table><thead><tr><th>Desired</th><th>List At</th><th>Shipping</th><th>Net</th></tr></thead><tbody>';rows.forEach(function(r){html+='<tr><td>$'+r.d.toFixed(2)+'</td><td style="color:'+(r.err?'#ef4444':'var(--ac)')+';font-weight:700">'+(r.err?'ERR':'$'+r.lp.toFixed(2))+'</td><td>'+(r.err?'—':'$'+r.sh.toFixed(2)+' '+(r.cat==='LOW'?'📦':'🚚'))+'</td><td style="color:var(--grn);font-weight:600">'+(r.err?'—':'$'+r.v.toFixed(2))+'</td></tr>';});html+='</tbody></table></div>';$('br').innerHTML=html;}
+  $('bi').onkeydown=function(e){if(e.key==='Enter')go();};$('bgo').onclick=go;
+}
+
+/* ═══ EBAY AUTH ═══ */
+function renderEbay(m){
+  var c=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt>Date.now(),x=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt<=Date.now();
+  var html='<div class="hd">🔐 eBay Authentication</div>';
+  html+='<div class="info-bar">⚠️ Browsers can\'t directly auth with eBay (CORS + client_secret). Generate a token from the <a href="https://developer.ebay.com/my/auth/?env=production" target="_blank">eBay Developer Portal</a> and paste it below.</div>';
+  if(c){var mins=Math.round((EBAY_AUTH.expiresAt-Date.now())/60000);html+='<div class="card" style="border-color:rgba(34,197,94,.3)"><div class="hd3" style="color:var(--grn)">✅ Connected</div><div style="font-size:13px;line-height:1.9"><div><span class="dim">Username:</span> <b>'+esc(EBAY_AUTH.username)+'</b></div><div><span class="dim">Token:</span> <code>'+esc(EBAY_AUTH.accessToken.substring(0,30))+'...</code></div><div><span class="dim">Expires:</span> <b>'+mins+' min</b></div></div><div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-out" id="eb-edit">Update</button><button class="btn btn-dng" id="eb-out">Sign Out</button></div></div>';}
+  else{html+='<div class="card"><div class="hd3">'+(x?'⏰ Expired':'🔑 Not Signed In')+'</div><div class="dim" style="margin-bottom:14px;line-height:1.7;font-size:13px">1. Open <a href="https://developer.ebay.com/my/auth/?env=production" target="_blank">eBay Dev Portal</a><br>2. Get User Token → copy it<br>3. Paste below</div><button class="btn btn-ac" id="eb-in">Enter Token</button></div>';}
+  m.innerHTML=html;
+  if($('eb-in'))$('eb-in').onclick=openEbayModal;if($('eb-edit'))$('eb-edit').onclick=openEbayModal;
+  if($('eb-out'))$('eb-out').onclick=function(){if(!confirm('Sign out?'))return;EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};saveStorage();renderEbayBtn();renderEbay(m);showToast('Signed out',true);};
+}
+function openEbayModal(){
+  var html='<div class="modal-t">🔐 eBay Token</div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Access Token</label><input class="inp" id="ea-t" value="'+esc(EBAY_AUTH.accessToken)+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Refresh Token (opt)</label><input class="inp" id="ea-r" value="'+esc(EBAY_AUTH.refreshToken)+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Expires In (sec)</label><input class="inp" id="ea-e" value="7200"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Username</label><input class="inp" id="ea-u" value="'+esc(EBAY_AUTH.username)+'"></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-out" id="ea-cancel">Cancel</button><button class="btn btn-ac" id="ea-save">Save</button></div>';
+  openModal(html);$('ea-cancel').onclick=closeModal;
+  $('ea-save').onclick=function(){var t=$('ea-t').value.trim();if(!t){showToast('Token required',false);return;}EBAY_AUTH={accessToken:t,refreshToken:$('ea-r').value.trim(),expiresAt:Date.now()+(parseInt($('ea-e').value)||7200)*1000,username:$('ea-u').value.trim()};saveStorage();renderEbayBtn();closeModal();renderEbay($('main'));showToast('Saved!',true);};
+}
+
+/* ═══ SETTINGS / INFO ═══ */
+function renderSettings(m){
+  m.innerHTML='<div class="hd">⚙️ Settings</div><div class="card"><div class="hd3">📍 Ship-From ZIP</div><div class="row"><input class="inp" id="s-zip" style="max-width:200px" value="'+esc(USER_ZIP)+'"><button class="btn btn-ac" id="s-zs">Save</button></div></div><div class="card"><div class="hd3">🗑️ Data</div><div class="row"><button class="btn btn-out" id="s-cl">Clear Linked</button><button class="btn btn-out" id="s-cp">Clear Presets</button><button class="btn btn-dng" id="s-ca">Clear All</button></div></div><div class="card"><div class="hd3">📊 Stats</div><div class="dim" style="font-size:13px;line-height:1.8">Linked: '+Object.keys(LINKED_LISTINGS).length+' products ('+Object.keys(LINKED_LISTINGS).reduce(function(a,k){return a+LINKED_LISTINGS[k].length;},0)+' listings)<br>Presets: '+BOX_PRESETS.length+'<br>eBay: '+(EBAY_AUTH.accessToken?(EBAY_AUTH.expiresAt>Date.now()?'connected':'expired'):'not signed in')+'</div></div>';
+  $('s-zs').onclick=function(){var z=$('s-zip').value.trim();if(!/^\d{5}$/.test(z)){showToast('Invalid ZIP',false);return;}USER_ZIP=z;saveStorage();showToast('ZIP: '+z,true);};
+  $('s-cl').onclick=function(){if(!confirm('Clear linked?'))return;LINKED_LISTINGS={};saveStorage();showToast('Cleared',true);renderSettings(m);};
+  $('s-cp').onclick=function(){if(!confirm('Clear presets?'))return;BOX_PRESETS=[];saveStorage();showToast('Cleared',true);renderSettings(m);};
+  $('s-ca').onclick=function(){if(!confirm('Clear EVERYTHING?'))return;LINKED_LISTINGS={};BOX_PRESETS=[];USER_ZIP='';EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};localStorage.clear();showToast('All cleared',true);renderEbayBtn();renderSettings(m);};
+}
+function renderInfo(m){
+  var items=[{i:'💰',t:'eBay FVF',d:'13.25% of item + 13.25% × 10.11% of shipping',d2:'≈14.59% effective rate'},{i:'💳',t:'Fixed Fee',d:'$0.30 if total ≤ $10',d2:'$0.40 if total ≥ $10.01'},{i:'📦',t:'Shipping',d:'≤ $20 → $0.74',d2:'> $20 → $5.89'},{i:'🔢',t:'Formula',d:'a = (n + c + (0.1325 + 0.1325×0.1011) × b) / (1 − 0.1325 − 0.1325×0.1011)',d2:'a=listing b=ship n=net c=fee',mono:1}];
+  var html='<div class="hd">📋 Fee Info</div><div style="display:grid;gap:14px">';
+  items.forEach(function(it){html+='<div class="card"><div style="font-size:16px;font-weight:700;margin-bottom:6px">'+it.i+' '+it.t+'</div><div class="dim" style="line-height:1.7">'+it.d+'</div><div class="dim" style="opacity:.65;margin-top:4px;font-size:12px'+(it.mono?';font-family:JetBrains Mono,monospace':'')+'">'+it.d2+'</div></div>';});
+  html+='</div>';m.innerHTML=html;
+}
+
+/* ═══ INIT ═══ */
+function initDB(){
+  searchStatus='Loading...';
+  loadDB(function(msg){searchStatus=msg;if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=msg;}}).then(function(data){
+    DB=data;searchStatus='ready';
+    if(currentTab==='search')renderSearch($('main'));
+    // After initial DB loads, scrape TCGPlayer for prices missing from the CSV.
+    // This runs in the background — user can search immediately, prices fill in as they're scraped.
+    scrapeMissingPrices(data,function(msg){
+      scrapeStatus=msg;
+      if(currentTab==='search'){
+        var el=$('sts-txt');
+        if(el){
+          var base='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';
+          el.textContent=base+(msg?' · '+msg:'');
+        }
+      }
+    }).then(function(){
+      // Re-render after scrape completes so newly-scraped prices appear in the grid/detail view.
+      if(currentTab==='search'){
+        if(searchSel){var fresh=getById(searchSel.productId);if(fresh)searchSel=fresh;}
+        renderSearch($('main'));
+      }
+    });
+  }).catch(function(e){searchStatus='Error: '+e.message;if(currentTab==='search')renderSearch($('main'));});
+}
+window.onload=function(){loadStorage();initSidebar();renderEbayBtn();renderSearch($('main'));initDB();};
+</script>
+
+</body>
+</html>
