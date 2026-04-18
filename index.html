@@ -46,13 +46,21 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg3)
 .sts{font-size:12px;color:var(--dim);margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
 .live-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:8px}
-.live-card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:8px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;text-align:center}
+.live-card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:8px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;text-align:left}
 .live-card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 20px rgba(232,65,24,.2)}
 .live-card .iw{width:100%;aspect-ratio:.716;background:#000;border-radius:6px;overflow:hidden;margin-bottom:6px}
 .live-card img{width:100%;height:100%;object-fit:cover;display:block}
-.live-card .n{font-weight:700;font-size:12px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.live-card .s{font-size:10px;color:var(--dim);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.live-card .p{font-size:12px;color:var(--ac);font-weight:700}
+/* Name = bold, 2 lines, fixed height so all cards align */
+.live-card .n{font-weight:700;font-size:12px;margin-bottom:3px;line-height:1.3;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  height:calc(1.3em * 2);word-break:break-word}
+/* Secondary (serial for cards, set for don/sealed) — small dim */
+.live-card .s{font-size:10px;color:var(--dim);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:1.25em}
+/* Price + variant row */
+.live-card .pv{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;min-height:16px}
+.live-card .var{font-size:9.5px;color:var(--dim);font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.live-card .var.foil{color:#c084fc}
+.live-card .p{font-size:12px;color:var(--ac);font-weight:700;white-space:nowrap;flex-shrink:0}
 .live-sec{font-size:12px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin:20px 0 10px}.live-sec:first-child{margin-top:0}
 .det-grid{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
 .det-iw{position:sticky;top:90px}.det-img{width:100%;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6);background:var(--bg3);cursor:zoom-in;transition:.15s}
@@ -75,6 +83,7 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 .field label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px}
 .badge-card{background:rgba(232,65,24,.15);color:var(--ac)}.badge-don{background:rgba(245,158,11,.15);color:var(--ylw)}.badge-sealed{background:rgba(34,197,94,.15);color:var(--grn)}
+.badge-variant{background:rgba(147,51,234,.15);color:#c084fc;margin-left:6px}
 .link-card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:10px}
 .link-title{font-weight:700;font-size:14px;margin-bottom:6px;word-break:break-word}.link-sub{font-size:12px;color:var(--dim);line-height:1.6}
 .link-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
@@ -89,56 +98,50 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 @keyframes spin{to{transform:rotate(360deg)}}.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
 
+/* Unified custom dropdown style — used for BOTH filter (multi-select) and sort (single-select) */
+.dropdown{position:relative}
+.dropdown-trigger{display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;gap:8px}
+.dropdown-trigger .dd-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tx)}
+.dropdown-trigger .dd-caret{color:var(--dim);font-size:10px;flex-shrink:0;transition:transform .15s}
+.dropdown.open .dd-caret{transform:rotate(180deg)}
+.dropdown-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:6px;z-index:50;box-shadow:0 12px 28px rgba(0,0,0,.5);max-height:320px;overflow-y:auto;min-width:180px}
+.dropdown-menu[hidden]{display:none}
+.dd-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;cursor:pointer;font-size:14px;user-select:none;color:var(--tx)}
+.dd-item:hover{background:var(--bg3)}
+.dd-item input{accent-color:var(--ac);width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.dd-item.selected{background:var(--acG);color:var(--ac);font-weight:600}
+.dd-sep{border:none;border-top:1px solid var(--bd);margin:4px 0}
+
+/* Image fallback placeholders */
+.iw-fallback{width:100%;height:100%;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:10px;font-weight:700;line-height:1.3}
+.det-img-fb{width:100%;aspect-ratio:.716;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;font-weight:700;font-size:15px;line-height:1.4;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+
 /* ─── Mobile / narrow viewport fixes ─── */
 @media(max-width:800px){
   .menu-btn{display:inline-flex}
   .layout{display:block}
-  /* Sidebar becomes a slide-out drawer. Keep column layout; use transform to slide. */
-  .side{
-    position:fixed;
-    top:0;
-    left:0;
-    bottom:0;
-    width:260px;
-    max-width:82vw;
-    height:100vh!important;
-    max-height:none!important;
-    padding:16px 10px!important;
-    transform:translateX(-100%);
-    transition:transform .25s ease;
-    z-index:201;
-    overflow-y:auto;
-    border-right:1px solid var(--bd);
-    border-bottom:none;
-    align-self:auto;
-    box-shadow:4px 0 24px rgba(0,0,0,.4);
-  }
+  .side{position:fixed;top:0;left:0;bottom:0;width:260px;max-width:82vw;height:100vh!important;max-height:none!important;padding:16px 10px!important;transform:translateX(-100%);transition:transform .25s ease;z-index:201;overflow-y:auto;border-right:1px solid var(--bd);border-bottom:none;align-self:auto;box-shadow:4px 0 24px rgba(0,0,0,.4)}
   .side.open{transform:translateX(0)}
   .side button{font-size:14px;padding:12px 14px;width:100%}
   .main{padding:16px}
   .det-grid{grid-template-columns:1fr!important}
-  /* Center the card image when the detail grid collapses to one column */
   .det-iw{position:static;max-width:240px;margin:0 auto;width:100%}
   .st-grid{grid-template-columns:1fr 1fr}
   .ext-grid{grid-template-columns:1fr}
-  /* Only hide the text, keep the status dot/icon visible on the eBay button */
   .hdr-right .ebay-btn span + span{display:none}
   .live-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
   .hdr{padding:12px 14px;gap:10px}
   .hdr-t{font-size:17px}
   .hdr-s{font-size:10px}
   .hdr-logo{width:38px;height:38px;font-size:20px;border-radius:10px}
-  /* Prevent iOS Safari auto-zoom on focused inputs (needs >=16px) */
   .inp{font-size:16px}
   .inp-big{font-size:17px}
   .hd{font-size:19px}
   .card{padding:16px}
   .toast{left:16px;right:16px;bottom:16px;max-width:none}
-  /* Lock body scroll while drawer is open */
   body.drawer-open{overflow:hidden}
 }
 @media(max-width:420px){
-  /* Extra tight — let the header title breathe on tiny phones */
   .hdr-s{display:none}
   .st-grid{grid-template-columns:1fr}
   .st-vb{font-size:22px}
@@ -165,6 +168,9 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 <div id="modal-root"></div>
 
 <script>
+/* ═══ APP VERSION — bump to force cache invalidation on code updates ═══ */
+var APP_VERSION = 'v17-variants-2026-04-18';
+
 /* ═══ STATE ═══ */
 var DB=null,LINKED_LISTINGS={},BOX_PRESETS=[],USER_ZIP='',EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''},scrapeStatus='';
 
@@ -180,6 +186,110 @@ function saveStorage(){
   localStorage.setItem('bp',JSON.stringify(BOX_PRESETS));
   localStorage.setItem('ea',JSON.stringify(EBAY_AUTH));
   localStorage.setItem('uz',USER_ZIP);
+}
+
+/* ═══ INDEXEDDB WRAPPER — used for DB cache (bigger than localStorage quota) ═══ */
+var IDB_NAME='tcg_cache',IDB_STORE='kv',IDB_VER=1;
+function idbOpen(){
+  return new Promise(function(res,rej){
+    var req=indexedDB.open(IDB_NAME,IDB_VER);
+    req.onupgradeneeded=function(e){var db=e.target.result;if(!db.objectStoreNames.contains(IDB_STORE))db.createObjectStore(IDB_STORE);};
+    req.onsuccess=function(e){res(e.target.result);};
+    req.onerror=function(e){rej(e.target.error);};
+  });
+}
+function idbGet(key){
+  return idbOpen().then(function(db){
+    return new Promise(function(res,rej){
+      var tx=db.transaction(IDB_STORE,'readonly');
+      var req=tx.objectStore(IDB_STORE).get(key);
+      req.onsuccess=function(){res(req.result);};
+      req.onerror=function(){rej(req.error);};
+    });
+  });
+}
+function idbSet(key,val){
+  return idbOpen().then(function(db){
+    return new Promise(function(res,rej){
+      var tx=db.transaction(IDB_STORE,'readwrite');
+      tx.objectStore(IDB_STORE).put(val,key);
+      tx.oncomplete=function(){res();};
+      tx.onerror=function(){rej(tx.error);};
+    });
+  });
+}
+
+/* ═══ SCHEDULE — next 8:10 AM / 8:10 PM America/New_York ═══
+   Cached DB is considered stale if current time is past the next scheduled
+   refresh AFTER the time the cache was saved. Uses Intl for correct EST/EDT
+   handling (no hardcoded offsets). */
+function getNYOffsetMs(utcMs){
+  var d=new Date(utcMs);
+  var parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(d);
+  var f={};parts.forEach(function(p){if(p.type!=='literal')f[p.type]=+p.value;});
+  return Date.UTC(f.year,f.month-1,f.day,f.hour,f.minute,f.second)-utcMs;
+}
+function nyWallclockToUTCms(y,m,d,h,mi){
+  var guess=Date.UTC(y,m-1,d,h,mi,0);
+  var off=getNYOffsetMs(guess);
+  return guess-off;
+}
+function nextScheduledRefresh(fromMs){
+  // Find NY calendar date of fromMs
+  var parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(fromMs));
+  var f={};parts.forEach(function(p){if(p.type!=='literal')f[p.type]=+p.value;});
+  var best=Infinity;
+  for(var delta=0;delta<=2;delta++){
+    var ref=new Date(Date.UTC(f.year,f.month-1,f.day+delta));
+    var y=ref.getUTCFullYear(),m=ref.getUTCMonth()+1,d=ref.getUTCDate();
+    var hms=[[8,10],[20,10]];
+    for(var i=0;i<hms.length;i++){
+      var t=nyWallclockToUTCms(y,m,d,hms[i][0],hms[i][1]);
+      if(t>fromMs&&t<best)best=t;
+    }
+  }
+  return best;
+}
+
+/* ═══ DB CACHE SERIALIZE / LOAD ═══
+   Stored by uid-keyed flat arrays; maps rebuilt on load to dedupe storage.
+   Invalidated when: (a) APP_VERSION changes, (b) current time is past the
+   next scheduled refresh from the save time. */
+var DB_CACHE_KEY='tcg_db_v2';
+function serializeDB(db){
+  return{
+    version:APP_VERSION,
+    savedAt:Date.now(),
+    allCards:db.allCards,
+    sealed:db.sealed,
+    don:db.don
+  };
+}
+function deserializeDB(s){
+  var cardMap=new Map(),byUid=new Map();
+  s.allCards.forEach(function(c){
+    if(!cardMap.has(c.number))cardMap.set(c.number,[]);
+    cardMap.get(c.number).push(c);
+    byUid.set(c.uid,c);
+  });
+  s.sealed.forEach(function(p){byUid.set(p.uid,p);});
+  s.don.forEach(function(p){byUid.set(p.uid,p);});
+  return{cardMap:cardMap,byUid:byUid,sealed:s.sealed,don:s.don,allCards:s.allCards};
+}
+function loadCachedDB(){
+  return idbGet(DB_CACHE_KEY).then(function(cached){
+    if(!cached)return null;
+    if(cached.version!==APP_VERSION){console.log('[cache] APP_VERSION changed, invalidating');return null;}
+    var next=nextScheduledRefresh(cached.savedAt);
+    if(Date.now()>next){console.log('[cache] past scheduled refresh, invalidating');return null;}
+    console.log('[cache] hit — valid until '+new Date(next).toLocaleString());
+    return deserializeDB(cached);
+  }).catch(function(e){console.warn('[cache] load failed:',e);return null;});
+}
+function saveCachedDB(db){
+  return idbSet(DB_CACHE_KEY,serializeDB(db)).then(function(){
+    console.log('[cache] saved — next refresh '+new Date(nextScheduledRefresh(Date.now())).toLocaleString());
+  }).catch(function(e){console.warn('[cache] save failed:',e);});
 }
 
 /* ═══ CALCULATOR ═══ */
@@ -204,59 +314,30 @@ function finalPrice(mkt,opt,mod,disp,sp){
   if(disp){var d='$'+md.toFixed(2);if(o<0.99)d+=' (min $0.99)';else if(mn!==md)d+=' (orig $'+o.toFixed(2)+')';return d;}return md;
 }
 
-/* ═══ ROBUST CSV PARSER — handles quoted newlines ═══ */
+/* ═══ CSV PARSER ═══ */
 function parseCSV(text){
-  var rows = [];
-  var row = [];
-  var field = '';
-  var inQuotes = false;
-  for (var i = 0; i < text.length; i++) {
-    var ch = text[i];
-    var next = text[i+1];
-    if (inQuotes) {
-      if (ch === '"') {
-        if (next === '"') {
-          field += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += ch;
-      }
-    } else {
-      if (ch === '"') {
-        inQuotes = true;
-      } else if (ch === ',') {
+  var rows=[],row=[],field='',inQuotes=false;
+  for(var i=0;i<text.length;i++){
+    var ch=text[i],next=text[i+1];
+    if(inQuotes){
+      if(ch==='"'){if(next==='"'){field+='"';i++;}else{inQuotes=false;}}
+      else{field+=ch;}
+    }else{
+      if(ch==='"')inQuotes=true;
+      else if(ch===',')  {row.push(field);field='';}
+      else if(ch==='\n'||ch==='\r'){
+        if(ch==='\r'&&next==='\n')i++;
         row.push(field);
-        field = '';
-      } else if (ch === '\n' || ch === '\r') {
-        // Handle Windows \r\n
-        if (ch === '\r' && next === '\n') i++;
-        row.push(field);
-        if (row.length > 0 && row.some(function(v){ return v !== ''; })) {
-          rows.push(row);
-        }
-        row = [];
-        field = '';
-      } else {
-        field += ch;
-      }
+        if(row.length>0&&row.some(function(v){return v!=='';}))rows.push(row);
+        row=[];field='';
+      }else field+=ch;
     }
   }
-  // Last field / row
-  if (field || row.length) {
-    row.push(field);
-    if (row.some(function(v){ return v !== ''; })) rows.push(row);
-  }
-  if (rows.length === 0) return [];
-  var headers = rows[0];
-  var result = [];
-  for (var r = 1; r < rows.length; r++) {
-    var obj = {};
-    headers.forEach(function(h, idx){
-      obj[h.trim()] = (rows[r][idx] || '').trim();
-    });
+  if(field||row.length){row.push(field);if(row.some(function(v){return v!=='';}))rows.push(row);}
+  if(rows.length===0)return[];
+  var headers=rows[0],result=[];
+  for(var r=1;r<rows.length;r++){
+    var obj={};headers.forEach(function(h,idx){obj[h.trim()]=(rows[r][idx]||'').trim();});
     result.push(obj);
   }
   return result;
@@ -285,12 +366,7 @@ function autoBodySealed(p,t){var sl=p.setName?'* Set: '+p.setName+'<br>':'';retu
 var PROXY='https://corsproxy.io/?';
 async function fetchP(url){try{var r=await fetch(url);if(r.ok)return await r.text();}catch(e){}var r2=await fetch(PROXY+encodeURIComponent(url));if(!r2.ok)throw new Error('HTTP '+r2.status);return await r2.text();}
 
-/* ═══ TCGPLAYER PRICE SCRAPER — uses internal JSON API (mpapi.tcgplayer.com) ═══ */
-/* Reason: HTML page scraping fails because (a) tcgplayer blocks most CORS proxies
-   and (b) prices are Vue-rendered client-side so they're not in the SSR HTML.
-   The mpapi.tcgplayer.com/v2/product/{id}/pricepoints endpoint returns JSON
-   with marketPrice directly — same endpoint tcgplayer's own site uses. */
-
+/* ═══ TCGPLAYER PRICE SCRAPER (variant-aware) ═══ */
 var SCRAPE_PROXIES=[
   function(u){return'https://corsproxy.io/?'+encodeURIComponent(u);},
   function(u){return'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
@@ -313,69 +389,72 @@ async function fetchViaProxy(url){
   return null;
 }
 
-async function scrapeTcgPrice(productId){
-  // PRIMARY: JSON pricepoints API — returns array of {productId, lowPrice, midPrice, highPrice, marketPrice, directLowPrice, subTypeName}
+// Returns a map { subTypeName: price, '_': fallbackPrice }
+async function scrapePricesForPid(pid){
   try{
-    var apiUrl='https://mpapi.tcgplayer.com/v2/product/'+productId+'/pricepoints';
+    var apiUrl='https://mpapi.tcgplayer.com/v2/product/'+pid+'/pricepoints';
     var txt=await fetchViaProxy(apiUrl);
     if(txt){
       var data=JSON.parse(txt);
       if(Array.isArray(data)&&data.length>0){
-        // Prefer "Normal" variant, else first with a usable price
-        var normal=data.find(function(p){return p.subTypeName==='Normal';});
-        var pick=normal||data[0];
-        var pr=pick.marketPrice||pick.midPrice||pick.lowPrice||pick.directLowPrice||pick.highPrice||0;
-        if(pr>0)return pr;
-        // Try any other entry with a price
-        for(var j=0;j<data.length;j++){
-          var x=data[j],xp=x.marketPrice||x.midPrice||x.lowPrice||x.directLowPrice||x.highPrice||0;
-          if(xp>0)return xp;
-        }
+        var result={};
+        data.forEach(function(p){
+          var pr=p.marketPrice||p.midPrice||p.lowPrice||p.directLowPrice||p.highPrice||0;
+          if(pr>0)result[p.subTypeName||'_']=pr;
+        });
+        if(Object.keys(result).length)return result;
       }
     }
   }catch(e){}
-  // FALLBACK: HTML scrape for near-mint-table__price span
   try{
-    var htmlUrl='https://www.tcgplayer.com/product/'+productId+'?Language=English';
+    var htmlUrl='https://www.tcgplayer.com/product/'+pid+'?Language=English';
     var html=await fetchViaProxy(htmlUrl);
-    if(html){
-      var m=html.match(/class="near-mint-table__price"[^>]*>\s*\$?([\d,]+\.\d{2})/);
-      if(m)return parseFloat(m[1].replace(/,/g,''));
-    }
+    if(html){var m=html.match(/class="near-mint-table__price"[^>]*>\s*\$?([\d,]+\.\d{2})/);if(m)return{'_':parseFloat(m[1].replace(/,/g,''))};}
   }catch(e){}
-  return 0;
+  return null;
 }
 
 async function scrapeMissingPrices(data,onP){
   var all=data.allCards.concat(data.sealed).concat(data.don);
   var missing=all.filter(function(p){return !p.marketPrice||p.marketPrice<=0;});
   if(!missing.length){onP('');return;}
-  proxyFails=[0,0,0]; // reset on every full scrape run
-  var CONC=12,done=0,found=0,firstErr=null;
-  onP('Scraping '+missing.length+' missing prices via TCGPlayer API...');
-  console.log('[scrape] Starting scrape for '+missing.length+' products');
-  for(var i=0;i<missing.length;i+=CONC){
-    var batch=missing.slice(i,i+CONC);
-    await Promise.allSettled(batch.map(function(p){
-      return scrapeTcgPrice(p.productId).then(function(price){
+  proxyFails=[0,0,0];
+  // Group by productId so we fetch each product once and distribute prices by variant
+  var byPid={};
+  missing.forEach(function(p){if(!byPid[p.productId])byPid[p.productId]=[];byPid[p.productId].push(p);});
+  var pids=Object.keys(byPid),CONC=12,done=0,found=0,total=pids.length;
+  onP('Scraping '+total+' missing products via TCGPlayer API...');
+  console.log('[scrape] Starting scrape for '+total+' products ('+missing.length+' variants)');
+  for(var i=0;i<pids.length;i+=CONC){
+    var batch=pids.slice(i,i+CONC);
+    await Promise.allSettled(batch.map(function(pid){
+      return scrapePricesForPid(pid).then(function(prices){
         done++;
-        if(price>0){p.marketPrice=price;found++;}
-      }).catch(function(e){done++;if(!firstErr)firstErr=e.message;});
+        if(prices){
+          byPid[pid].forEach(function(p){
+            var pr=prices[p.variant]||prices['_']||prices['Normal']||0;
+            if(!pr){for(var k in prices){if(prices[k]>0){pr=prices[k];break;}}}
+            if(pr>0){p.marketPrice=pr;found++;}
+          });
+        }
+      }).catch(function(){done++;});
     }));
-    onP('Scraping prices: '+done+'/'+missing.length+' ('+found+' recovered)');
-    // If all 3 proxies are dead, bail out early — no point hammering dead endpoints
+    onP('Scraping prices: '+done+'/'+total+' ('+found+' recovered)');
     if(proxyFails[0]>=PROXY_DEAD_AT&&proxyFails[1]>=PROXY_DEAD_AT&&proxyFails[2]>=PROXY_DEAD_AT){
       console.warn('[scrape] All proxies dead, aborting. Fails:',proxyFails);
-      onP('Scrape aborted — all proxies blocked. Check console.');
+      onP('Scrape aborted — all proxies blocked.');
       break;
     }
   }
-  console.log('[scrape] Done. Recovered '+found+'/'+missing.length+'. Proxy failure counts:',proxyFails);
-  onP('Price scrape complete: '+found+'/'+missing.length+' recovered');
+  console.log('[scrape] Done. Recovered '+found+'. Proxy fails:',proxyFails);
+  onP('Price scrape complete: '+found+' variants recovered');
   setTimeout(function(){scrapeStatus='';var el=document.getElementById('sts-txt');if(el&&DB&&currentTab==='search'){el.textContent='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';}},4000);
 }
 
-/* ═══ DB LOADER — complete fetch with robust parsing ═══ */
+/* ═══ DB LOADER — emits variant-aware entries ═══
+   For a given productId with multiple rows in the CSV (different subTypeName
+   like "Normal" / "Foil"), each row becomes its own entry with uid = pid_variant.
+   Single-variant products keep uid = pid (preserves legacy LINKED_LISTINGS keys). */
 var DNAMES={CardType:'Card Type',Subtypes:'Subtype(s)',Counterplus:'Counter+',CardEffect:'Effect',BlockIcon:'Block',FlavorText:'Flavor Text'};
 var SERIAL_PATTERN=/\b((?:OP|ST|EB|P|PRB)\d{0,2}-\d{3,}[A-Z]?)\b/i;
 
@@ -384,7 +463,7 @@ async function loadDB(onP){
   var gRows=parseCSV(gTxt);
   var sets=gRows.filter(function(r){return r.groupId&&r.name;}).map(function(r){return{id:parseInt(r.groupId),name:r.name};});
   onP('Found '+sets.length+' sets...');
-  var cMap=new Map(),byId=new Map(),sealed=[],don=[],allCards=[];
+  var cMap=new Map(),byUid=new Map(),sealed=[],don=[],allCards=[];
   for(var i=0;i<sets.length;i+=6){
     var batch=sets.slice(i,i+6);
     var results=await Promise.allSettled(batch.map(function(s){
@@ -393,6 +472,9 @@ async function loadDB(onP){
     results.forEach(function(res){
       if(res.status!=='fulfilled')return;
       var rows=parseCSV(res.value.t);
+      // Count rows per productId to detect multi-variant products
+      var counts={};
+      rows.forEach(function(r){if(!r.name||!r.name.trim())return;var pid=parseInt(r.productId)||0;counts[pid]=(counts[pid]||0)+1;});
       rows.forEach(function(row){
         if(!row.name||!row.name.trim())return;
 
@@ -410,6 +492,12 @@ async function loadDB(onP){
           }
         }
 
+        var pid=parseInt(row.productId)||0;
+        var subType=(row.subTypeName||'').trim();
+        var splitVariants=counts[pid]>1&&subType;
+        var variant=subType||null;
+        var uid=splitVariants?(pid+'_'+subType):String(pid);
+
         var nm=row.name.trim();
         var serial=row.extNumber&&row.extNumber.trim()?row.extNumber.trim():'';
         if(!serial){var nE=ext.find(function(e){return e.name==='Number';});if(nE)serial=nE.value.trim();}
@@ -418,25 +506,51 @@ async function loadDB(onP){
         if(serial){
           var num=serial.toUpperCase();
           var rE=ext.find(function(e){return e.name==='Rarity';});
-          var card={productId:parseInt(row.productId)||0,name:nm,
+          var card={productId:pid,uid:uid,variant:variant,name:nm,
             rarity:row.extRarity||(rE?rE.value:'')||'',
             number:num,marketPrice:mp,extendedData:ext,setName:res.value.sn,type:'card'};
           if(!cMap.has(num))cMap.set(num,[]);
-          cMap.get(num).push(card);byId.set(card.productId,card);allCards.push(card);
+          cMap.get(num).push(card);byUid.set(uid,card);allCards.push(card);
         } else if(nm.toUpperCase().indexOf('DON!!')>=0){
-          var dp={productId:parseInt(row.productId)||0,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'don'};
-          don.push(dp);byId.set(dp.productId,dp);
+          var dp={productId:pid,uid:uid,variant:variant,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'don'};
+          don.push(dp);byUid.set(uid,dp);
         } else {
-          var sp={productId:parseInt(row.productId)||0,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'sealed'};
-          sealed.push(sp);byId.set(sp.productId,sp);
+          var sp={productId:pid,uid:uid,variant:variant,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'sealed'};
+          sealed.push(sp);byUid.set(uid,sp);
         }
       });
     });
     onP('Loaded '+Math.min(i+6,sets.length)+'/'+sets.length+' sets ('+cMap.size+' serials, '+sealed.length+' sealed, '+don.length+' DON!!)');
   }
-  return{cardMap:cMap,byId:byId,sealed:sealed,don:don,allCards:allCards};
+  return{cardMap:cMap,byUid:byUid,sealed:sealed,don:don,allCards:allCards};
 }
-function getById(pid){pid=parseInt(pid);return DB&&DB.byId?DB.byId.get(pid)||null:null;}
+function getByUid(uid){uid=String(uid);return DB&&DB.byUid?DB.byUid.get(uid)||null:null;}
+
+/* ═══ LINKED LISTINGS MIGRATION ═══
+   Old keys were plain productIds. After variant split, a productId may now
+   map to pid_Normal and pid_Foil. Default old entries to the Normal variant. */
+function migrateLinkedListings(){
+  if(!DB||!DB.byUid)return;
+  var changed=false,toDel=[];
+  Object.keys(LINKED_LISTINGS).forEach(function(key){
+    if(DB.byUid.has(key))return; // already valid
+    // Try Normal first, then Foil, then any uid starting with `${key}_`
+    var candidates=[key+'_Normal',key+'_Foil'];
+    var found=null;
+    for(var i=0;i<candidates.length;i++){if(DB.byUid.has(candidates[i])){found=candidates[i];break;}}
+    if(!found){
+      DB.byUid.forEach(function(v,k){if(!found&&k.indexOf(key+'_')===0)found=k;});
+    }
+    if(found){
+      if(!LINKED_LISTINGS[found])LINKED_LISTINGS[found]=[];
+      LINKED_LISTINGS[found]=LINKED_LISTINGS[found].concat(LINKED_LISTINGS[key]);
+      toDel.push(key);changed=true;
+      console.log('[migrate] '+key+' → '+found);
+    }
+  });
+  toDel.forEach(function(k){delete LINKED_LISTINGS[k];});
+  if(changed)saveStorage();
+}
 
 /* ═══ UTILS ═══ */
 function $(id){return document.getElementById(id);}
@@ -459,23 +573,14 @@ function openLightbox(imgSrc){
 }
 
 /* ═══ SAVE IMAGE ═══ */
-async function saveImage(imgSrc, name){
+async function saveImage(imgSrc,name){
   showToast('Downloading...',true);
   var blob=null;
-  try{
-    var r=await fetch(imgSrc,{mode:'cors'});
-    if(r.ok)blob=await r.blob();
-  }catch(e){}
-  if(!blob){
-    try{
-      var r2=await fetch(PROXY+encodeURIComponent(imgSrc));
-      if(r2.ok)blob=await r2.blob();
-    }catch(e){}
-  }
+  try{var r=await fetch(imgSrc,{mode:'cors'});if(r.ok)blob=await r.blob();}catch(e){}
+  if(!blob){try{var r2=await fetch(PROXY+encodeURIComponent(imgSrc));if(r2.ok)blob=await r2.blob();}catch(e){}}
   if(!blob){showToast('Download failed — check network',false);return;}
   var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;a.download=(name||'card')+'.jpg';
+  var a=document.createElement('a');a.href=url;a.download=(name||'card')+'.jpg';
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(url);},200);
   showToast('Downloaded!',true);
@@ -502,21 +607,33 @@ function toggleMenu(open){
   var sb=$('sidebar'),bd=$('side-backdrop'),mb=$('menu-btn');
   if(!sb||!bd)return;
   if(open===undefined)open=!sb.classList.contains('open');
-  if(open){
-    sb.classList.add('open');bd.classList.add('open');
-    document.body.classList.add('drawer-open');
-    if(mb)mb.setAttribute('aria-label','Close menu');
-  }else{
-    sb.classList.remove('open');bd.classList.remove('open');
-    document.body.classList.remove('drawer-open');
-    if(mb)mb.setAttribute('aria-label','Open menu');
-  }
+  if(open){sb.classList.add('open');bd.classList.add('open');document.body.classList.add('drawer-open');if(mb)mb.setAttribute('aria-label','Close menu');}
+  else{sb.classList.remove('open');bd.classList.remove('open');document.body.classList.remove('drawer-open');if(mb)mb.setAttribute('aria-label','Open menu');}
 }
-// ESC closes the drawer
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var sb=$('sidebar');if(sb&&sb.classList.contains('open'))toggleMenu(false);}});
 
 /* ═══ SEARCH TAB ═══ */
 var searchQ='',searchStatus='idle',searchSel=null,searchCustShip='';
+var searchFilter={cards:true,don:true,sealed:true};
+var searchSort='high-low';
+
+function imgFail(img){if(!img||!img.parentNode)return;img.parentNode.innerHTML='<div class="iw-fallback">Image Currently Unavailable</div>';}
+function detImgFail(){
+  var img=$('det-img');
+  if(img&&img.parentNode){var fb=document.createElement('div');fb.className='det-img-fb';fb.textContent='Image Currently Unavailable';img.parentNode.replaceChild(fb,img);}
+  var btns=$('img-btns');if(btns)btns.style.display='none';
+}
+
+function filterLabel(){
+  var f=searchFilter,all=f.cards&&f.don&&f.sealed,none=!f.cards&&!f.don&&!f.sealed;
+  if(all)return'All Types';
+  if(none)return'None';
+  var parts=[];if(f.cards)parts.push('Cards');if(f.don)parts.push('DON!!');if(f.sealed)parts.push('Sealed');
+  return parts.join(', ');
+}
+function updateFilterLabel(){var lbl=document.querySelector('#filter-trigger .dd-label');if(lbl)lbl.textContent=filterLabel();}
+function sortLabel(){return searchSort==='high-low'?'Price: High → Low':'Price: Low → High';}
+function updateSortLabel(){var lbl=document.querySelector('#sort-trigger .dd-label');if(lbl)lbl.textContent=sortLabel();}
 
 function renderSearch(m){
   var stColor=searchStatus==='ready'?'#22c55e':searchStatus.indexOf('Error')>=0?'#ef4444':'#eab308';
@@ -525,7 +642,27 @@ function renderSearch(m){
   var html='<div class="sts"><span class="dot" style="background:'+stColor+'"></span><span id="sts-txt">'+esc(stText)+'</span></div>';
 
   if(!searchSel){
-    html+='<input class="inp inp-big" id="sq" placeholder="Type a serial (e.g. OP05-) or name..." autocomplete="off" value="'+esc(searchQ)+'" style="margin-bottom:20px">';
+    html+='<input class="inp inp-big" id="sq" placeholder="Type a serial (e.g. OP05-) or name..." autocomplete="off" value="'+esc(searchQ)+'" style="margin-bottom:14px">';
+    var f=searchFilter,allChecked=f.cards&&f.don&&f.sealed;
+    html+='<div class="row mb">';
+    // Filter — custom dropdown, multi-select
+    html+='<div class="field dropdown" id="filter-dd"><label>Filter</label>';
+    html+='<button class="inp dropdown-trigger" id="filter-trigger" type="button"><span class="dd-label">'+esc(filterLabel())+'</span><span class="dd-caret">▼</span></button>';
+    html+='<div class="dropdown-menu" id="filter-menu" hidden>';
+    html+='<label class="dd-item"><input type="checkbox" data-fk="all"'+(allChecked?' checked':'')+'> <span>All</span></label>';
+    html+='<hr class="dd-sep">';
+    html+='<label class="dd-item"><input type="checkbox" data-fk="cards"'+(f.cards?' checked':'')+'> <span>Cards</span></label>';
+    html+='<label class="dd-item"><input type="checkbox" data-fk="don"'+(f.don?' checked':'')+'> <span>DON!!</span></label>';
+    html+='<label class="dd-item"><input type="checkbox" data-fk="sealed"'+(f.sealed?' checked':'')+'> <span>Sealed</span></label>';
+    html+='</div></div>';
+    // Sort — custom dropdown, single-select (matching filter style)
+    html+='<div class="field dropdown" id="sort-dd"><label>Sort</label>';
+    html+='<button class="inp dropdown-trigger" id="sort-trigger" type="button"><span class="dd-label">'+esc(sortLabel())+'</span><span class="dd-caret">▼</span></button>';
+    html+='<div class="dropdown-menu" id="sort-menu" hidden>';
+    html+='<div class="dd-item'+(searchSort==='high-low'?' selected':'')+'" data-sv="high-low">Price: High → Low</div>';
+    html+='<div class="dd-item'+(searchSort==='low-high'?' selected':'')+'" data-sv="low-high">Price: Low → High</div>';
+    html+='</div></div>';
+    html+='</div>';
   }
   html+='<div id="search-content"></div>';
   m.innerHTML=html;
@@ -536,91 +673,214 @@ function renderSearch(m){
     sqEl.oninput=function(){searchQ=this.value;debUp();};
     sqEl.onkeydown=function(e){if(e.key==='Escape'){this.value='';searchQ='';renderLiveGrid();}};
     sqEl.focus();
+
+    // Filter dropdown wiring
+    var fTrig=$('filter-trigger'),fMenu=$('filter-menu'),fDD=$('filter-dd');
+    fTrig.onclick=function(e){e.stopPropagation();closeAllDropdownsExcept('filter-dd');var opening=fMenu.hidden;fMenu.hidden=!fMenu.hidden;fDD.classList.toggle('open',opening);};
+    fMenu.onclick=function(e){e.stopPropagation();};
+    fMenu.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+      cb.onchange=function(){
+        var key=this.getAttribute('data-fk');
+        if(key==='all'){
+          searchFilter.cards=searchFilter.don=searchFilter.sealed=this.checked;
+          ['cards','don','sealed'].forEach(function(k){var c=fMenu.querySelector('input[data-fk="'+k+'"]');if(c)c.checked=searchFilter[k];});
+        }else{
+          searchFilter[key]=this.checked;
+          var allCb=fMenu.querySelector('input[data-fk="all"]');
+          if(allCb)allCb.checked=searchFilter.cards&&searchFilter.don&&searchFilter.sealed;
+        }
+        updateFilterLabel();renderLiveGrid();
+      };
+    });
+
+    // Sort dropdown wiring
+    var sTrig=$('sort-trigger'),sMenu=$('sort-menu'),sDD=$('sort-dd');
+    sTrig.onclick=function(e){e.stopPropagation();closeAllDropdownsExcept('sort-dd');var opening=sMenu.hidden;sMenu.hidden=!sMenu.hidden;sDD.classList.toggle('open',opening);};
+    sMenu.querySelectorAll('[data-sv]').forEach(function(it){
+      it.onclick=function(e){
+        e.stopPropagation();
+        searchSort=this.getAttribute('data-sv');
+        sMenu.querySelectorAll('[data-sv]').forEach(function(x){x.classList.toggle('selected',x.getAttribute('data-sv')===searchSort);});
+        updateSortLabel();
+        sMenu.hidden=true;sDD.classList.remove('open');
+        renderLiveGrid();
+      };
+    });
+
+    if(!window._closeDropdowns){
+      window._closeDropdowns=function(e){
+        ['filter','sort'].forEach(function(id){
+          var menu=$(id+'-menu'),dd=$(id+'-dd');
+          if(menu&&!menu.hidden&&dd&&!dd.contains(e.target)){menu.hidden=true;dd.classList.remove('open');}
+        });
+      };
+      document.addEventListener('click',window._closeDropdowns);
+    }
   }
 
   if(searchSel)renderDetail($('search-content'));
   else renderLiveGrid();
 }
 
-function renderLiveGrid(){
-  var el=$('search-content');if(!el)return;
-  if(!DB||searchStatus!=='ready'){el.innerHTML='<div class="empty"><span class="spinner"></span> Loading database...</div>';return;}
-  var q=searchQ.trim().toUpperCase();
-  if(!q){el.innerHTML='<div class="empty">Start typing above to see cards with images.<br><br>Examples: <code>OP05-</code> shows all OP05 cards, <code>Luffy</code> shows all Luffy cards.</div>';return;}
-  var qL=q.toLowerCase(),cardMatches=[],seenPids={};
-  DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)===0)cards.forEach(function(c){if(!seenPids[c.productId]){seenPids[c.productId]=1;cardMatches.push(c);}});});
-  if(cardMatches.length===0)DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)>=0)cards.forEach(function(c){if(!seenPids[c.productId]){seenPids[c.productId]=1;cardMatches.push(c);}});});
-  if(cardMatches.length<80)for(var i=0;i<DB.allCards.length&&cardMatches.length<80;i++){var c=DB.allCards[i];if(!seenPids[c.productId]&&c.name.toLowerCase().indexOf(qL)>=0){seenPids[c.productId]=1;cardMatches.push(c);}}
-  cardMatches.sort(function(a,b){var ak=a.number.toUpperCase(),bk=b.number.toUpperCase();if(ak!==bk)return ak.localeCompare(bk);return b.marketPrice-a.marketPrice;});
-  cardMatches=cardMatches.slice(0,80);
-  var sealedM=DB.sealed.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}).slice(0,12);
-  var donM=DB.don.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}).slice(0,12);
-  var total=cardMatches.length+sealedM.length+donM.length;
-  if(total===0){el.innerHTML='<div class="empty">No results for "'+esc(searchQ)+'"</div>';return;}
-  var html='';
-  if(cardMatches.length>0){
-    html+='<div class="live-sec">🃏 Cards ('+cardMatches.length+(cardMatches.length>=80?'+':'')+')</div><div class="live-grid">';
-    cardMatches.forEach(function(c){html+='<div class="live-card" data-pid="'+c.productId+'"><div class="iw"><img src="'+tcgImg(c.productId)+'" onerror="this.style.opacity=0.2" loading="lazy"></div><div class="n" title="'+esc(c.name)+'">'+esc(c.number)+'</div><div class="s" title="'+esc(c.name)+'">'+esc(c.name)+'</div><div class="p">'+(c.marketPrice>0?'$'+c.marketPrice.toFixed(2):'<span class="dim">no price</span>')+'</div></div>';});
-    html+='</div>';
-  }
-  if(donM.length>0){
-    html+='<div class="live-sec">🃏 DON!! ('+donM.length+')</div><div class="live-grid">';
-    donM.forEach(function(p){html+='<div class="live-card" data-pid="'+p.productId+'"><div class="iw"><img src="'+tcgImg(p.productId)+'" onerror="this.style.opacity=0.2" loading="lazy"></div><div class="n">'+esc(p.name)+'</div><div class="s">'+esc(p.setName)+'</div><div class="p">'+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'no price')+'</div></div>';});
-    html+='</div>';
-  }
-  if(sealedM.length>0){
-    html+='<div class="live-sec">📦 Sealed ('+sealedM.length+')</div><div class="live-grid">';
-    sealedM.forEach(function(p){html+='<div class="live-card" data-pid="'+p.productId+'"><div class="iw"><img src="'+tcgImg(p.productId)+'" onerror="this.style.opacity=0.2" loading="lazy"></div><div class="n">'+esc(p.name)+'</div><div class="s">'+esc(p.setName)+'</div><div class="p">'+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'no price')+'</div></div>';});
-    html+='</div>';
-  }
-  el.innerHTML=html;
-  el.querySelectorAll('[data-pid]').forEach(function(card){
-    card.onclick=function(){var p=getById(this.getAttribute('data-pid'));if(p){searchSel=p;searchCustShip='';renderSearch($('main'));window.scrollTo({top:0,behavior:'smooth'});}};
+function closeAllDropdownsExcept(keepId){
+  ['filter-dd','sort-dd'].forEach(function(id){
+    if(id===keepId)return;
+    var dd=$(id),menu=$(id.replace('-dd','-menu'));
+    if(menu&&!menu.hidden){menu.hidden=true;if(dd)dd.classList.remove('open');}
   });
 }
 
+function renderLiveGrid(){
+  var el=$('search-content');if(!el)return;
+  if(!DB||searchStatus!=='ready'){el.innerHTML='<div class="empty"><span class="spinner"></span> Loading database...</div>';return;}
+
+  if(!searchFilter.cards&&!searchFilter.don&&!searchFilter.sealed){
+    el.innerHTML='<div class="empty">No types selected — choose at least one in the filter above.</div>';return;
+  }
+
+  var q=searchQ.trim().toUpperCase(),qL=q.toLowerCase();
+  var cardMatches=[],sealedM=[],donM=[];
+
+  if(searchFilter.cards){
+    if(!q){cardMatches=DB.allCards.slice();}
+    else{
+      var seenUids={};
+      DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)===0)cards.forEach(function(c){if(!seenUids[c.uid]){seenUids[c.uid]=1;cardMatches.push(c);}});});
+      if(cardMatches.length===0)DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)>=0)cards.forEach(function(c){if(!seenUids[c.uid]){seenUids[c.uid]=1;cardMatches.push(c);}});});
+      if(cardMatches.length<200)for(var i=0;i<DB.allCards.length&&cardMatches.length<200;i++){var c=DB.allCards[i];if(!seenUids[c.uid]&&c.name.toLowerCase().indexOf(qL)>=0){seenUids[c.uid]=1;cardMatches.push(c);}}
+    }
+  }
+  if(searchFilter.don)donM=q?DB.don.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}):DB.don.slice();
+  if(searchFilter.sealed)sealedM=q?DB.sealed.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}):DB.sealed.slice();
+
+  function priceSort(a,b){
+    var ap=a.marketPrice>0?a.marketPrice:null,bp=b.marketPrice>0?b.marketPrice:null;
+    if(ap===null&&bp===null)return 0;
+    if(ap===null)return 1;
+    if(bp===null)return -1;
+    return searchSort==='low-high'?ap-bp:bp-ap;
+  }
+  cardMatches.sort(priceSort);donM.sort(priceSort);sealedM.sort(priceSort);
+
+  var moreCards=cardMatches.length>80;cardMatches=cardMatches.slice(0,80);
+  var moreDon=donM.length>24;donM=donM.slice(0,24);
+  var moreSealed=sealedM.length>24;sealedM=sealedM.slice(0,24);
+
+  var total=cardMatches.length+sealedM.length+donM.length;
+  if(total===0){el.innerHTML='<div class="empty">No results'+(q?' for "'+esc(searchQ)+'"':'')+'</div>';return;}
+
+  function priceCell(p){return p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'<span class="dim">N/A</span>';}
+  function variantCell(p){
+    if(!p.variant)return'<span class="var"></span>';
+    var isFoil=/foil|holo|parallel/i.test(p.variant);
+    return'<span class="var'+(isFoil?' foil':'')+'">'+esc(p.variant)+'</span>';
+  }
+  function imgTag(pid){return'<img src="'+tcgImg(pid)+'" onerror="imgFail(this)" loading="lazy">';}
+
+  var html='';
+  if(cardMatches.length>0){
+    html+='<div class="live-sec">🃏 Cards ('+cardMatches.length+(moreCards?'+':'')+')</div><div class="live-grid">';
+    cardMatches.forEach(function(c){
+      html+='<div class="live-card" data-uid="'+esc(c.uid)+'"><div class="iw">'+imgTag(c.productId)+'</div>';
+      // Name bolded on 2 rows, serial small underneath
+      html+='<div class="n" title="'+esc(c.name)+'">'+esc(c.name)+'</div>';
+      html+='<div class="s">'+esc(c.number)+'</div>';
+      html+='<div class="pv">'+variantCell(c)+'<span class="p">'+priceCell(c)+'</span></div></div>';
+    });
+    html+='</div>';
+  }
+  if(donM.length>0){
+    html+='<div class="live-sec">🃏 DON!! ('+donM.length+(moreDon?'+':'')+')</div><div class="live-grid">';
+    donM.forEach(function(p){
+      html+='<div class="live-card" data-uid="'+esc(p.uid)+'"><div class="iw">'+imgTag(p.productId)+'</div>';
+      html+='<div class="n">'+esc(p.name)+'</div>';
+      html+='<div class="s">'+esc(p.setName)+'</div>';
+      html+='<div class="pv">'+variantCell(p)+'<span class="p">'+priceCell(p)+'</span></div></div>';
+    });
+    html+='</div>';
+  }
+  if(sealedM.length>0){
+    html+='<div class="live-sec">📦 Sealed ('+sealedM.length+(moreSealed?'+':'')+')</div><div class="live-grid">';
+    sealedM.forEach(function(p){
+      html+='<div class="live-card" data-uid="'+esc(p.uid)+'"><div class="iw">'+imgTag(p.productId)+'</div>';
+      html+='<div class="n">'+esc(p.name)+'</div>';
+      html+='<div class="s">'+esc(p.setName)+'</div>';
+      html+='<div class="pv"><span class="var"></span><span class="p">'+priceCell(p)+'</span></div></div>';
+    });
+    html+='</div>';
+  }
+  el.innerHTML=html;
+  el.querySelectorAll('[data-uid]').forEach(function(card){
+    card.onclick=function(){var p=getByUid(this.getAttribute('data-uid'));if(p){searchSel=p;searchCustShip='';renderSearch($('main'));window.scrollTo({top:0,behavior:'smooth'});}};
+  });
+}
+
+/* ═══ DETAIL VIEW — restructured:
+   1. Market Price card (top)
+   2. Details (card specs)
+   3. List At Price Breakdown (moved here)
+   4. Auto List Format (listing price syncs with custom shipping)
+   5. Linked Listings
+════════════════════════════════════════════════════════════ */
 function renderDetail(el){
   var s=searchSel;if(!s)return;
   var mp=s.marketPrice;
   var shipN=searchCustShip!==''&&!isNaN(parseFloat(searchCustShip))?parseFloat(searchCustShip):null;
   var calc=mp>0?calcListing(mp,shipN):null,vn=calc?vNet(calc.lp,calc.ship,calc.c):0;
-  var linked=LINKED_LISTINGS[s.productId]||[];
+  var linked=LINKED_LISTINGS[s.uid]||[];
   var imgSrc=tcgImg(s.productId);
   var aT,aB;
-  if(s.type==='card'){aT=autoTitle(s);aB=autoBodyCard(s,aT);}else if(s.type==='don'){aT=s.name+' One Piece CCG';aB=autoBodyDon(s,aT);}else{aT=s.name+' One Piece CCG (SEALED)';aB=autoBodySealed(s,aT);}
+  if(s.type==='card'){aT=autoTitle(s);aB=autoBodyCard(s,aT);}
+  else if(s.type==='don'){aT=s.name+' One Piece CCG';aB=autoBodyDon(s,aT);}
+  else{aT=s.name+' One Piece CCG (SEALED)';aB=autoBodySealed(s,aT);}
   var aP=calc?calc.lp.toFixed(2):'—';
 
   var html='<div style="animation:fadeIn .2s ease">';
   html+='<button class="btn-back" id="det-back">← Back to Search Results</button>';
   html+='<div class="det-grid"><div class="det-iw">';
-  html+='<img src="'+imgSrc+'" class="det-img" id="det-img" onerror="this.style.opacity=0.3">';
-  html+='<div class="img-btns"><button class="btn btn-out" style="padding:8px 18px;font-size:13px" id="img-save">💾 Save Image</button></div>';
+  html+='<img src="'+imgSrc+'" class="det-img" id="det-img" onerror="detImgFail()">';
+  html+='<div class="img-btns" id="img-btns"><button class="btn btn-out" style="padding:8px 18px;font-size:13px" id="img-save">💾 Save Image</button></div>';
   html+='</div><div>';
 
   var tb=s.type==='card'?'<span class="badge badge-card">CARD</span>':s.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
-  html+='<div class="det-t">'+tb+' '+esc(s.name)+'</div>';
+  var vb=s.variant?'<span class="badge badge-variant">'+esc(s.variant)+'</span>':'';
+  html+='<div class="det-t">'+tb+' '+esc(s.name)+vb+'</div>';
   html+='<div class="det-m">';
   if(s.type==='card')html+='Serial: '+esc(s.number)+' · Rarity: '+esc(s.rarity)+' · ';
+  if(s.variant)html+='Variant: '+esc(s.variant)+' · ';
   html+='Set: '+esc(s.setName)+'</div>';
 
-  html+='<div class="card" id="price-card">';
-  html+=buildPriceCardInner(mp,calc,vn,shipN);
-  html+='</div>';
+  // 1. Market Price (top) — renamed from "Price Breakdown"
+  html+='<div class="card"><div class="hd3">📈 Market Price</div><div class="st-grid">';
+  html+=stat('Market Price',mp>0?'$'+mp.toFixed(2):'N/A','',true);
+  if(s.variant)html+=stat('Variant',s.variant);
+  html+='</div></div>';
 
+  // 2. Details (card specs)
   var ext=s.extendedData||[];
   if(ext.length>0){
     html+='<div class="card"><div class="hd3">📋 Details</div><div class="ext-grid">';
     ext.filter(function(e){return e.name!=='Description';}).forEach(function(e){html+='<div><span class="dim">'+(e.displayName||e.name)+':</span> <b>'+esc(e.value)+'</b></div>';});
-    html+='</div>';var dE=ext.find(function(e){return e.name==='Description';});if(dE)html+='<div class="desc-t">'+esc(dE.value)+'</div>';html+='</div>';
+    html+='</div>';
+    var dE=ext.find(function(e){return e.name==='Description';});if(dE)html+='<div class="desc-t">'+esc(dE.value)+'</div>';
+    html+='</div>';
   }
 
+  // 3. List At Price Breakdown (moved here — now its own card after Details)
+  html+='<div class="card" id="listat-card"><div class="hd3">💰 List At Price Breakdown</div>';
+  html+='<div id="listat-stats">'+buildListAtStats(calc,vn)+'</div>';
+  html+='<div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="dim">Custom shipping $:</span><input class="inp" style="width:90px;flex:0 0 auto" id="det-ship" placeholder="auto" value="'+esc(searchCustShip)+'"></div>';
+  html+='</div>';
+
+  // 4. Auto List Format
   html+='<div class="card"><div class="hd3">📝 Auto List Format</div>';
-  var fields=[{label:'Title',value:aT},{label:'Listing Price',value:aP},{label:'Body (HTML)',value:aB}];
+  var fields=[{label:'Title',value:aT,id:'alf-title'},{label:'Listing Price',value:aP,id:'alf-price'},{label:'Body (HTML)',value:aB,id:'alf-body'}];
   fields.forEach(function(f,i){
-    html+='<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:12px;font-weight:700">'+f.label+'</span><button class="btn-sm" data-cp="'+i+'">Copy</button></div><div class="code-blk" data-cp="'+i+'">'+esc(f.value)+'</div></div>';
+    html+='<div style="margin-bottom:12px" data-alf-row="'+i+'"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:12px;font-weight:700">'+f.label+'</span><button class="btn-sm" data-cp="'+i+'">Copy</button></div><div class="code-blk" id="'+f.id+'" data-cp="'+i+'">'+esc(f.value)+'</div></div>';
   });
   html+='</div>';
 
+  // 5. Linked Listings
   html+='<div class="card"><div class="hd3">🔗 Linked Listings '+(linked.length>0?'('+linked.length+')':'')+'</div>';
   if(linked.length===0)html+='<div class="dim" style="font-size:13px;margin-bottom:14px">Link eBay listings to this product for auto price updates.</div>';
   else linked.forEach(function(l,li){
@@ -634,59 +894,57 @@ function renderDetail(el){
 
   html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">';
   html+='<a href="https://www.tcgplayer.com/product/'+s.productId+'" target="_blank" class="btn btn-out">TCGPlayer ↗</a>';
-  html+='<a href="https://www.ebay.com/sch/i.html?_nkw='+encodeURIComponent(s.name)+'" target="_blank" class="btn btn-out">eBay Search ↗</a>';
-  if(s.type==='card')html+='<a href="https://onepiece.limitlesstcg.com/cards/'+s.number.toUpperCase()+'" target="_blank" class="btn btn-out">Limitless ↗</a>';
   html+='</div></div></div></div>';
   el.innerHTML=html;
 
   $('det-back').onclick=function(){searchSel=null;renderSearch($('main'));};
-  $('img-save').onclick=function(){saveImage(imgSrc,s.name.replace(/[^a-zA-Z0-9]/g,'_'));};
-  $('det-img').onclick=function(){openLightbox(imgSrc);};
+  var saveBtn=$('img-save');if(saveBtn)saveBtn.onclick=function(){saveImage(imgSrc,s.name.replace(/[^a-zA-Z0-9]/g,'_'));};
+  var dImg=$('det-img');if(dImg)dImg.onclick=function(){openLightbox(imgSrc);};
 
+  // Live update: changing custom shipping updates (a) List At Price Breakdown and (b) Auto List Format listing price
   var shipInp=$('det-ship');
   if(shipInp)shipInp.oninput=function(){
     searchCustShip=this.value;
     var sN=searchCustShip!==''&&!isNaN(parseFloat(searchCustShip))?parseFloat(searchCustShip):null;
     var c2=mp>0?calcListing(mp,sN):null,v2=c2?vNet(c2.lp,c2.ship,c2.c):0;
-    var pc=$('price-card');
-    if(pc){
-      var inner=buildPriceCardInner(mp,c2,v2,sN);
-      var statsEl=$('price-stats');
-      if(statsEl){
-        var tempDiv=document.createElement('div');tempDiv.innerHTML=inner;
-        var newStats=tempDiv.querySelector('#price-stats');
-        if(newStats)statsEl.innerHTML=newStats.innerHTML;
-      }
-    }
+    var stats=$('listat-stats');if(stats)stats.innerHTML=buildListAtStats(c2,v2);
+    var priceBlk=$('alf-price');if(priceBlk)priceBlk.textContent=c2?c2.lp.toFixed(2):'—';
   };
 
-  var fields2=[{label:'Title',value:aT},{label:'Listing Price',value:aP},{label:'Body (HTML)',value:aB}];
-  el.querySelectorAll('[data-cp]').forEach(function(btn){btn.onclick=function(){copyTxt(fields2[parseInt(this.getAttribute('data-cp'))].value);};});
+  // Copy buttons read live values so the Listing Price copy picks up the current shipping-adjusted price
+  el.querySelectorAll('[data-cp]').forEach(function(btn){
+    btn.onclick=function(){
+      var i=parseInt(this.getAttribute('data-cp'));
+      var txt;
+      if(i===0)txt=aT;
+      else if(i===1){var blk=$('alf-price');txt=blk?blk.textContent:aP;}
+      else txt=aB;
+      copyTxt(txt);
+    };
+  });
   $('link-new').onclick=function(){openLinkModal(s,null);};
   el.querySelectorAll('[data-link-edit]').forEach(function(btn){btn.onclick=function(){openLinkModal(s,parseInt(this.getAttribute('data-link-edit')));};});
   el.querySelectorAll('[data-link-del]').forEach(function(btn){
-    btn.onclick=function(){var li=parseInt(this.getAttribute('data-link-del'));if(!confirm('Delete this linked listing?'))return;LINKED_LISTINGS[s.productId].splice(li,1);if(LINKED_LISTINGS[s.productId].length===0)delete LINKED_LISTINGS[s.productId];saveStorage();showToast('Deleted',true);renderDetail(el);};
+    btn.onclick=function(){var li=parseInt(this.getAttribute('data-link-del'));if(!confirm('Delete this linked listing?'))return;LINKED_LISTINGS[s.uid].splice(li,1);if(LINKED_LISTINGS[s.uid].length===0)delete LINKED_LISTINGS[s.uid];saveStorage();showToast('Deleted',true);renderDetail(el);};
   });
 }
 
-function buildPriceCardInner(mp,calc,vn,shipN){
-  var html='<div class="hd3">💰 Price Breakdown</div><div class="st-grid" id="price-stats">';
-  html+=stat('Market Price',mp>0?'$'+mp.toFixed(2):'N/A','',true);
+function buildListAtStats(calc,vn){
+  var html='<div class="st-grid">';
   html+=stat('List At',calc?'$'+calc.lp.toFixed(2):'—','var(--ac)',true);
   html+=stat('Shipping',calc?'$'+calc.ship.toFixed(2):'—');
   html+=stat('eBay Fee',calc?'$'+calc.c.toFixed(2):'—','var(--ylw)');
   html+=stat('Net Return',calc?'$'+vn.toFixed(2):'—','var(--grn)');
   html+=stat('Rule',calc?calc.rule:'—');
   html+='</div>';
-  html+='<div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="dim">Custom shipping $:</span><input class="inp" style="width:90px;flex:0 0 auto" id="det-ship" placeholder="auto" value="'+esc(searchCustShip)+'"></div>';
   return html;
 }
 function stat(l,v,c,big){return'<div><div class="st-l">'+l+'</div><div class="'+(big?'st-vb':'st-v')+'" style="'+(c?'color:'+c:'')+'">'+v+'</div></div>';}
 
 /* ═══ LINK MODAL ═══ */
 function openLinkModal(product,editIdx){
-  var existing=editIdx!=null?LINKED_LISTINGS[product.productId][editIdx]:null,isEdit=editIdx!=null;
-  var html='<div class="modal-t">'+(isEdit?'Edit':'Add')+' Linked Listing</div>';
+  var existing=editIdx!=null?LINKED_LISTINGS[product.uid][editIdx]:null,isEdit=editIdx!=null;
+  var html='<div class="modal-t">'+(isEdit?'Edit':'Add')+' Linked Listing'+(product.variant?' <span class="badge badge-variant">'+esc(product.variant)+'</span>':'')+'</div>';
   html+='<div class="field" style="margin-bottom:12px"><label>eBay Item ID or URL</label><input class="inp" id="m-url" placeholder="1234567890" value="'+esc(existing?existing.itemId:'')+'"></div>';
   html+='<div class="field" style="margin-bottom:12px"><label>Pricing Option</label><select class="inp" id="m-opt"><option value="1"'+(existing&&existing.option===1?' selected':'')+'>Market Price</option><option value="2"'+(!existing||existing.option===2?' selected':'')+'>Calculated</option></select></div>';
   html+='<div class="field" style="margin-bottom:12px"><label>Modifier</label><select class="inp" id="m-mod">';
@@ -701,8 +959,8 @@ function openLinkModal(product,editIdx){
     var url=$('m-url').value.trim(),itemId='',match=url.match(/\/itm\/(\d+)/);
     if(match)itemId=match[1];else if(/^\d+$/.test(url))itemId=url;else{showToast('Invalid eBay URL/ID',false);return;}
     var e={itemId:itemId,option:parseInt($('m-opt').value),modifier:parseInt($('m-mod').value),shippingPrice:isNaN(parseFloat($('m-ship').value))?null:parseFloat($('m-ship').value),service:$('m-svc').value.trim()||null};
-    if(!LINKED_LISTINGS[product.productId])LINKED_LISTINGS[product.productId]=[];
-    if(isEdit)LINKED_LISTINGS[product.productId][editIdx]=e;else LINKED_LISTINGS[product.productId].push(e);
+    if(!LINKED_LISTINGS[product.uid])LINKED_LISTINGS[product.uid]=[];
+    if(isEdit)LINKED_LISTINGS[product.uid][editIdx]=e;else LINKED_LISTINGS[product.uid].push(e);
     saveStorage();showToast(isEdit?'Updated!':'Added!',true);closeModal();
     if(currentTab==='search')renderDetail($('search-content'));else if(currentTab==='linked')renderLinked($('main'));
   };
@@ -711,38 +969,43 @@ function openLinkModal(product,editIdx){
 /* ═══ LINKED LISTINGS TAB ═══ */
 var lSort='high-low',lFilter='all';
 function renderLinked(m){
-  var pids=Object.keys(LINKED_LISTINGS).map(Number),total=pids.reduce(function(a,p){return a+(LINKED_LISTINGS[p]||[]).length;},0);
-  var filtered=pids;
-  if(lFilter==='cards')filtered=pids.filter(function(p){var x=getById(p);return x&&x.type==='card';});
-  else if(lFilter==='don')filtered=pids.filter(function(p){var x=getById(p);return x&&x.type==='don';});
-  else if(lFilter==='sealed')filtered=pids.filter(function(p){var x=getById(p);return x&&x.type==='sealed';});
-  var sortable=filtered.map(function(pid){var p=getById(pid);return{pid:pid,name:p?(p.type==='card'?shortName(p):p.name).toLowerCase():'',price:p?p.marketPrice:0};});
+  var uids=Object.keys(LINKED_LISTINGS),total=uids.reduce(function(a,u){return a+(LINKED_LISTINGS[u]||[]).length;},0);
+  var filtered=uids;
+  if(lFilter==='cards')filtered=uids.filter(function(u){var x=getByUid(u);return x&&x.type==='card';});
+  else if(lFilter==='don')filtered=uids.filter(function(u){var x=getByUid(u);return x&&x.type==='don';});
+  else if(lFilter==='sealed')filtered=uids.filter(function(u){var x=getByUid(u);return x&&x.type==='sealed';});
+  var sortable=filtered.map(function(uid){var p=getByUid(uid);return{uid:uid,name:p?(p.type==='card'?shortName(p):p.name).toLowerCase():'',price:p?p.marketPrice:0};});
   if(lSort==='alpha')sortable.sort(function(a,b){return a.name.localeCompare(b.name);});
   else if(lSort==='high-low')sortable.sort(function(a,b){return b.price-a.price;});
   else sortable.sort(function(a,b){return a.price-b.price;});
-  var html='<div class="hd">🔗 Linked Listings <span class="dim" style="font-size:14px;font-weight:500">'+total+' across '+pids.length+' products</span></div>';
+  var html='<div class="hd">🔗 Linked Listings <span class="dim" style="font-size:14px;font-weight:500">'+total+' across '+uids.length+' products</span></div>';
   html+='<div class="row mb"><div class="field"><label>Sort</label><select class="inp" id="l-sort"><option value="alpha"'+(lSort==='alpha'?' selected':'')+'>Alphabetical</option><option value="high-low"'+(lSort==='high-low'?' selected':'')+'>Price High→Low</option><option value="low-high"'+(lSort==='low-high'?' selected':'')+'>Price Low→High</option></select></div>';
   html+='<div class="field"><label>Filter</label><select class="inp" id="l-filter"><option value="all"'+(lFilter==='all'?' selected':'')+'>All</option><option value="cards"'+(lFilter==='cards'?' selected':'')+'>Cards</option><option value="don"'+(lFilter==='don'?' selected':'')+'>DON!!</option><option value="sealed"'+(lFilter==='sealed'?' selected':'')+'>Sealed</option></select></div></div>';
   if(total===0)html+='<div class="empty">No linked listings yet.</div>';
   else if(sortable.length===0)html+='<div class="empty">No listings match filter.</div>';
   else sortable.forEach(function(s){
-    var p=getById(s.pid);if(!p)return;var ls=LINKED_LISTINGS[s.pid]||[];
+    var p=getByUid(s.uid);if(!p){
+      html+='<div class="card"><div class="dim">Unknown product (uid: '+esc(s.uid)+') — '+LINKED_LISTINGS[s.uid].length+' orphaned listings</div></div>';
+      return;
+    }
+    var ls=LINKED_LISTINGS[s.uid]||[];
     var tb=p.type==='card'?'<span class="badge badge-card">CARD</span>':p.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
-    html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1"><div style="font-weight:700;font-size:15px;word-break:break-word">'+tb+' '+esc(p.type==='card'?shortName(p):p.name)+'</div><div class="dim" style="font-size:12px">Market: '+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'N/A')+'</div></div><button class="btn-sm" data-goto="'+s.pid+'">View →</button></div>';
+    var vb=p.variant?'<span class="badge badge-variant">'+esc(p.variant)+'</span>':'';
+    html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1"><div style="font-weight:700;font-size:15px;word-break:break-word">'+tb+' '+esc(p.type==='card'?shortName(p):p.name)+vb+'</div><div class="dim" style="font-size:12px">Market: '+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'N/A')+'</div></div><button class="btn-sm" data-goto="'+esc(s.uid)+'">View →</button></div>';
     ls.forEach(function(l,li){
       var fp=finalPrice(p.marketPrice,l.option,l.modifier,true,l.shippingPrice);
       html+='<div class="link-card"><div class="link-title"><a href="https://www.ebay.com/itm/'+l.itemId+'" target="_blank">'+esc(l.itemId)+'</a></div>';
       html+='<div class="link-sub">Price: '+fp+' · '+modName(l.modifier);if(l.shippingPrice!=null)html+=' · Ship $'+l.shippingPrice.toFixed(2);html+='</div>';
-      html+='<div class="link-actions"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-ll-edit="'+s.pid+'_'+li+'">✏️</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-ll-del="'+s.pid+'_'+li+'">🗑️</button></div></div>';
+      html+='<div class="link-actions"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-ll-edit="'+esc(s.uid)+'|'+li+'">✏️</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-ll-del="'+esc(s.uid)+'|'+li+'">🗑️</button></div></div>';
     });
     html+='</div>';
   });
   m.innerHTML=html;
   $('l-sort').onchange=function(){lSort=this.value;renderLinked(m);};
   $('l-filter').onchange=function(){lFilter=this.value;renderLinked(m);};
-  m.querySelectorAll('[data-goto]').forEach(function(b){b.onclick=function(){searchSel=getById(this.getAttribute('data-goto'));searchCustShip='';searchQ=searchSel?(searchSel.number||searchSel.name):'';switchTab('search');};});
-  m.querySelectorAll('[data-ll-edit]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-edit').split('_');openLinkModal(getById(ps[0]),parseInt(ps[1]));};});
-  m.querySelectorAll('[data-ll-del]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-del').split('_'),pid=parseInt(ps[0]),li=parseInt(ps[1]);if(!confirm('Delete?'))return;LINKED_LISTINGS[pid].splice(li,1);if(!LINKED_LISTINGS[pid].length)delete LINKED_LISTINGS[pid];saveStorage();showToast('Deleted',true);renderLinked(m);};});
+  m.querySelectorAll('[data-goto]').forEach(function(b){b.onclick=function(){searchSel=getByUid(this.getAttribute('data-goto'));searchCustShip='';searchQ=searchSel?(searchSel.number||searchSel.name):'';switchTab('search');};});
+  m.querySelectorAll('[data-ll-edit]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-edit').split('|');openLinkModal(getByUid(ps[0]),parseInt(ps[1]));};});
+  m.querySelectorAll('[data-ll-del]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-del').split('|'),uid=ps[0],li=parseInt(ps[1]);if(!confirm('Delete?'))return;LINKED_LISTINGS[uid].splice(li,1);if(!LINKED_LISTINGS[uid].length)delete LINKED_LISTINGS[uid];saveStorage();showToast('Deleted',true);renderLinked(m);};});
 }
 
 /* ═══ BOX PRESETS ═══ */
@@ -817,11 +1080,18 @@ function openEbayModal(){
 
 /* ═══ SETTINGS / INFO ═══ */
 function renderSettings(m){
-  m.innerHTML='<div class="hd">⚙️ Settings</div><div class="card"><div class="hd3">📍 Ship-From ZIP</div><div class="row"><input class="inp" id="s-zip" style="max-width:200px" value="'+esc(USER_ZIP)+'"><button class="btn btn-ac" id="s-zs">Save</button></div></div><div class="card"><div class="hd3">🗑️ Data</div><div class="row"><button class="btn btn-out" id="s-cl">Clear Linked</button><button class="btn btn-out" id="s-cp">Clear Presets</button><button class="btn btn-dng" id="s-ca">Clear All</button></div></div><div class="card"><div class="hd3">📊 Stats</div><div class="dim" style="font-size:13px;line-height:1.8">Linked: '+Object.keys(LINKED_LISTINGS).length+' products ('+Object.keys(LINKED_LISTINGS).reduce(function(a,k){return a+LINKED_LISTINGS[k].length;},0)+' listings)<br>Presets: '+BOX_PRESETS.length+'<br>eBay: '+(EBAY_AUTH.accessToken?(EBAY_AUTH.expiresAt>Date.now()?'connected':'expired'):'not signed in')+'</div></div>';
+  var next=nextScheduledRefresh(Date.now());
+  var nextStr=new Date(next).toLocaleString('en-US',{timeZone:'America/New_York',weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+  m.innerHTML='<div class="hd">⚙️ Settings</div>'
+    +'<div class="card"><div class="hd3">📍 Ship-From ZIP</div><div class="row"><input class="inp" id="s-zip" style="max-width:200px" value="'+esc(USER_ZIP)+'"><button class="btn btn-ac" id="s-zs">Save</button></div></div>'
+    +'<div class="card"><div class="hd3">🔄 Database Cache</div><div class="dim" style="font-size:13px;line-height:1.8">Version: <b>'+esc(APP_VERSION)+'</b><br>Next scheduled refresh: <b>'+esc(nextStr)+'</b><br><span style="font-size:12px">(schedule: 8:10 AM &amp; 8:10 PM America/New_York)</span></div><div class="row" style="margin-top:10px"><button class="btn btn-out" id="s-refresh">Force Refresh Now</button></div></div>'
+    +'<div class="card"><div class="hd3">🗑️ Data</div><div class="row"><button class="btn btn-out" id="s-cl">Clear Linked</button><button class="btn btn-out" id="s-cp">Clear Presets</button><button class="btn btn-dng" id="s-ca">Clear All</button></div></div>'
+    +'<div class="card"><div class="hd3">📊 Stats</div><div class="dim" style="font-size:13px;line-height:1.8">Linked: '+Object.keys(LINKED_LISTINGS).length+' products ('+Object.keys(LINKED_LISTINGS).reduce(function(a,k){return a+LINKED_LISTINGS[k].length;},0)+' listings)<br>Presets: '+BOX_PRESETS.length+'<br>eBay: '+(EBAY_AUTH.accessToken?(EBAY_AUTH.expiresAt>Date.now()?'connected':'expired'):'not signed in')+'</div></div>';
   $('s-zs').onclick=function(){var z=$('s-zip').value.trim();if(!/^\d{5}$/.test(z)){showToast('Invalid ZIP',false);return;}USER_ZIP=z;saveStorage();showToast('ZIP: '+z,true);};
+  $('s-refresh').onclick=function(){if(!confirm('Force refresh database from TCGCSV now? This may take a minute.'))return;idbSet(DB_CACHE_KEY,null).then(function(){location.reload();});};
   $('s-cl').onclick=function(){if(!confirm('Clear linked?'))return;LINKED_LISTINGS={};saveStorage();showToast('Cleared',true);renderSettings(m);};
   $('s-cp').onclick=function(){if(!confirm('Clear presets?'))return;BOX_PRESETS=[];saveStorage();showToast('Cleared',true);renderSettings(m);};
-  $('s-ca').onclick=function(){if(!confirm('Clear EVERYTHING?'))return;LINKED_LISTINGS={};BOX_PRESETS=[];USER_ZIP='';EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};localStorage.clear();showToast('All cleared',true);renderEbayBtn();renderSettings(m);};
+  $('s-ca').onclick=function(){if(!confirm('Clear EVERYTHING?'))return;LINKED_LISTINGS={};BOX_PRESETS=[];USER_ZIP='';EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};localStorage.clear();idbSet(DB_CACHE_KEY,null);showToast('All cleared',true);renderEbayBtn();renderSettings(m);};
 }
 function renderInfo(m){
   var items=[{i:'💰',t:'eBay FVF',d:'13.25% of item + 13.25% × 10.11% of shipping',d2:'≈14.59% effective rate'},{i:'💳',t:'Fixed Fee',d:'$0.30 if total ≤ $10',d2:'$0.40 if total ≥ $10.01'},{i:'📦',t:'Shipping',d:'≤ $20 → $0.74',d2:'> $20 → $5.89'},{i:'🔢',t:'Formula',d:'a = (n + c + (0.1325 + 0.1325×0.1011) × b) / (1 − 0.1325 − 0.1325×0.1011)',d2:'a=listing b=ship n=net c=fee',mono:1}];
@@ -830,29 +1100,50 @@ function renderInfo(m){
   html+='</div>';m.innerHTML=html;
 }
 
-/* ═══ INIT ═══ */
-function initDB(){
+/* ═══ INIT ═══
+   Flow:
+   1. Try to load cached DB from IndexedDB
+   2. If cache hit & fresh → use it instantly (no network fetch)
+   3. Else fetch from TCGCSV, save to cache
+   4. Always run price scrape for products missing marketPrice
+*/
+async function initDB(){
+  searchStatus='Checking cache...';
+  if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=searchStatus;}
+
+  var cached=await loadCachedDB();
+  if(cached){
+    DB=cached;searchStatus='ready';
+    migrateLinkedListings();
+    if(currentTab==='search')renderSearch($('main'));
+    // Still scrape for anything missing a price (cached data may have stale gaps we can fill)
+    scrapeMissingPrices(cached,function(msg){
+      scrapeStatus=msg;
+      if(currentTab==='search'){var el=$('sts-txt');if(el){var base='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';el.textContent=base+(msg?' · '+msg:'');}}
+    }).then(function(){
+      if(currentTab==='search'){if(searchSel){var fresh=getByUid(searchSel.uid);if(fresh)searchSel=fresh;}renderSearch($('main'));}
+      // Re-save cache with any newly scraped prices
+      saveCachedDB(DB);
+    });
+    return;
+  }
+
+  // Cache miss — fetch fresh
   searchStatus='Loading...';
+  if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=searchStatus;}
   loadDB(function(msg){searchStatus=msg;if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=msg;}}).then(function(data){
     DB=data;searchStatus='ready';
+    migrateLinkedListings();
     if(currentTab==='search')renderSearch($('main'));
-    // After initial DB loads, scrape TCGPlayer for prices missing from the CSV.
-    // This runs in the background — user can search immediately, prices fill in as they're scraped.
+    // Save what we have immediately (before scrape) — cache is usable even if scrape fails
+    saveCachedDB(DB);
     scrapeMissingPrices(data,function(msg){
       scrapeStatus=msg;
-      if(currentTab==='search'){
-        var el=$('sts-txt');
-        if(el){
-          var base='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';
-          el.textContent=base+(msg?' · '+msg:'');
-        }
-      }
+      if(currentTab==='search'){var el=$('sts-txt');if(el){var base='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';el.textContent=base+(msg?' · '+msg:'');}}
     }).then(function(){
-      // Re-render after scrape completes so newly-scraped prices appear in the grid/detail view.
-      if(currentTab==='search'){
-        if(searchSel){var fresh=getById(searchSel.productId);if(fresh)searchSel=fresh;}
-        renderSearch($('main'));
-      }
+      if(currentTab==='search'){if(searchSel){var fresh=getByUid(searchSel.uid);if(fresh)searchSel=fresh;}renderSearch($('main'));}
+      // Re-save cache with scraped prices baked in so next load sees them
+      saveCachedDB(DB);
     });
   }).catch(function(e){searchStatus='Error: '+e.message;if(currentTab==='search')renderSearch($('main'));});
 }
