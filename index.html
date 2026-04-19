@@ -12,10 +12,10 @@ button{font-family:inherit;cursor:pointer}input,select,textarea{font-family:inhe
 code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px}
 .app{display:flex;flex-direction:column;min-height:100vh}
 .hdr{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--bd);background:rgba(6,6,16,.95);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
-.menu-btn{display:none;background:var(--bg3);border:1px solid var(--bd);color:var(--tx);border-radius:9px;width:40px;height:40px;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;transition:.15s;line-height:1}
+.menu-btn{display:none;background:var(--bg3);border:1px solid var(--bd);color:var(--tx);border-radius:9px;width:40px;height:40px;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;transition:.15s;line-height:1;position:relative;z-index:302}
 .menu-btn:hover{border-color:var(--ac);color:var(--ac)}
 .menu-btn:active{transform:scale(.95)}
-.side-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;animation:fadeIn .2s ease}
+.side-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:340;animation:fadeIn .2s ease}
 .side-backdrop.open{display:block}
 .hdr-logo{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e84118,#c23616);font-size:22px;color:#fff;box-shadow:0 4px 20px rgba(232,65,24,.35);flex-shrink:0}
 .hdr-t{font-weight:800;font-size:19px;letter-spacing:-.4px}.hdr-s{font-size:11px;color:var(--dim);letter-spacing:.3px}
@@ -50,13 +50,10 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg3)
 .live-card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 20px rgba(232,65,24,.2)}
 .live-card .iw{width:100%;aspect-ratio:.716;background:#000;border-radius:6px;overflow:hidden;margin-bottom:6px}
 .live-card img{width:100%;height:100%;object-fit:cover;display:block}
-/* Name = bold, 2 lines, fixed height so all cards align */
 .live-card .n{font-weight:700;font-size:12px;margin-bottom:3px;line-height:1.3;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   height:calc(1.3em * 2);word-break:break-word}
-/* Secondary (serial for cards, set for don/sealed) — small dim */
 .live-card .s{font-size:10px;color:var(--dim);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:1.25em}
-/* Price + variant row */
 .live-card .pv{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;min-height:16px}
 .live-card .var{font-size:9.5px;color:var(--dim);font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
 .live-card .var.foil{color:#c084fc}
@@ -98,7 +95,6 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 @keyframes spin{to{transform:rotate(360deg)}}.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
 
-/* Unified custom dropdown style — used for BOTH filter (multi-select) and sort (single-select) */
 .dropdown{position:relative}
 .dropdown-trigger{display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;gap:8px}
 .dropdown-trigger .dd-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tx)}
@@ -112,15 +108,14 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 .dd-item.selected{background:var(--acG);color:var(--ac);font-weight:600}
 .dd-sep{border:none;border-top:1px solid var(--bd);margin:4px 0}
 
-/* Image fallback placeholders */
 .iw-fallback{width:100%;height:100%;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:10px;font-weight:700;line-height:1.3}
 .det-img-fb{width:100%;aspect-ratio:.716;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;font-weight:700;font-size:15px;line-height:1.4;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
 
-/* ─── Mobile / narrow viewport fixes ─── */
 @media(max-width:800px){
-  .menu-btn{display:inline-flex}
+  .hdr{position:sticky;top:0;z-index:400;padding:12px 14px;gap:10px}
+  .menu-btn{display:inline-flex;position:relative;z-index:401}
   .layout{display:block}
-  .side{position:fixed;top:0;left:0;bottom:0;width:260px;max-width:82vw;height:100vh!important;max-height:none!important;padding:16px 10px!important;transform:translateX(-100%);transition:transform .25s ease;z-index:201;overflow-y:auto;border-right:1px solid var(--bd);border-bottom:none;align-self:auto;box-shadow:4px 0 24px rgba(0,0,0,.4)}
+  .side{position:fixed;top:63px;left:0;bottom:0;width:260px;max-width:82vw;height:calc(100vh - 63px)!important;max-height:none!important;padding:16px 10px!important;transform:translateX(-100%);transition:transform .25s ease;z-index:350;overflow-y:auto;border-right:1px solid var(--bd);border-bottom:none;align-self:auto;box-shadow:4px 0 24px rgba(0,0,0,.4)}
   .side.open{transform:translateX(0)}
   .side button{font-size:14px;padding:12px 14px;width:100%}
   .main{padding:16px}
@@ -130,10 +125,6 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
   .ext-grid{grid-template-columns:1fr}
   .hdr-right .ebay-btn span + span{display:none}
   .live-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
-  .hdr{padding:12px 14px;gap:10px}
-  .hdr-t{font-size:17px}
-  .hdr-s{font-size:10px}
-  .hdr-logo{width:38px;height:38px;font-size:20px;border-radius:10px}
   .inp{font-size:16px}
   .inp-big{font-size:17px}
   .hd{font-size:19px}
@@ -145,7 +136,7 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
   .hdr-s{display:none}
   .st-grid{grid-template-columns:1fr}
   .st-vb{font-size:22px}
-  .hdr-logo{width:36px;height:36px;font-size:18px}
+  .hdr-logo{width:36px;height:36px;font-size:18px;border-radius:10px}
   .hdr-t{font-size:16px}
 }
 </style>
@@ -169,7 +160,7 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 
 <script>
 /* ═══ APP VERSION — bump to force cache invalidation on code updates ═══ */
-var APP_VERSION = 'v17-variants-2026-04-18';
+var APP_VERSION = 'v20-cardtype-scrape-detail-sidebar-fixes-2026-04-19';
 
 /* ═══ STATE ═══ */
 var DB=null,LINKED_LISTINGS={},BOX_PRESETS=[],USER_ZIP='',EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''},scrapeStatus='';
@@ -219,10 +210,7 @@ function idbSet(key,val){
   });
 }
 
-/* ═══ SCHEDULE — next 8:10 AM / 8:10 PM America/New_York ═══
-   Cached DB is considered stale if current time is past the next scheduled
-   refresh AFTER the time the cache was saved. Uses Intl for correct EST/EDT
-   handling (no hardcoded offsets). */
+/* ═══ SCHEDULE — next 8:10 AM / 8:10 PM America/New_York ═══ */
 function getNYOffsetMs(utcMs){
   var d=new Date(utcMs);
   var parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(d);
@@ -235,7 +223,6 @@ function nyWallclockToUTCms(y,m,d,h,mi){
   return guess-off;
 }
 function nextScheduledRefresh(fromMs){
-  // Find NY calendar date of fromMs
   var parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(fromMs));
   var f={};parts.forEach(function(p){if(p.type!=='literal')f[p.type]=+p.value;});
   var best=Infinity;
@@ -251,10 +238,7 @@ function nextScheduledRefresh(fromMs){
   return best;
 }
 
-/* ═══ DB CACHE SERIALIZE / LOAD ═══
-   Stored by uid-keyed flat arrays; maps rebuilt on load to dedupe storage.
-   Invalidated when: (a) APP_VERSION changes, (b) current time is past the
-   next scheduled refresh from the save time. */
+/* ═══ DB CACHE SERIALIZE / LOAD ═══ */
 var DB_CACHE_KEY='tcg_db_v2';
 function serializeDB(db){
   return{
@@ -362,6 +346,48 @@ function autoBodyCard(c,t){var ext=c.extendedData||[],eD=ext.find(function(e){re
 function autoBodyDon(p,t){var ext=p.extendedData||[],eD=ext.find(function(e){return e.name==='Description';}),eff=eD?eD.value:'',sp='';ext.forEach(function(e){if(e.name!=='Description'&&e.value&&e.value.trim())sp+='* '+(e.displayName||e.name)+': '+e.value+'<br>';});var d=(eff||sp)?'<b>Card Specifications:</b><br>'+(eff?'* Description: '+eff+'<br>':'')+sp:'';return'<div><b>'+t+'</b></div><div><br></div>'+(d?d+'<div><br></div>':'')+'<div><b>Shipping:</b><br>This card will be sleeved, sandwiched between cardboard, and sealed in a bag. The item will be shipped in an envelope during transport.</div>';}
 function autoBodySealed(p,t){var sl=p.setName?'* Set: '+p.setName+'<br>':'';return'<div><b>'+t+'</b></div><div><br></div>'+(sl?'<b>Product Details:</b><br>'+sl+'<div><br></div>':'')+'<div><b>Shipping:</b><br>This item will be securely packaged to prevent damage during transport.</div>';}
 
+function decodeHtmlEntities(str){
+  if(str==null)return'';
+  var ta=document.createElement('textarea');
+  ta.innerHTML=String(str);
+  return ta.value;
+}
+function sanitizeDetailHtml(str){
+  if(str==null)return'';
+  var html=decodeHtmlEntities(str);
+  html=html.replace(/\r\n|\r|\n/g,'<br>');
+  html=html.replace(/<script[\s\S]*?<\/script>/gi,'');
+  html=html.replace(/on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,'');
+  return html;
+}
+function detectVariantFromHtml(html){
+  if(!html)return null;
+  var rows=html.match(/<tr[^>]*data-testid="near-mint-data-row-\d+"[^>]*>[\s\S]*?<\/tr>/gi)||[];
+  for(var i=0;i<rows.length;i++){
+    var varMatch=rows[i].match(/<span[^>]*class="text"[^>]*>\s*(Foil|Normal)\s*:<\/span>/i);
+    if(varMatch)return varMatch[1].charAt(0).toUpperCase()+varMatch[1].slice(1).toLowerCase();
+  }
+  var direct=html.match(/<span[^>]*class="text"[^>]*>\s*(Foil|Normal)\s*:<\/span>/i);
+  if(direct)return direct[1].charAt(0).toUpperCase()+direct[1].slice(1).toLowerCase();
+  return null;
+}
+function getCardTypeValue(ext){
+  var cardTypeExt=(ext||[]).find(function(e){return e.name==='CardType'&&e.displayName==='Card Type'&&e.value&&e.value.trim();});
+  return cardTypeExt?cardTypeExt.value.trim().toUpperCase():'';
+}
+function hasCardTypeField(ext){
+  return !!(ext||[]).find(function(e){return e.name==='CardType'&&e.displayName==='Card Type'&&e.value&&e.value.trim();});
+}
+function isFoilVariantName(variant){
+  return /foil|holo|parallel/i.test(variant||'');
+}
+function variantMatchesFilter(variant, wanted){
+  var v=(variant||'').toLowerCase();
+  if(wanted==='normal')return v==='normal';
+  if(wanted==='foil')return v==='foil'||v.includes('foil')||v.includes('holo')||v.includes('parallel');
+  return true;
+}
+
 /* ═══ FETCH ═══ */
 var PROXY='https://corsproxy.io/?';
 async function fetchP(url){try{var r=await fetch(url);if(r.ok)return await r.text();}catch(e){}var r2=await fetch(PROXY+encodeURIComponent(url));if(!r2.ok)throw new Error('HTTP '+r2.status);return await r2.text();}
@@ -389,15 +415,15 @@ async function fetchViaProxy(url){
   return null;
 }
 
-// Returns a map { subTypeName: price, '_': fallbackPrice }
+// Returns a map { variantName: price, '_': fallbackPrice } and also attaches variant names where possible
 async function scrapePricesForPid(pid){
+  var result={};
   try{
     var apiUrl='https://mpapi.tcgplayer.com/v2/product/'+pid+'/pricepoints';
     var txt=await fetchViaProxy(apiUrl);
     if(txt){
       var data=JSON.parse(txt);
       if(Array.isArray(data)&&data.length>0){
-        var result={};
         data.forEach(function(p){
           var pr=p.marketPrice||p.midPrice||p.lowPrice||p.directLowPrice||p.highPrice||0;
           if(pr>0)result[p.subTypeName||'_']=pr;
@@ -409,9 +435,36 @@ async function scrapePricesForPid(pid){
   try{
     var htmlUrl='https://www.tcgplayer.com/product/'+pid+'?Language=English';
     var html=await fetchViaProxy(htmlUrl);
-    if(html){var m=html.match(/class="near-mint-table__price"[^>]*>\s*\$?([\d,]+\.\d{2})/);if(m)return{'_':parseFloat(m[1].replace(/,/g,''))};}
+    if(html){
+      var detectedVariant=detectVariantFromHtml(html);
+      // Extract variant and price from near-mint table rows
+      var rows=html.match(/<tr[^>]*data-testid="near-mint-data-row-\d+"[^>]*>[\s\S]*?<\/tr>/g);
+      if(rows){
+        rows.forEach(function(row){
+          var varMatch=row.match(/<span[^>]*class="text"[^>]*>([^<]+):<\/span>/);
+          var priceMatch=row.match(/<span[^>]*class="near-mint-table__price"[^>]*>\s*\$?([\d,]+\.\d{2})/);
+          if(varMatch&&priceMatch){
+            var variantName=varMatch[1].trim();
+            var price=parseFloat(priceMatch[1].replace(/,/g,''));
+            if(!isNaN(price)&&price>0)result[variantName]=price;
+          }
+        });
+      }
+      // Fallback if no rows found
+      if(Object.keys(result).length===0){
+        var m=html.match(/class="near-mint-table__price"[^>]*>\s*\$?([\d,]+\.\d{2})/);
+        if(m){
+          var fallbackPrice=parseFloat(m[1].replace(/,/g,''));
+          if(detectedVariant)result[detectedVariant]=fallbackPrice;
+          else result['_']=fallbackPrice;
+        }
+      } else if(detectedVariant && !result[detectedVariant]){
+        var firstKey=Object.keys(result).find(function(k){return k!=='_';});
+        if(firstKey&&result[firstKey]>0)result[detectedVariant]=result[firstKey];
+      }
+    }
   }catch(e){}
-  return null;
+  return result;
 }
 
 async function scrapeMissingPrices(data,onP){
@@ -419,7 +472,6 @@ async function scrapeMissingPrices(data,onP){
   var missing=all.filter(function(p){return !p.marketPrice||p.marketPrice<=0;});
   if(!missing.length){onP('');return;}
   proxyFails=[0,0,0];
-  // Group by productId so we fetch each product once and distribute prices by variant
   var byPid={};
   missing.forEach(function(p){if(!byPid[p.productId])byPid[p.productId]=[];byPid[p.productId].push(p);});
   var pids=Object.keys(byPid),CONC=12,done=0,found=0,total=pids.length;
@@ -432,9 +484,27 @@ async function scrapeMissingPrices(data,onP){
         done++;
         if(prices){
           byPid[pid].forEach(function(p){
-            var pr=prices[p.variant]||prices['_']||prices['Normal']||0;
-            if(!pr){for(var k in prices){if(prices[k]>0){pr=prices[k];break;}}}
-            if(pr>0){p.marketPrice=pr;found++;}
+            // Determine best matching price: try exact variant name first, then fallback
+            var pr=null;
+            if(p.variant&&prices[p.variant])pr=prices[p.variant];
+            else if(prices['Normal'])pr=prices['Normal'];
+            else if(prices['Foil'])pr=prices['Foil'];
+            else if(prices['_'])pr=prices['_'];
+            else{
+              for(var k in prices){if(prices[k]>0){pr=prices[k];break;}}
+            }
+            if(pr>0){
+              p.marketPrice=pr;
+              // If variant not set and we found a specific variant name, set it (only for cards/don)
+              if(!p.variant&&(p.type==='card'||p.type==='don')){
+                if(prices['Normal'])p.variant='Normal';
+                else if(prices['Foil'])p.variant='Foil';
+                else{
+                  for(var k in prices){if(k!=='_'){p.variant=k;break;}}
+                }
+              }
+              found++;
+            }
           });
         }
       }).catch(function(){done++;});
@@ -451,10 +521,7 @@ async function scrapeMissingPrices(data,onP){
   setTimeout(function(){scrapeStatus='';var el=document.getElementById('sts-txt');if(el&&DB&&currentTab==='search'){el.textContent='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';}},4000);
 }
 
-/* ═══ DB LOADER — emits variant-aware entries ═══
-   For a given productId with multiple rows in the CSV (different subTypeName
-   like "Normal" / "Foil"), each row becomes its own entry with uid = pid_variant.
-   Single-variant products keep uid = pid (preserves legacy LINKED_LISTINGS keys). */
+/* ═══ DB LOADER — improved categorization using CardType extendedData ═══ */
 var DNAMES={CardType:'Card Type',Subtypes:'Subtype(s)',Counterplus:'Counter+',CardEffect:'Effect',BlockIcon:'Block',FlavorText:'Flavor Text'};
 var SERIAL_PATTERN=/\b((?:OP|ST|EB|P|PRB)\d{0,2}-\d{3,}[A-Z]?)\b/i;
 
@@ -472,7 +539,6 @@ async function loadDB(onP){
     results.forEach(function(res){
       if(res.status!=='fulfilled')return;
       var rows=parseCSV(res.value.t);
-      // Count rows per productId to detect multi-variant products
       var counts={};
       rows.forEach(function(r){if(!r.name||!r.name.trim())return;var pid=parseInt(r.productId)||0;counts[pid]=(counts[pid]||0)+1;});
       rows.forEach(function(row){
@@ -503,19 +569,26 @@ async function loadDB(onP){
         if(!serial){var nE=ext.find(function(e){return e.name==='Number';});if(nE)serial=nE.value.trim();}
         if(!serial){var sm=nm.match(SERIAL_PATTERN);if(sm)serial=sm[1];}
 
-        if(serial){
-          var num=serial.toUpperCase();
+        var cardTypeVal=getCardTypeValue(ext);
+        var hasCardType=hasCardTypeField(ext);
+        var isDonByCardType=hasCardType&&cardTypeVal==='DON!!';
+        var isCharacterOrLeader=hasCardType&&(cardTypeVal==='CHARACTER'||cardTypeVal==='LEADER');
+        var detectedType=isDonByCardType?'don':(isCharacterOrLeader?'card':'sealed');
+        if(detectedType==='sealed')variant=null;
+
+        if(serial||detectedType==='card'){
+          var num=serial?serial.toUpperCase():('NO-SERIAL-'+pid);
           var rE=ext.find(function(e){return e.name==='Rarity';});
           var card={productId:pid,uid:uid,variant:variant,name:nm,
             rarity:row.extRarity||(rE?rE.value:'')||'',
             number:num,marketPrice:mp,extendedData:ext,setName:res.value.sn,type:'card'};
           if(!cMap.has(num))cMap.set(num,[]);
           cMap.get(num).push(card);byUid.set(uid,card);allCards.push(card);
-        } else if(nm.toUpperCase().indexOf('DON!!')>=0){
+        } else if(detectedType==='don'){
           var dp={productId:pid,uid:uid,variant:variant,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'don'};
           don.push(dp);byUid.set(uid,dp);
         } else {
-          var sp={productId:pid,uid:uid,variant:variant,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'sealed'};
+          var sp={productId:pid,uid:uid,variant:null,name:nm,marketPrice:mp,setName:res.value.sn,extendedData:ext,type:'sealed'};
           sealed.push(sp);byUid.set(uid,sp);
         }
       });
@@ -526,15 +599,12 @@ async function loadDB(onP){
 }
 function getByUid(uid){uid=String(uid);return DB&&DB.byUid?DB.byUid.get(uid)||null:null;}
 
-/* ═══ LINKED LISTINGS MIGRATION ═══
-   Old keys were plain productIds. After variant split, a productId may now
-   map to pid_Normal and pid_Foil. Default old entries to the Normal variant. */
+/* ═══ LINKED LISTINGS MIGRATION ═══ */
 function migrateLinkedListings(){
   if(!DB||!DB.byUid)return;
   var changed=false,toDel=[];
   Object.keys(LINKED_LISTINGS).forEach(function(key){
-    if(DB.byUid.has(key))return; // already valid
-    // Try Normal first, then Foil, then any uid starting with `${key}_`
+    if(DB.byUid.has(key))return;
     var candidates=[key+'_Normal',key+'_Foil'];
     var found=null;
     for(var i=0;i<candidates.length;i++){if(DB.byUid.has(candidates[i])){found=candidates[i];break;}}
@@ -615,7 +685,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var sb=$('s
 /* ═══ SEARCH TAB ═══ */
 var searchQ='',searchStatus='idle',searchSel=null,searchCustShip='';
 var searchFilter={cards:true,don:true,sealed:true};
-var searchSort='high-low';
+var searchVariant={cards:'all',don:'all'};
+var searchSort='best'; // 'best', 'high-low', 'low-high'
 
 function imgFail(img){if(!img||!img.parentNode)return;img.parentNode.innerHTML='<div class="iw-fallback">Image Currently Unavailable</div>';}
 function detImgFail(){
@@ -632,7 +703,9 @@ function filterLabel(){
   return parts.join(', ');
 }
 function updateFilterLabel(){var lbl=document.querySelector('#filter-trigger .dd-label');if(lbl)lbl.textContent=filterLabel();}
-function sortLabel(){return searchSort==='high-low'?'Price: High → Low':'Price: Low → High';}
+function variantLabelFor(type){var val=searchVariant[type]||'all';return val==='all'?'All Variants':val==='normal'?'Normal':'Foil';}
+function updateVariantLabel(type){var lbl=document.querySelector('#variant-trigger-'+type+' .dd-label');if(lbl)lbl.textContent=variantLabelFor(type);}
+function sortLabel(){return searchSort==='best'?'Best Match':searchSort==='high-low'?'Price: High → Low':'Price: Low → High';}
 function updateSortLabel(){var lbl=document.querySelector('#sort-trigger .dd-label');if(lbl)lbl.textContent=sortLabel();}
 
 function renderSearch(m){
@@ -655,10 +728,29 @@ function renderSearch(m){
     html+='<label class="dd-item"><input type="checkbox" data-fk="don"'+(f.don?' checked':'')+'> <span>DON!!</span></label>';
     html+='<label class="dd-item"><input type="checkbox" data-fk="sealed"'+(f.sealed?' checked':'')+'> <span>Sealed</span></label>';
     html+='</div></div>';
-    // Sort — custom dropdown, single-select (matching filter style)
+    if(f.cards){
+      html+='<div class="field dropdown" id="variant-dd-cards"><label>Cards Variant</label>';
+      html+='<button class="inp dropdown-trigger" id="variant-trigger-cards" type="button"><span class="dd-label">'+esc(variantLabelFor('cards'))+'</span><span class="dd-caret">▼</span></button>';
+      html+='<div class="dropdown-menu" id="variant-menu-cards" hidden>';
+      html+='<div class="dd-item'+(searchVariant.cards==='all'?' selected':'')+'" data-vv="all" data-vtype="cards">All Variants</div>';
+      html+='<div class="dd-item'+(searchVariant.cards==='normal'?' selected':'')+'" data-vv="normal" data-vtype="cards">Normal</div>';
+      html+='<div class="dd-item'+(searchVariant.cards==='foil'?' selected':'')+'" data-vv="foil" data-vtype="cards">Foil</div>';
+      html+='</div></div>';
+    }
+    if(f.don){
+      html+='<div class="field dropdown" id="variant-dd-don"><label>DON!! Variant</label>';
+      html+='<button class="inp dropdown-trigger" id="variant-trigger-don" type="button"><span class="dd-label">'+esc(variantLabelFor('don'))+'</span><span class="dd-caret">▼</span></button>';
+      html+='<div class="dropdown-menu" id="variant-menu-don" hidden>';
+      html+='<div class="dd-item'+(searchVariant.don==='all'?' selected':'')+'" data-vv="all" data-vtype="don">All Variants</div>';
+      html+='<div class="dd-item'+(searchVariant.don==='normal'?' selected':'')+'" data-vv="normal" data-vtype="don">Normal</div>';
+      html+='<div class="dd-item'+(searchVariant.don==='foil'?' selected':'')+'" data-vv="foil" data-vtype="don">Foil</div>';
+      html+='</div></div>';
+    }
+    // Sort — custom dropdown, single-select (best match added)
     html+='<div class="field dropdown" id="sort-dd"><label>Sort</label>';
     html+='<button class="inp dropdown-trigger" id="sort-trigger" type="button"><span class="dd-label">'+esc(sortLabel())+'</span><span class="dd-caret">▼</span></button>';
     html+='<div class="dropdown-menu" id="sort-menu" hidden>';
+    html+='<div class="dd-item'+(searchSort==='best'?' selected':'')+'" data-sv="best">Best Match</div>';
     html+='<div class="dd-item'+(searchSort==='high-low'?' selected':'')+'" data-sv="high-low">Price: High → Low</div>';
     html+='<div class="dd-item'+(searchSort==='low-high'?' selected':'')+'" data-sv="low-high">Price: Low → High</div>';
     html+='</div></div>';
@@ -689,8 +781,27 @@ function renderSearch(m){
           var allCb=fMenu.querySelector('input[data-fk="all"]');
           if(allCb)allCb.checked=searchFilter.cards&&searchFilter.don&&searchFilter.sealed;
         }
-        updateFilterLabel();renderLiveGrid();
+        updateFilterLabel();
+        // Re-render whole search to show/hide variant filter
+        renderSearch($('main'));
       };
+    });
+
+    ['cards','don'].forEach(function(vType){
+      if($('variant-dd-'+vType)){
+        var vTrig=$('variant-trigger-'+vType),vMenu=$('variant-menu-'+vType),vDD=$('variant-dd-'+vType);
+        vTrig.onclick=function(e){e.stopPropagation();closeAllDropdownsExcept('variant-dd-'+vType);var opening=vMenu.hidden;vMenu.hidden=!vMenu.hidden;vDD.classList.toggle('open',opening);};
+        vMenu.querySelectorAll('[data-vv]').forEach(function(it){
+          it.onclick=function(e){
+            e.stopPropagation();
+            searchVariant[vType]=this.getAttribute('data-vv');
+            vMenu.querySelectorAll('[data-vv]').forEach(function(x){x.classList.toggle('selected',x.getAttribute('data-vv')===searchVariant[vType]);});
+            updateVariantLabel(vType);
+            vMenu.hidden=true;vDD.classList.remove('open');
+            renderLiveGrid();
+          };
+        });
+      }
     });
 
     // Sort dropdown wiring
@@ -709,8 +820,10 @@ function renderSearch(m){
 
     if(!window._closeDropdowns){
       window._closeDropdowns=function(e){
-        ['filter','sort'].forEach(function(id){
-          var menu=$(id+'-menu'),dd=$(id+'-dd');
+        ['filter-dd','variant-dd-cards','variant-dd-don','sort-dd'].forEach(function(ddId){
+          var dd=$(ddId);
+          var menuId=ddId.replace('variant-dd-','variant-menu-').replace('-dd','-menu');
+          var menu=$(menuId);
           if(menu&&!menu.hidden&&dd&&!dd.contains(e.target)){menu.hidden=true;dd.classList.remove('open');}
         });
       };
@@ -723,7 +836,7 @@ function renderSearch(m){
 }
 
 function closeAllDropdownsExcept(keepId){
-  ['filter-dd','sort-dd'].forEach(function(id){
+  ['filter-dd','variant-dd-cards','variant-dd-don','sort-dd'].forEach(function(id){
     if(id===keepId)return;
     var dd=$(id),menu=$(id.replace('-dd','-menu'));
     if(menu&&!menu.hidden){menu.hidden=true;if(dd)dd.classList.remove('open');}
@@ -753,6 +866,24 @@ function renderLiveGrid(){
   if(searchFilter.don)donM=q?DB.don.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}):DB.don.slice();
   if(searchFilter.sealed)sealedM=q?DB.sealed.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}):DB.sealed.slice();
 
+  if(searchVariant.cards!=='all'){
+    cardMatches=cardMatches.filter(function(c){
+      var v=(c.variant||'').toLowerCase();
+      if(searchVariant.cards==='normal')return variantMatchesFilter(c.variant,'normal');
+      if(searchVariant.cards==='foil')return variantMatchesFilter(c.variant,'foil');
+      return true;
+    });
+  }
+  if(searchVariant.don!=='all'){
+    donM=donM.filter(function(p){
+      var v=(p.variant||'').toLowerCase();
+      if(searchVariant.don==='normal')return variantMatchesFilter(p.variant,'normal');
+      if(searchVariant.don==='foil')return variantMatchesFilter(p.variant,'foil');
+      return true;
+    });
+  }
+
+  // Sort based on selection
   function priceSort(a,b){
     var ap=a.marketPrice>0?a.marketPrice:null,bp=b.marketPrice>0?b.marketPrice:null;
     if(ap===null&&bp===null)return 0;
@@ -760,7 +891,24 @@ function renderLiveGrid(){
     if(bp===null)return -1;
     return searchSort==='low-high'?ap-bp:bp-ap;
   }
-  cardMatches.sort(priceSort);donM.sort(priceSort);sealedM.sort(priceSort);
+  function bestMatchScore(item){
+    if(!q)return 0;
+    var name=item.name.toLowerCase();
+    var number=(item.number||'').toLowerCase();
+    if(number===qL)return 100;
+    if(number.startsWith(qL))return 80;
+    if(name===qL)return 70;
+    if(name.startsWith(qL))return 60;
+    if(name.includes(qL))return 30;
+    return 0;
+  }
+  if(searchSort==='best'){
+    cardMatches.sort(function(a,b){return bestMatchScore(b)-bestMatchScore(a);});
+    donM.sort(function(a,b){return bestMatchScore(b)-bestMatchScore(a);});
+    sealedM.sort(function(a,b){return bestMatchScore(b)-bestMatchScore(a);});
+  } else {
+    cardMatches.sort(priceSort);donM.sort(priceSort);sealedM.sort(priceSort);
+  }
 
   var moreCards=cardMatches.length>80;cardMatches=cardMatches.slice(0,80);
   var moreDon=donM.length>24;donM=donM.slice(0,24);
@@ -771,8 +919,8 @@ function renderLiveGrid(){
 
   function priceCell(p){return p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'<span class="dim">N/A</span>';}
   function variantCell(p){
-    if(!p.variant)return'<span class="var"></span>';
-    var isFoil=/foil|holo|parallel/i.test(p.variant);
+    if(p.type==='sealed'||!p.variant)return'<span class="var"></span>';
+    var isFoil=isFoilVariantName(p.variant);
     return'<span class="var'+(isFoil?' foil':'')+'">'+esc(p.variant)+'</span>';
   }
   function imgTag(pid){return'<img src="'+tcgImg(pid)+'" onerror="imgFail(this)" loading="lazy">';}
@@ -782,7 +930,6 @@ function renderLiveGrid(){
     html+='<div class="live-sec">🃏 Cards ('+cardMatches.length+(moreCards?'+':'')+')</div><div class="live-grid">';
     cardMatches.forEach(function(c){
       html+='<div class="live-card" data-uid="'+esc(c.uid)+'"><div class="iw">'+imgTag(c.productId)+'</div>';
-      // Name bolded on 2 rows, serial small underneath
       html+='<div class="n" title="'+esc(c.name)+'">'+esc(c.name)+'</div>';
       html+='<div class="s">'+esc(c.number)+'</div>';
       html+='<div class="pv">'+variantCell(c)+'<span class="p">'+priceCell(c)+'</span></div></div>';
@@ -815,13 +962,7 @@ function renderLiveGrid(){
   });
 }
 
-/* ═══ DETAIL VIEW — restructured:
-   1. Market Price card (top)
-   2. Details (card specs)
-   3. List At Price Breakdown (moved here)
-   4. Auto List Format (listing price syncs with custom shipping)
-   5. Linked Listings
-════════════════════════════════════════════════════════════ */
+/* ═══ DETAIL VIEW — restructured, HTML rendering for description ═══ */
 function renderDetail(el){
   var s=searchSel;if(!s)return;
   var mp=s.marketPrice;
@@ -843,30 +984,33 @@ function renderDetail(el){
   html+='</div><div>';
 
   var tb=s.type==='card'?'<span class="badge badge-card">CARD</span>':s.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
-  var vb=s.variant?'<span class="badge badge-variant">'+esc(s.variant)+'</span>':'';
+  var vb=(s.type!=='sealed'&&s.variant)?'<span class="badge badge-variant">'+esc(s.variant)+'</span>':'';
   html+='<div class="det-t">'+tb+' '+esc(s.name)+vb+'</div>';
   html+='<div class="det-m">';
   if(s.type==='card')html+='Serial: '+esc(s.number)+' · Rarity: '+esc(s.rarity)+' · ';
-  if(s.variant)html+='Variant: '+esc(s.variant)+' · ';
+  if(s.type!=='sealed'&&s.variant)html+='Variant: '+esc(s.variant)+' · ';
   html+='Set: '+esc(s.setName)+'</div>';
 
-  // 1. Market Price (top) — renamed from "Price Breakdown"
+  // 1. Market Price
   html+='<div class="card"><div class="hd3">📈 Market Price</div><div class="st-grid">';
   html+=stat('Market Price',mp>0?'$'+mp.toFixed(2):'N/A','',true);
-  if(s.variant)html+=stat('Variant',s.variant);
+  if(s.type!=='sealed'&&s.variant)html+=stat('Variant',s.variant);
   html+='</div></div>';
 
-  // 2. Details (card specs)
+  // 2. Details (render HTML for fields)
   var ext=s.extendedData||[];
   if(ext.length>0){
     html+='<div class="card"><div class="hd3">📋 Details</div><div class="ext-grid">';
-    ext.filter(function(e){return e.name!=='Description';}).forEach(function(e){html+='<div><span class="dim">'+(e.displayName||e.name)+':</span> <b>'+esc(e.value)+'</b></div>';});
+    ext.filter(function(e){return e.name!=='Description';}).forEach(function(e){
+      html+='<div><span class="dim">'+(e.displayName||e.name)+':</span> <b>'+esc(e.value)+'</b></div>';
+    });
     html+='</div>';
-    var dE=ext.find(function(e){return e.name==='Description';});if(dE)html+='<div class="desc-t">'+esc(dE.value)+'</div>';
+    var dE=ext.find(function(e){return e.name==='Description';});
+    if(dE)html+='<div class="desc-t">'+sanitizeDetailHtml(dE.value)+'</div>';
     html+='</div>';
   }
 
-  // 3. List At Price Breakdown (moved here — now its own card after Details)
+  // 3. List At Price Breakdown
   html+='<div class="card" id="listat-card"><div class="hd3">💰 List At Price Breakdown</div>';
   html+='<div id="listat-stats">'+buildListAtStats(calc,vn)+'</div>';
   html+='<div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="dim">Custom shipping $:</span><input class="inp" style="width:90px;flex:0 0 auto" id="det-ship" placeholder="auto" value="'+esc(searchCustShip)+'"></div>';
@@ -901,7 +1045,6 @@ function renderDetail(el){
   var saveBtn=$('img-save');if(saveBtn)saveBtn.onclick=function(){saveImage(imgSrc,s.name.replace(/[^a-zA-Z0-9]/g,'_'));};
   var dImg=$('det-img');if(dImg)dImg.onclick=function(){openLightbox(imgSrc);};
 
-  // Live update: changing custom shipping updates (a) List At Price Breakdown and (b) Auto List Format listing price
   var shipInp=$('det-ship');
   if(shipInp)shipInp.oninput=function(){
     searchCustShip=this.value;
@@ -911,7 +1054,6 @@ function renderDetail(el){
     var priceBlk=$('alf-price');if(priceBlk)priceBlk.textContent=c2?c2.lp.toFixed(2):'—';
   };
 
-  // Copy buttons read live values so the Listing Price copy picks up the current shipping-adjusted price
   el.querySelectorAll('[data-cp]').forEach(function(btn){
     btn.onclick=function(){
       var i=parseInt(this.getAttribute('data-cp'));
@@ -944,7 +1086,7 @@ function stat(l,v,c,big){return'<div><div class="st-l">'+l+'</div><div class="'+
 /* ═══ LINK MODAL ═══ */
 function openLinkModal(product,editIdx){
   var existing=editIdx!=null?LINKED_LISTINGS[product.uid][editIdx]:null,isEdit=editIdx!=null;
-  var html='<div class="modal-t">'+(isEdit?'Edit':'Add')+' Linked Listing'+(product.variant?' <span class="badge badge-variant">'+esc(product.variant)+'</span>':'')+'</div>';
+  var html='<div class="modal-t">'+(isEdit?'Edit':'Add')+' Linked Listing'+(product.variant&&product.type!=='sealed'?' <span class="badge badge-variant">'+esc(product.variant)+'</span>':'')+'</div>';
   html+='<div class="field" style="margin-bottom:12px"><label>eBay Item ID or URL</label><input class="inp" id="m-url" placeholder="1234567890" value="'+esc(existing?existing.itemId:'')+'"></div>';
   html+='<div class="field" style="margin-bottom:12px"><label>Pricing Option</label><select class="inp" id="m-opt"><option value="1"'+(existing&&existing.option===1?' selected':'')+'>Market Price</option><option value="2"'+(!existing||existing.option===2?' selected':'')+'>Calculated</option></select></div>';
   html+='<div class="field" style="margin-bottom:12px"><label>Modifier</label><select class="inp" id="m-mod">';
@@ -990,7 +1132,7 @@ function renderLinked(m){
     }
     var ls=LINKED_LISTINGS[s.uid]||[];
     var tb=p.type==='card'?'<span class="badge badge-card">CARD</span>':p.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
-    var vb=p.variant?'<span class="badge badge-variant">'+esc(p.variant)+'</span>':'';
+    var vb=p.type!=='sealed'&&p.variant?'<span class="badge badge-variant">'+esc(p.variant)+'</span>':'';
     html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1"><div style="font-weight:700;font-size:15px;word-break:break-word">'+tb+' '+esc(p.type==='card'?shortName(p):p.name)+vb+'</div><div class="dim" style="font-size:12px">Market: '+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'N/A')+'</div></div><button class="btn-sm" data-goto="'+esc(s.uid)+'">View →</button></div>';
     ls.forEach(function(l,li){
       var fp=finalPrice(p.marketPrice,l.option,l.modifier,true,l.shippingPrice);
@@ -1100,13 +1242,7 @@ function renderInfo(m){
   html+='</div>';m.innerHTML=html;
 }
 
-/* ═══ INIT ═══
-   Flow:
-   1. Try to load cached DB from IndexedDB
-   2. If cache hit & fresh → use it instantly (no network fetch)
-   3. Else fetch from TCGCSV, save to cache
-   4. Always run price scrape for products missing marketPrice
-*/
+/* ═══ INIT ═══ */
 async function initDB(){
   searchStatus='Checking cache...';
   if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=searchStatus;}
@@ -1116,33 +1252,28 @@ async function initDB(){
     DB=cached;searchStatus='ready';
     migrateLinkedListings();
     if(currentTab==='search')renderSearch($('main'));
-    // Still scrape for anything missing a price (cached data may have stale gaps we can fill)
     scrapeMissingPrices(cached,function(msg){
       scrapeStatus=msg;
       if(currentTab==='search'){var el=$('sts-txt');if(el){var base='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';el.textContent=base+(msg?' · '+msg:'');}}
     }).then(function(){
       if(currentTab==='search'){if(searchSel){var fresh=getByUid(searchSel.uid);if(fresh)searchSel=fresh;}renderSearch($('main'));}
-      // Re-save cache with any newly scraped prices
       saveCachedDB(DB);
     });
     return;
   }
 
-  // Cache miss — fetch fresh
   searchStatus='Loading...';
   if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=searchStatus;}
   loadDB(function(msg){searchStatus=msg;if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=msg;}}).then(function(data){
     DB=data;searchStatus='ready';
     migrateLinkedListings();
     if(currentTab==='search')renderSearch($('main'));
-    // Save what we have immediately (before scrape) — cache is usable even if scrape fails
     saveCachedDB(DB);
     scrapeMissingPrices(data,function(msg){
       scrapeStatus=msg;
       if(currentTab==='search'){var el=$('sts-txt');if(el){var base='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';el.textContent=base+(msg?' · '+msg:'');}}
     }).then(function(){
       if(currentTab==='search'){if(searchSel){var fresh=getByUid(searchSel.uid);if(fresh)searchSel=fresh;}renderSearch($('main'));}
-      // Re-save cache with scraped prices baked in so next load sees them
       saveCachedDB(DB);
     });
   }).catch(function(e){searchStatus='Error: '+e.message;if(currentTab==='search')renderSearch($('main'));});
