@@ -107,6 +107,11 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 .dd-item input{accent-color:var(--ac);width:16px;height:16px;cursor:pointer;flex-shrink:0}
 .dd-item.selected{background:var(--acG);color:var(--ac);font-weight:600}
 .dd-sep{border:none;border-top:1px solid var(--bd);margin:4px 0}
+/* ── Variant sub-filter pills ── */
+.dd-sub{display:flex;gap:4px;padding:2px 12px 10px 38px;flex-wrap:wrap;transition:opacity .15s}
+.dd-pill{padding:3px 11px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--dim);font-size:11px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit;line-height:1.6}
+.dd-pill.on{background:var(--acG);border-color:rgba(232,65,24,.45);color:var(--ac)}
+.dd-pill:hover:not(.on){border-color:var(--bd2);color:var(--tx)}
 
 .iw-fallback{width:100%;height:100%;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:10px;font-weight:700;line-height:1.3}
 .det-img-fb{width:100%;aspect-ratio:.716;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;font-weight:700;font-size:15px;line-height:1.4;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
@@ -160,7 +165,7 @@ td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-a
 
 <script>
 /* ═══ APP VERSION — bump to force cache invalidation on code updates ═══ */
-var APP_VERSION = 'v20-cardtype-scrape-detail-sidebar-fixes-2026-04-19';
+var APP_VERSION = 'v21-variant-subfilter-in-filter-dd-2026-04-19';
 
 /* ═══ STATE ═══ */
 var DB=null,LINKED_LISTINGS={},BOX_PRESETS=[],USER_ZIP='',EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''},scrapeStatus='';
@@ -179,7 +184,7 @@ function saveStorage(){
   localStorage.setItem('uz',USER_ZIP);
 }
 
-/* ═══ INDEXEDDB WRAPPER — used for DB cache (bigger than localStorage quota) ═══ */
+/* ═══ INDEXEDDB WRAPPER ═══ */
 var IDB_NAME='tcg_cache',IDB_STORE='kv',IDB_VER=1;
 function idbOpen(){
   return new Promise(function(res,rej){
@@ -415,7 +420,6 @@ async function fetchViaProxy(url){
   return null;
 }
 
-// Returns a map { variantName: price, '_': fallbackPrice } and also attaches variant names where possible
 async function scrapePricesForPid(pid){
   var result={};
   try{
@@ -437,7 +441,6 @@ async function scrapePricesForPid(pid){
     var html=await fetchViaProxy(htmlUrl);
     if(html){
       var detectedVariant=detectVariantFromHtml(html);
-      // Extract variant and price from near-mint table rows
       var rows=html.match(/<tr[^>]*data-testid="near-mint-data-row-\d+"[^>]*>[\s\S]*?<\/tr>/g);
       if(rows){
         rows.forEach(function(row){
@@ -450,7 +453,6 @@ async function scrapePricesForPid(pid){
           }
         });
       }
-      // Fallback if no rows found
       if(Object.keys(result).length===0){
         var m=html.match(/class="near-mint-table__price"[^>]*>\s*\$?([\d,]+\.\d{2})/);
         if(m){
@@ -484,24 +486,18 @@ async function scrapeMissingPrices(data,onP){
         done++;
         if(prices){
           byPid[pid].forEach(function(p){
-            // Determine best matching price: try exact variant name first, then fallback
             var pr=null;
             if(p.variant&&prices[p.variant])pr=prices[p.variant];
             else if(prices['Normal'])pr=prices['Normal'];
             else if(prices['Foil'])pr=prices['Foil'];
             else if(prices['_'])pr=prices['_'];
-            else{
-              for(var k in prices){if(prices[k]>0){pr=prices[k];break;}}
-            }
+            else{for(var k in prices){if(prices[k]>0){pr=prices[k];break;}}}
             if(pr>0){
               p.marketPrice=pr;
-              // If variant not set and we found a specific variant name, set it (only for cards/don)
               if(!p.variant&&(p.type==='card'||p.type==='don')){
                 if(prices['Normal'])p.variant='Normal';
                 else if(prices['Foil'])p.variant='Foil';
-                else{
-                  for(var k in prices){if(k!=='_'){p.variant=k;break;}}
-                }
+                else{for(var k in prices){if(k!=='_'){p.variant=k;break;}}}
               }
               found++;
             }
@@ -521,7 +517,7 @@ async function scrapeMissingPrices(data,onP){
   setTimeout(function(){scrapeStatus='';var el=document.getElementById('sts-txt');if(el&&DB&&currentTab==='search'){el.textContent='One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)';}},4000);
 }
 
-/* ═══ DB LOADER — improved categorization using CardType extendedData ═══ */
+/* ═══ DB LOADER ═══ */
 var DNAMES={CardType:'Card Type',Subtypes:'Subtype(s)',Counterplus:'Counter+',CardEffect:'Effect',BlockIcon:'Block',FlavorText:'Flavor Text'};
 var SERIAL_PATTERN=/\b((?:OP|ST|EB|P|PRB)\d{0,2}-\d{3,}[A-Z]?)\b/i;
 
@@ -543,13 +539,11 @@ async function loadDB(onP){
       rows.forEach(function(r){if(!r.name||!r.name.trim())return;var pid=parseInt(r.productId)||0;counts[pid]=(counts[pid]||0)+1;});
       rows.forEach(function(row){
         if(!row.name||!row.name.trim())return;
-
         var mp=parseFloat(row.marketPrice)||0;
         if(mp<=0)mp=parseFloat(row.midPrice)||0;
         if(mp<=0)mp=parseFloat(row.lowPrice)||0;
         if(mp<=0)mp=parseFloat(row.directLowPrice)||0;
         if(mp<=0)mp=parseFloat(row.highPrice)||0;
-
         var ext=[];
         for(var ck in row){
           if(ck.indexOf('ext')===0&&ck.length>3&&row[ck]&&row[ck].trim()){
@@ -557,25 +551,21 @@ async function loadDB(onP){
             ext.push({name:fn,displayName:DNAMES[fn]||fn.replace(/([A-Z])/g,' $1').trim(),value:row[ck].trim()});
           }
         }
-
         var pid=parseInt(row.productId)||0;
         var subType=(row.subTypeName||'').trim();
         var splitVariants=counts[pid]>1&&subType;
         var variant=subType||null;
         var uid=splitVariants?(pid+'_'+subType):String(pid);
-
         var nm=row.name.trim();
         var serial=row.extNumber&&row.extNumber.trim()?row.extNumber.trim():'';
         if(!serial){var nE=ext.find(function(e){return e.name==='Number';});if(nE)serial=nE.value.trim();}
         if(!serial){var sm=nm.match(SERIAL_PATTERN);if(sm)serial=sm[1];}
-
         var cardTypeVal=getCardTypeValue(ext);
         var hasCardType=hasCardTypeField(ext);
         var isDonByCardType=hasCardType&&cardTypeVal==='DON!!';
         var isCharacterOrLeader=hasCardType&&(cardTypeVal==='CHARACTER'||cardTypeVal==='LEADER');
         var detectedType=isDonByCardType?'don':(isCharacterOrLeader?'card':'sealed');
         if(detectedType==='sealed')variant=null;
-
         if(serial||detectedType==='card'){
           var num=serial?serial.toUpperCase():('NO-SERIAL-'+pid);
           var rE=ext.find(function(e){return e.name==='Rarity';});
@@ -608,9 +598,7 @@ function migrateLinkedListings(){
     var candidates=[key+'_Normal',key+'_Foil'];
     var found=null;
     for(var i=0;i<candidates.length;i++){if(DB.byUid.has(candidates[i])){found=candidates[i];break;}}
-    if(!found){
-      DB.byUid.forEach(function(v,k){if(!found&&k.indexOf(key+'_')===0)found=k;});
-    }
+    if(!found){DB.byUid.forEach(function(v,k){if(!found&&k.indexOf(key+'_')===0)found=k;});}
     if(found){
       if(!LINKED_LISTINGS[found])LINKED_LISTINGS[found]=[];
       LINKED_LISTINGS[found]=LINKED_LISTINGS[found].concat(LINKED_LISTINGS[key]);
@@ -686,7 +674,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var sb=$('s
 var searchQ='',searchStatus='idle',searchSel=null,searchCustShip='';
 var searchFilter={cards:true,don:true,sealed:true};
 var searchVariant={cards:'all',don:'all'};
-var searchSort='best'; // 'best', 'high-low', 'low-high'
+var searchSort='best';
 
 function imgFail(img){if(!img||!img.parentNode)return;img.parentNode.innerHTML='<div class="iw-fallback">Image Currently Unavailable</div>';}
 function detImgFail(){
@@ -696,15 +684,17 @@ function detImgFail(){
 }
 
 function filterLabel(){
-  var f=searchFilter,all=f.cards&&f.don&&f.sealed,none=!f.cards&&!f.don&&!f.sealed;
-  if(all)return'All Types';
+  var f=searchFilter,vc=searchVariant.cards,vd=searchVariant.don;
+  var all=f.cards&&f.don&&f.sealed,none=!f.cards&&!f.don&&!f.sealed;
   if(none)return'None';
-  var parts=[];if(f.cards)parts.push('Cards');if(f.don)parts.push('DON!!');if(f.sealed)parts.push('Sealed');
+  var parts=[];
+  if(f.cards){var cv=vc!=='all'?(' · '+(vc==='foil'?'Foil':'Normal')):'';parts.push('Cards'+cv);}
+  if(f.don){var dv=vd!=='all'?(' · '+(vd==='foil'?'Foil':'Normal')):'';parts.push('DON!!'+dv);}
+  if(f.sealed)parts.push('Sealed');
+  if(all&&vc==='all'&&vd==='all')return'All Types';
   return parts.join(', ');
 }
 function updateFilterLabel(){var lbl=document.querySelector('#filter-trigger .dd-label');if(lbl)lbl.textContent=filterLabel();}
-function variantLabelFor(type){var val=searchVariant[type]||'all';return val==='all'?'All Variants':val==='normal'?'Normal':'Foil';}
-function updateVariantLabel(type){var lbl=document.querySelector('#variant-trigger-'+type+' .dd-label');if(lbl)lbl.textContent=variantLabelFor(type);}
 function sortLabel(){return searchSort==='best'?'Best Match':searchSort==='high-low'?'Price: High → Low':'Price: Low → High';}
 function updateSortLabel(){var lbl=document.querySelector('#sort-trigger .dd-label');if(lbl)lbl.textContent=sortLabel();}
 
@@ -718,35 +708,33 @@ function renderSearch(m){
     html+='<input class="inp inp-big" id="sq" placeholder="Type a serial (e.g. OP05-) or name..." autocomplete="off" value="'+esc(searchQ)+'" style="margin-bottom:14px">';
     var f=searchFilter,allChecked=f.cards&&f.don&&f.sealed;
     html+='<div class="row mb">';
-    // Filter — custom dropdown, multi-select
+
+    /* ── Filter dropdown (now includes variant sub-pills) ── */
     html+='<div class="field dropdown" id="filter-dd"><label>Filter</label>';
     html+='<button class="inp dropdown-trigger" id="filter-trigger" type="button"><span class="dd-label">'+esc(filterLabel())+'</span><span class="dd-caret">▼</span></button>';
     html+='<div class="dropdown-menu" id="filter-menu" hidden>';
+    // All
     html+='<label class="dd-item"><input type="checkbox" data-fk="all"'+(allChecked?' checked':'')+'> <span>All</span></label>';
     html+='<hr class="dd-sep">';
+    // Cards + variant sub-pills
     html+='<label class="dd-item"><input type="checkbox" data-fk="cards"'+(f.cards?' checked':'')+'> <span>Cards</span></label>';
+    html+='<div class="dd-sub" id="fsub-cards" style="opacity:'+(f.cards?'1':'0.4')+'">';
+    html+='<button class="dd-pill'+(searchVariant.cards==='all'?' on':'')+'" data-vv="all" data-vtype="cards">All</button>';
+    html+='<button class="dd-pill'+(searchVariant.cards==='normal'?' on':'')+'" data-vv="normal" data-vtype="cards">Normal</button>';
+    html+='<button class="dd-pill'+(searchVariant.cards==='foil'?' on':'')+'" data-vv="foil" data-vtype="cards">Foil</button>';
+    html+='</div>';
+    // DON!! + variant sub-pills
     html+='<label class="dd-item"><input type="checkbox" data-fk="don"'+(f.don?' checked':'')+'> <span>DON!!</span></label>';
+    html+='<div class="dd-sub" id="fsub-don" style="opacity:'+(f.don?'1':'0.4')+'">';
+    html+='<button class="dd-pill'+(searchVariant.don==='all'?' on':'')+'" data-vv="all" data-vtype="don">All</button>';
+    html+='<button class="dd-pill'+(searchVariant.don==='normal'?' on':'')+'" data-vv="normal" data-vtype="don">Normal</button>';
+    html+='<button class="dd-pill'+(searchVariant.don==='foil'?' on':'')+'" data-vv="foil" data-vtype="don">Foil</button>';
+    html+='</div>';
+    // Sealed
     html+='<label class="dd-item"><input type="checkbox" data-fk="sealed"'+(f.sealed?' checked':'')+'> <span>Sealed</span></label>';
     html+='</div></div>';
-    if(f.cards){
-      html+='<div class="field dropdown" id="variant-dd-cards"><label>Cards Variant</label>';
-      html+='<button class="inp dropdown-trigger" id="variant-trigger-cards" type="button"><span class="dd-label">'+esc(variantLabelFor('cards'))+'</span><span class="dd-caret">▼</span></button>';
-      html+='<div class="dropdown-menu" id="variant-menu-cards" hidden>';
-      html+='<div class="dd-item'+(searchVariant.cards==='all'?' selected':'')+'" data-vv="all" data-vtype="cards">All Variants</div>';
-      html+='<div class="dd-item'+(searchVariant.cards==='normal'?' selected':'')+'" data-vv="normal" data-vtype="cards">Normal</div>';
-      html+='<div class="dd-item'+(searchVariant.cards==='foil'?' selected':'')+'" data-vv="foil" data-vtype="cards">Foil</div>';
-      html+='</div></div>';
-    }
-    if(f.don){
-      html+='<div class="field dropdown" id="variant-dd-don"><label>DON!! Variant</label>';
-      html+='<button class="inp dropdown-trigger" id="variant-trigger-don" type="button"><span class="dd-label">'+esc(variantLabelFor('don'))+'</span><span class="dd-caret">▼</span></button>';
-      html+='<div class="dropdown-menu" id="variant-menu-don" hidden>';
-      html+='<div class="dd-item'+(searchVariant.don==='all'?' selected':'')+'" data-vv="all" data-vtype="don">All Variants</div>';
-      html+='<div class="dd-item'+(searchVariant.don==='normal'?' selected':'')+'" data-vv="normal" data-vtype="don">Normal</div>';
-      html+='<div class="dd-item'+(searchVariant.don==='foil'?' selected':'')+'" data-vv="foil" data-vtype="don">Foil</div>';
-      html+='</div></div>';
-    }
-    // Sort — custom dropdown, single-select (best match added)
+
+    /* ── Sort dropdown ── */
     html+='<div class="field dropdown" id="sort-dd"><label>Sort</label>';
     html+='<button class="inp dropdown-trigger" id="sort-trigger" type="button"><span class="dd-label">'+esc(sortLabel())+'</span><span class="dd-caret">▼</span></button>';
     html+='<div class="dropdown-menu" id="sort-menu" hidden>';
@@ -766,45 +754,52 @@ function renderSearch(m){
     sqEl.onkeydown=function(e){if(e.key==='Escape'){this.value='';searchQ='';renderLiveGrid();}};
     sqEl.focus();
 
-    // Filter dropdown wiring
+    /* ── Filter dropdown wiring ── */
     var fTrig=$('filter-trigger'),fMenu=$('filter-menu'),fDD=$('filter-dd');
     fTrig.onclick=function(e){e.stopPropagation();closeAllDropdownsExcept('filter-dd');var opening=fMenu.hidden;fMenu.hidden=!fMenu.hidden;fDD.classList.toggle('open',opening);};
     fMenu.onclick=function(e){e.stopPropagation();};
+
+    // Checkboxes
     fMenu.querySelectorAll('input[type=checkbox]').forEach(function(cb){
       cb.onchange=function(){
         var key=this.getAttribute('data-fk');
         if(key==='all'){
           searchFilter.cards=searchFilter.don=searchFilter.sealed=this.checked;
-          ['cards','don','sealed'].forEach(function(k){var c=fMenu.querySelector('input[data-fk="'+k+'"]');if(c)c.checked=searchFilter[k];});
+          ['cards','don','sealed'].forEach(function(k){
+            var c=fMenu.querySelector('input[data-fk="'+k+'"]');
+            if(c)c.checked=searchFilter[k];
+          });
+          ['cards','don'].forEach(function(k){
+            var sub=$('fsub-'+k);
+            if(sub)sub.style.opacity=searchFilter[k]?'1':'0.4';
+          });
         }else{
           searchFilter[key]=this.checked;
           var allCb=fMenu.querySelector('input[data-fk="all"]');
           if(allCb)allCb.checked=searchFilter.cards&&searchFilter.don&&searchFilter.sealed;
+          var sub=$('fsub-'+key);
+          if(sub)sub.style.opacity=this.checked?'1':'0.4';
         }
         updateFilterLabel();
-        // Re-render whole search to show/hide variant filter
-        renderSearch($('main'));
+        renderLiveGrid();
       };
     });
 
-    ['cards','don'].forEach(function(vType){
-      if($('variant-dd-'+vType)){
-        var vTrig=$('variant-trigger-'+vType),vMenu=$('variant-menu-'+vType),vDD=$('variant-dd-'+vType);
-        vTrig.onclick=function(e){e.stopPropagation();closeAllDropdownsExcept('variant-dd-'+vType);var opening=vMenu.hidden;vMenu.hidden=!vMenu.hidden;vDD.classList.toggle('open',opening);};
-        vMenu.querySelectorAll('[data-vv]').forEach(function(it){
-          it.onclick=function(e){
-            e.stopPropagation();
-            searchVariant[vType]=this.getAttribute('data-vv');
-            vMenu.querySelectorAll('[data-vv]').forEach(function(x){x.classList.toggle('selected',x.getAttribute('data-vv')===searchVariant[vType]);});
-            updateVariantLabel(vType);
-            vMenu.hidden=true;vDD.classList.remove('open');
-            renderLiveGrid();
-          };
+    // Variant pills inside filter dropdown
+    fMenu.querySelectorAll('[data-vv]').forEach(function(pill){
+      pill.onclick=function(e){
+        e.stopPropagation();
+        var vtype=this.getAttribute('data-vtype');
+        searchVariant[vtype]=this.getAttribute('data-vv');
+        fMenu.querySelectorAll('[data-vtype="'+vtype+'"]').forEach(function(p){
+          p.classList.toggle('on',p.getAttribute('data-vv')===searchVariant[vtype]);
         });
-      }
+        updateFilterLabel();
+        renderLiveGrid();
+      };
     });
 
-    // Sort dropdown wiring
+    /* ── Sort dropdown wiring ── */
     var sTrig=$('sort-trigger'),sMenu=$('sort-menu'),sDD=$('sort-dd');
     sTrig.onclick=function(e){e.stopPropagation();closeAllDropdownsExcept('sort-dd');var opening=sMenu.hidden;sMenu.hidden=!sMenu.hidden;sDD.classList.toggle('open',opening);};
     sMenu.querySelectorAll('[data-sv]').forEach(function(it){
@@ -820,10 +815,9 @@ function renderSearch(m){
 
     if(!window._closeDropdowns){
       window._closeDropdowns=function(e){
-        ['filter-dd','variant-dd-cards','variant-dd-don','sort-dd'].forEach(function(ddId){
+        ['filter-dd','sort-dd'].forEach(function(ddId){
           var dd=$(ddId);
-          var menuId=ddId.replace('variant-dd-','variant-menu-').replace('-dd','-menu');
-          var menu=$(menuId);
+          var menu=$(ddId.replace('-dd','-menu'));
           if(menu&&!menu.hidden&&dd&&!dd.contains(e.target)){menu.hidden=true;dd.classList.remove('open');}
         });
       };
@@ -836,7 +830,7 @@ function renderSearch(m){
 }
 
 function closeAllDropdownsExcept(keepId){
-  ['filter-dd','variant-dd-cards','variant-dd-don','sort-dd'].forEach(function(id){
+  ['filter-dd','sort-dd'].forEach(function(id){
     if(id===keepId)return;
     var dd=$(id),menu=$(id.replace('-dd','-menu'));
     if(menu&&!menu.hidden){menu.hidden=true;if(dd)dd.classList.remove('open');}
@@ -868,7 +862,6 @@ function renderLiveGrid(){
 
   if(searchVariant.cards!=='all'){
     cardMatches=cardMatches.filter(function(c){
-      var v=(c.variant||'').toLowerCase();
       if(searchVariant.cards==='normal')return variantMatchesFilter(c.variant,'normal');
       if(searchVariant.cards==='foil')return variantMatchesFilter(c.variant,'foil');
       return true;
@@ -876,44 +869,35 @@ function renderLiveGrid(){
   }
   if(searchVariant.don!=='all'){
     donM=donM.filter(function(p){
-      var v=(p.variant||'').toLowerCase();
       if(searchVariant.don==='normal')return variantMatchesFilter(p.variant,'normal');
       if(searchVariant.don==='foil')return variantMatchesFilter(p.variant,'foil');
       return true;
     });
   }
 
-  // Sort based on selection
   function priceSort(a,b){
     var ap=a.marketPrice>0?a.marketPrice:null,bp=b.marketPrice>0?b.marketPrice:null;
-    if(ap===null&&bp===null)return 0;
-    if(ap===null)return 1;
-    if(bp===null)return -1;
+    if(ap===null&&bp===null)return 0;if(ap===null)return 1;if(bp===null)return -1;
     return searchSort==='low-high'?ap-bp:bp-ap;
   }
   function bestMatchScore(item){
     if(!q)return 0;
-    var name=item.name.toLowerCase();
-    var number=(item.number||'').toLowerCase();
-    if(number===qL)return 100;
-    if(number.startsWith(qL))return 80;
-    if(name===qL)return 70;
-    if(name.startsWith(qL))return 60;
-    if(name.includes(qL))return 30;
-    return 0;
+    var name=item.name.toLowerCase(),number=(item.number||'').toLowerCase();
+    if(number===qL)return 100;if(number.startsWith(qL))return 80;
+    if(name===qL)return 70;if(name.startsWith(qL))return 60;
+    if(name.includes(qL))return 30;return 0;
   }
   if(searchSort==='best'){
     cardMatches.sort(function(a,b){return bestMatchScore(b)-bestMatchScore(a);});
     donM.sort(function(a,b){return bestMatchScore(b)-bestMatchScore(a);});
     sealedM.sort(function(a,b){return bestMatchScore(b)-bestMatchScore(a);});
-  } else {
+  }else{
     cardMatches.sort(priceSort);donM.sort(priceSort);sealedM.sort(priceSort);
   }
 
   var moreCards=cardMatches.length>80;cardMatches=cardMatches.slice(0,80);
   var moreDon=donM.length>24;donM=donM.slice(0,24);
   var moreSealed=sealedM.length>24;sealedM=sealedM.slice(0,24);
-
   var total=cardMatches.length+sealedM.length+donM.length;
   if(total===0){el.innerHTML='<div class="empty">No results'+(q?' for "'+esc(searchQ)+'"':'')+'</div>';return;}
 
@@ -962,7 +946,7 @@ function renderLiveGrid(){
   });
 }
 
-/* ═══ DETAIL VIEW — restructured, HTML rendering for description ═══ */
+/* ═══ DETAIL VIEW ═══ */
 function renderDetail(el){
   var s=searchSel;if(!s)return;
   var mp=s.marketPrice;
@@ -991,13 +975,11 @@ function renderDetail(el){
   if(s.type!=='sealed'&&s.variant)html+='Variant: '+esc(s.variant)+' · ';
   html+='Set: '+esc(s.setName)+'</div>';
 
-  // 1. Market Price
   html+='<div class="card"><div class="hd3">📈 Market Price</div><div class="st-grid">';
   html+=stat('Market Price',mp>0?'$'+mp.toFixed(2):'N/A','',true);
   if(s.type!=='sealed'&&s.variant)html+=stat('Variant',s.variant);
   html+='</div></div>';
 
-  // 2. Details (render HTML for fields)
   var ext=s.extendedData||[];
   if(ext.length>0){
     html+='<div class="card"><div class="hd3">📋 Details</div><div class="ext-grid">';
@@ -1010,13 +992,11 @@ function renderDetail(el){
     html+='</div>';
   }
 
-  // 3. List At Price Breakdown
   html+='<div class="card" id="listat-card"><div class="hd3">💰 List At Price Breakdown</div>';
   html+='<div id="listat-stats">'+buildListAtStats(calc,vn)+'</div>';
   html+='<div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="dim">Custom shipping $:</span><input class="inp" style="width:90px;flex:0 0 auto" id="det-ship" placeholder="auto" value="'+esc(searchCustShip)+'"></div>';
   html+='</div>';
 
-  // 4. Auto List Format
   html+='<div class="card"><div class="hd3">📝 Auto List Format</div>';
   var fields=[{label:'Title',value:aT,id:'alf-title'},{label:'Listing Price',value:aP,id:'alf-price'},{label:'Body (HTML)',value:aB,id:'alf-body'}];
   fields.forEach(function(f,i){
@@ -1024,7 +1004,6 @@ function renderDetail(el){
   });
   html+='</div>';
 
-  // 5. Linked Listings
   html+='<div class="card"><div class="hd3">🔗 Linked Listings '+(linked.length>0?'('+linked.length+')':'')+'</div>';
   if(linked.length===0)html+='<div class="dim" style="font-size:13px;margin-bottom:14px">Link eBay listings to this product for auto price updates.</div>';
   else linked.forEach(function(l,li){
@@ -1246,7 +1225,6 @@ function renderInfo(m){
 async function initDB(){
   searchStatus='Checking cache...';
   if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=searchStatus;}
-
   var cached=await loadCachedDB();
   if(cached){
     DB=cached;searchStatus='ready';
@@ -1261,7 +1239,6 @@ async function initDB(){
     });
     return;
   }
-
   searchStatus='Loading...';
   if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=searchStatus;}
   loadDB(function(msg){searchStatus=msg;if(currentTab==='search'){var el=$('sts-txt');if(el)el.textContent=msg;}}).then(function(data){
