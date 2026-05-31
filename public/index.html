@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCG Marketplace — eBay Seller Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060610;--bg2:#0c0c1e;--bg3:#101028;--bd:#1c1c3a;--bd2:#2a2a50;--tx:#e4e4f0;--dim:#6a6a88;--ac:#e84118;--ac2:#ff6348;--acG:rgba(232,65,24,.15);--grn:#22c55e;--ylw:#f59e0b}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:14px}
+button{font-family:inherit;cursor:pointer}input,select,textarea{font-family:inherit}a{color:var(--ac)}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px}
+:root{--hdr-h:71px}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.hdr{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--bd);background:rgba(6,6,16,.95);backdrop-filter:blur(16px);position:sticky;top:0;z-index:400;height:var(--hdr-h)}
+.menu-btn{display:inline-flex;background:var(--bg3);border:1px solid var(--bd);color:var(--tx);border-radius:9px;width:40px;height:40px;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;transition:.15s;line-height:1;position:relative;z-index:402}
+.menu-btn:hover{border-color:var(--ac);color:var(--ac)}.menu-btn:active{transform:scale(.95)}
+.side-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:340;animation:fadeIn .2s ease}.side-backdrop.open{display:block}
+.hdr-logo{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e84118,#c23616);font-size:22px;color:#fff;box-shadow:0 4px 20px rgba(232,65,24,.35);flex-shrink:0}
+.hdr-t{font-weight:800;font-size:19px;letter-spacing:-.4px}.hdr-s{font-size:11px;color:var(--dim);letter-spacing:.3px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.ebay-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;background:var(--bg3);border:1px solid var(--bd);font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;transition:.15s}
+.ebay-btn:hover{border-color:var(--ac)}.ebay-btn.connected{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--grn)}.ebay-btn.expired{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--ylw)}
+.auth-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;background:var(--bg3);border:1px solid var(--bd);font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;transition:.15s;white-space:nowrap}
+.auth-btn:hover{border-color:var(--ac);color:var(--ac)}.auth-btn.signed-in{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:var(--grn)}
+.auth-btn.signed-in:hover{border-color:var(--grn);background:rgba(34,197,94,.15)}
+.layout{display:block;flex:1}
+.side{position:fixed;top:var(--hdr-h);left:0;bottom:0;width:230px;max-width:82vw;display:flex;flex-direction:column;gap:3px;padding:12px 10px;background:var(--bg2);z-index:350;overflow-y:auto;border-right:1px solid var(--bd);transform:translateX(-100%);transition:transform .25s ease;box-shadow:4px 0 24px rgba(0,0,0,.4)}
+.side.open{transform:translateX(0)}
+.side button{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--dim);font-weight:500;font-size:13.5px;text-align:left;transition:.15s;width:100%}
+.side button:hover{background:rgba(255,255,255,.03)}.side button.on{background:var(--acG);border-color:rgba(232,65,24,.25);color:var(--ac);font-weight:700}
+.side .ico{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.main{padding:24px 22px 90px;min-width:0}
+@media(min-width:1100px){.main{padding:28px max(26px,calc((100vw - 1060px)/2)) 90px;}}
+@media(min-width:1500px){.main{padding:32px max(36px,calc((100vw - 1140px)/2)) 90px;}}
+.inp{padding:10px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);font-size:14px;outline:none;transition:.15s;width:100%}
+.inp:focus{border-color:var(--ac)}.inp::placeholder{color:var(--dim)}.inp-big{font-size:17px;font-weight:600;padding:12px 16px}
+.btn{padding:10px 22px;border-radius:8px;border:none;font-weight:700;font-size:14px;transition:.15s;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn:disabled{opacity:.4;cursor:default}.btn-ac{background:var(--ac);color:#fff}.btn-ac:hover:not(:disabled){background:var(--ac2)}
+.btn-grn{background:var(--grn);color:#fff}.btn-dng{background:#dc2626;color:#fff}
+.btn-out{background:var(--bg2);color:var(--tx);border:1px solid var(--bd)}.btn-out:hover{border-color:var(--bd2)}
+.btn-sm{padding:5px 14px;border-radius:6px;border:none;font-size:12px;font-weight:700;background:var(--ac);color:#fff;cursor:pointer}
+.btn-back{margin-bottom:16px;padding:8px 16px;border-radius:8px;background:transparent;border:1px solid var(--bd);color:var(--dim);font-size:13px;cursor:pointer}
+.btn-back:hover{border-color:var(--bd2);color:var(--tx)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}.mb{margin-bottom:20px}
+.card{background:var(--bg2);border-radius:12px;padding:20px;border:1px solid var(--bd);margin-bottom:16px}
+.dim{color:var(--dim)}.hd{font-size:22px;font-weight:700;margin-bottom:20px}.hd3{font-size:15px;font-weight:700;margin-bottom:14px}
+.tg{display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--bd)}
+.tg button{padding:10px 16px;background:var(--bg2);color:var(--dim);border:none;font-size:13px;font-weight:600;transition:.15s}.tg button.on{background:var(--ac);color:#fff}
+.sts{font-size:12px;color:var(--dim);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.live-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:8px}
+.live-card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:8px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;text-align:left}
+.live-card:hover{border-color:var(--t-ac,var(--ac));transform:translateY(-2px);box-shadow:0 8px 20px var(--t-sh,rgba(232,65,24,.2))}
+.st-cards{--t-ac:#e84118;--t-acG:rgba(232,65,24,.15);--t-sh:rgba(232,65,24,.2)}
+.st-don{--t-ac:#f59e0b;--t-acG:rgba(245,158,11,.15);--t-sh:rgba(245,158,11,.2)}
+.st-sealed{--t-ac:#22c55e;--t-acG:rgba(34,197,94,.15);--t-sh:rgba(34,197,94,.2)}
+body.st-cards{--t-ac:#e84118;--t-acG:rgba(232,65,24,.15);--t-sh:rgba(232,65,24,.2)}
+body.st-don{--t-ac:#f59e0b;--t-acG:rgba(245,158,11,.15);--t-sh:rgba(245,158,11,.2)}
+body.st-sealed{--t-ac:#22c55e;--t-acG:rgba(34,197,94,.15);--t-sh:rgba(34,197,94,.2)}
+.st-don .inp:focus,.st-sealed .inp:focus{border-color:var(--t-ac)}
+.st-don .dd-item.selected,.st-sealed .dd-item.selected{background:var(--t-acG);color:var(--t-ac)}
+.st-don .pg-btn.pg-cur,.st-sealed .pg-btn.pg-cur{background:var(--t-ac);border-color:var(--t-ac)}
+.st-don .pg-btn:hover:not(:disabled),.st-sealed .pg-btn:hover:not(:disabled){border-color:var(--t-ac);color:var(--t-ac)}
+.st-don .pg-jump-go,.st-sealed .pg-jump-go{background:var(--t-ac)}
+.st-don .sq-clear:hover,.st-sealed .sq-clear:hover{color:var(--t-ac)}
+body.st-don .fab-btn:hover,body.st-sealed .fab-btn:hover{color:var(--t-ac)}
+body.st-cards .fab-btn:hover{color:var(--ac)}
+body.st-don .pg-jump input:focus,body.st-sealed .pg-jump input:focus{border-color:var(--t-ac)}
+.live-card .iw{width:100%;aspect-ratio:.716;background:#000;border-radius:6px;overflow:hidden;margin-bottom:6px}
+.live-card .iw.sealed{aspect-ratio:1;background:#fff}
+.live-card img{width:100%;height:100%;object-fit:cover;display:block}
+.live-card .iw.sealed img{object-fit:contain}
+.live-grid-spacer{visibility:hidden;pointer-events:none}
+.live-card .n{font-weight:700;font-size:12px;margin-bottom:3px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:calc(1.3em * 2);word-break:break-word}
+.live-card .s{font-size:10px;color:var(--dim);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:1.25em}
+.live-card .pv{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;min-height:16px}
+.live-card .var{font-size:9.5px;color:var(--dim);font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.live-card .var.foil{color:#c084fc}.live-card .p{font-size:12px;color:#60a5fa;font-weight:700;white-space:nowrap;flex-shrink:0}
+.live-sec{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--dim);letter-spacing:.5px;margin:20px 0 10px}.live-sec:first-child{margin-top:0}
+.live-sec-count{color:var(--dim);font-weight:600}
+/* search controls */
+.search-controls{max-width:820px;margin:0 auto}
+.type-tabs{display:flex;justify-content:center;margin-bottom:10px}
+.type-tabs-inner{display:inline-flex;border-radius:9px;overflow:hidden;border:1px solid var(--bd)}
+.type-tab{padding:9px 24px;background:var(--bg2);color:var(--dim);border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.type-tab:not(:last-child){border-right:1px solid var(--bd)}
+.type-tab:hover:not(.on){background:var(--bg3);color:var(--tx)}
+.type-tab[data-type="cards"].on{background:var(--ac);color:#fff}
+.type-tab[data-type="don"].on{background:var(--ylw);color:#1a1a1a}
+.type-tab[data-type="sealed"].on{background:var(--grn);color:#fff}
+.search-row{display:flex;gap:10px;align-items:stretch;margin-bottom:14px;flex-wrap:wrap}
+.search-row .inp-wrap{flex:1;min-width:200px;display:flex}
+.sq-wrap{position:relative;display:flex;align-items:center;width:100%}
+.sq-wrap .inp{padding-right:38px;width:100%}
+.sq-clear{position:absolute;right:10px;background:none;border:none;color:var(--dim);font-size:14px;cursor:pointer;padding:4px;line-height:1;transition:.15s;display:none;align-items:center;justify-content:center;border-radius:4px}
+.sq-clear.vis{display:flex}
+.sq-clear:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+.search-row .sort-wrap{flex:0 0 auto;display:flex;min-width:200px}
+.search-row .sort-wrap .inp{height:100%;display:flex;align-items:center;white-space:nowrap;width:100%}
+.pg-wrap{margin-top:20px}
+.pg-bar{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap}
+.pg-btn{padding:7px 13px;border-radius:7px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;min-width:36px;text-align:center;line-height:1}
+.pg-btn:hover:not(:disabled){border-color:var(--ac);color:var(--ac)}.pg-btn:disabled{opacity:.35;cursor:default}
+.pg-btn.pg-cur{background:var(--ac);color:#fff;border-color:var(--ac);cursor:default;pointer-events:none}
+.pg-ellipsis{padding:7px 5px;color:var(--dim);font-size:13px;cursor:default;user-select:none}
+.pg-sub{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;flex-wrap:wrap}
+.pg-info{font-size:12px;color:var(--dim)}
+.pg-jump{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim)}
+.pg-jump input{width:50px;padding:5px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);font-size:12px;text-align:center;outline:none;font-family:inherit;-moz-appearance:textfield;appearance:textfield}
+.pg-jump input::-webkit-outer-spin-button,.pg-jump input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.pg-jump input:focus{border-color:var(--ac)}
+.pg-jump-go{padding:5px 0;border-radius:6px;border:none;background:var(--ac);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:max-width .2s ease,opacity .2s ease,padding .2s ease;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;vertical-align:middle}
+.pg-jump-go.vis{max-width:60px;opacity:1;padding:5px 11px}
+.pg-jump-go:hover{background:var(--ac2)}
+#fab-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;z-index:200;display:flex;flex-direction:row;border-radius:10px;overflow:hidden;border:1px solid var(--bd);background:var(--bg2);box-shadow:0 4px 16px rgba(0,0,0,.4);transition:opacity .22s ease}
+#fab-wrap.fab-gone{opacity:0;pointer-events:none}
+body.drawer-open #fab-wrap{opacity:0;pointer-events:none}
+.fab-btn{height:40px;width:40px;max-width:0;overflow:hidden;opacity:0;pointer-events:none;border:none;background:transparent;color:var(--tx);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:inherit;flex-shrink:0;transition:max-width .22s ease,opacity .22s ease}
+.fab-btn:hover{color:var(--ac)}.fab-btn.fab-on{max-width:40px;opacity:1;pointer-events:auto}
+#fab-up.fab-on+#fab-down.fab-on{border-left:1px solid var(--bd)}
+/* Sign-in page */
+.signin-page{max-width:440px;margin:40px auto;animation:fadeIn .25s ease}
+.signin-tabs{display:flex;justify-content:center;margin-bottom:28px}
+.signin-tabs-inner{display:inline-flex;border-radius:9px;overflow:hidden;border:1px solid var(--bd)}
+.signin-tab{padding:10px 32px;background:var(--bg2);color:var(--dim);border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.signin-tab:first-child{border-right:1px solid var(--bd)}
+.signin-tab:hover:not(.on){background:var(--bg3);color:var(--tx)}
+.signin-tab.on{background:var(--ac);color:#fff}
+.signin-card{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:28px 28px 24px}
+.signin-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.signin-sub{font-size:13px;color:var(--dim);margin-bottom:22px}
+.signin-field{margin-bottom:16px}
+.signin-field label{display:block;font-size:12px;font-weight:700;color:var(--dim);margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase}
+.signin-row{display:flex;gap:12px}
+.signin-row .signin-field{flex:1;min-width:0}
+.signin-err{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);color:#fca5a5;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+.signin-err.vis{display:block}
+.signout-section{border-top:1px solid var(--bd);margin-top:20px;padding-top:20px;text-align:center}
+.det-grid{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
+.det-iw{position:sticky;top:90px}.det-img{width:100%;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6);background:var(--bg3);cursor:zoom-in;transition:.15s}.det-img:hover{opacity:.9}
+.det-t{font-size:21px;font-weight:700;margin-bottom:4px}.det-m{font-size:13px;color:var(--dim);margin-bottom:18px;line-height:1.6}
+.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
+.st-l{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}.st-v{font-weight:700;font-size:18px}.st-vb{font-weight:700;font-size:26px}
+.ext-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:13px}
+.desc-t{margin-top:10px;font-size:13px;color:var(--dim);line-height:1.6;border-top:1px solid var(--bd);padding-top:10px}
+.code-blk{padding:14px;border-radius:8px;background:#08081a;border:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:12px;color:#a5b4fc;cursor:pointer;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto;line-height:1.7;transition:.15s}.code-blk:hover{border-color:var(--ac)}
+.tbl-w{background:var(--bg2);border-radius:12px;border:1px solid var(--bd);overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse}th{padding:12px 16px;text-align:left;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--bd)}
+td{padding:10px 16px;font-size:14px;border-bottom:1px solid var(--bd);vertical-align:top}tr:last-child td{border-bottom:none}
+.empty{text-align:center;padding:48px 20px;color:var(--dim);line-height:1.8}
+.err{color:#fca5a5;padding:14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;margin-top:10px}
+.info-bar{color:#93c5fd;padding:12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;margin-bottom:14px;font-size:13px;line-height:1.5}
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 22px;border-radius:10px;color:#fff;font-weight:600;font-size:14px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.4);animation:slideUp .25s ease;pointer-events:none;max-width:400px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:160px;flex:1}
+.field label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px}
+.badge-card{background:rgba(232,65,24,.15);color:var(--ac)}.badge-don{background:rgba(245,158,11,.15);color:var(--ylw)}.badge-sealed{background:rgba(34,197,94,.15);color:var(--grn)}.badge-variant{background:rgba(147,51,234,.15);color:#c084fc;margin-left:6px}
+.link-card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:10px}
+.link-title{font-weight:700;font-size:14px;margin-bottom:6px;word-break:break-word}.link-sub{font-size:12px;color:var(--dim);line-height:1.6}
+.link-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease;cursor:pointer}
+.modal-bg.lightbox{cursor:zoom-out}
+.modal{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:24px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;cursor:default}
+.modal-t{font-size:18px;font-weight:700;margin-bottom:16px}
+.lightbox-img{max-width:90vw;max-height:85vh;border-radius:12px;box-shadow:0 12px 60px rgba(0,0,0,.8);cursor:default}
+.dropdown{position:relative}
+.dropdown-trigger{display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;gap:8px}
+.dropdown-trigger .dd-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tx)}
+.dropdown-trigger .dd-caret{color:var(--dim);font-size:10px;flex-shrink:0;transition:transform .15s}
+.dropdown.open .dd-caret{transform:rotate(180deg)}
+.dropdown-menu{position:absolute;top:calc(100% + 4px);right:0;left:auto;width:200px;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:6px;z-index:50;box-shadow:0 12px 28px rgba(0,0,0,.5);max-height:320px;overflow-y:auto;display:block!important;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:opacity .18s ease,transform .18s ease}
+.dropdown.open .dropdown-menu{opacity:1;transform:none;pointer-events:auto}
+.dd-item.selected{background:var(--t-acG,var(--acG));color:var(--t-ac,var(--ac));font-weight:700}
+.dd-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;cursor:pointer;font-size:14px;user-select:none;color:var(--tx)}
+.dd-item:hover{background:var(--bg3)}.dd-item input{accent-color:var(--ac);width:16px;height:16px;cursor:pointer;flex-shrink:0}
+
+.dd-sep{border:none;border-top:1px solid var(--bd);margin:4px 0}
+.dd-sub{display:flex;gap:4px;padding:2px 12px 10px 38px;flex-wrap:wrap;transition:opacity .15s}
+.dd-pill{padding:3px 11px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--dim);font-size:11px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit;line-height:1.6}
+.dd-pill.on{background:var(--acG);border-color:rgba(232,65,24,.45);color:var(--ac)}
+.dd-pill:hover:not(.on){border-color:var(--bd2);color:var(--tx)}
+.iw-fallback{width:100%;height:100%;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:10px;font-weight:700;line-height:1.3}
+.det-img-fb{width:100%;aspect-ratio:.716;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;font-weight:700;font-size:15px;line-height:1.4;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+/* Edit CSV tab */
+.edit-item{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;transition:.15s}
+.edit-item:hover{border-color:var(--bd2)}
+.tag-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700}
+.tag-no-price{background:rgba(239,68,68,.12);color:#fca5a5}.tag-img{background:rgba(245,158,11,.12);color:var(--ylw)}.tag-fixed{background:rgba(34,197,94,.12);color:var(--grn)}.tag-variant{background:rgba(99,102,241,.12);color:#a5b4fc}
+.template-blk{background:#06060f;border:1px solid var(--bd);border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#a5b4fc;line-height:1.9;margin:10px 0;white-space:pre}
+.stype-btn{padding:9px 20px;border-radius:8px;border:1px solid var(--bd);background:transparent;color:var(--dim);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.stype-btn.on{background:var(--acG);border-color:rgba(232,65,24,.4);color:var(--ac)}.stype-btn:hover:not(.on){border-color:var(--bd2);color:var(--tx)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+@media(max-width:800px){
+  :root{--hdr-h:67px}
+  .hdr{padding:12px 14px;gap:10px}
+  .main{padding:16px 14px 90px}
+  .det-grid{grid-template-columns:1fr!important}.det-iw{position:static;max-width:240px;margin:0 auto;width:100%}
+  .st-grid{grid-template-columns:1fr 1fr}.ext-grid{grid-template-columns:1fr}
+  .hdr-right .ebay-btn span + span{display:none}
+  .hdr-right .auth-btn span.auth-lbl{display:none}
+  .live-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .inp{font-size:16px}.inp-big{font-size:17px}.hd{font-size:19px}.card{padding:16px}
+  .toast{left:16px;right:16px;bottom:16px;max-width:none}body.drawer-open{overflow:hidden}
+  .type-tab{padding:9px 14px;font-size:12px}
+}
+@media(max-width:560px){
+  .search-row{flex-direction:column;align-items:center}
+  .search-row .inp-wrap{width:100%}
+  .search-row .sort-wrap{align-self:center}
+  .signin-row{flex-direction:column;gap:0}
+}
+@media(max-width:420px){.hdr-s{display:none}.st-grid{grid-template-columns:1fr}.st-vb{font-size:22px}.hdr-logo{width:36px;height:36px;font-size:18px;border-radius:10px}.hdr-t{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hdr">
+    <button class="menu-btn" id="menu-btn" aria-label="Open menu" onclick="toggleMenu()">☰</button>
+    <div class="hdr-logo">⚓</div>
+    <div><div class="hdr-t">TCG Marketplace</div><div class="hdr-s">One Piece · eBay Seller Tools</div></div>
+    <div class="hdr-right">
+      <button class="auth-btn" id="auth-btn"></button>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="side" id="sidebar"></nav>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+<div class="side-backdrop" id="side-backdrop" onclick="toggleMenu(false)"></div>
+<div id="toast-container"></div>
+<div id="modal-root"></div>
+<div id="fab-wrap" class="fab-gone">
+  <button class="fab-btn" id="fab-up" title="Jump to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <button class="fab-btn" id="fab-down" title="Jump to bottom" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">↓</button>
+</div>
+<script src="config.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — edit this before uploading to Cloudflare Pages
+   ════════════════════════════════════════════════════════════
+   LOCAL:      leave TCG_API_URL as empty string ''
+               the app auto-detects http://localhost:3000
+
+   CLOUDFLARE: set TCG_API_URL to your server's public URL
+               e.g. 'https://myserver.example.com'
+               or   'http://123.456.78.90:3000'
+               (your Node.js server must be publicly reachable)
+═══════════════════════════════════════════════════════════ */
+window.TCG_API_URL = '';   // ← change this line before uploading to Cloudflare
+
+/* ═══ ADMIN CONFIG — change to your chosen admin username ═══ */
+var ADMIN_USERNAME = 'xottic_56'; // ← set this to the username you register as admin
+
+/* ═══ STATE ═══ */
+var DB=null,LINKED_LISTINGS={},BOX_PRESETS=[],USER_ZIP='',EBAY_AUTH={};
+var currentUser=null; // {username,email,firstName,lastName,isAdmin}
+function loadStorage(){
+  try{LINKED_LISTINGS=JSON.parse(localStorage.getItem('ll')||'{}');}catch(e){}
+  try{BOX_PRESETS=JSON.parse(localStorage.getItem('bp')||'[]');}catch(e){}
+  try{EBAY_AUTH=JSON.parse(localStorage.getItem('ea')||'{}');}catch(e){}
+  if(!EBAY_AUTH.accessToken)EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};
+  USER_ZIP=localStorage.getItem('uz')||'';
+  try{var s=localStorage.getItem('tcg_session');if(s)currentUser=JSON.parse(s);}catch(e){}
+}
+function saveStorage(){
+  localStorage.setItem('ll',JSON.stringify(LINKED_LISTINGS));
+  localStorage.setItem('bp',JSON.stringify(BOX_PRESETS));
+  localStorage.setItem('ea',JSON.stringify(EBAY_AUTH));
+  localStorage.setItem('uz',USER_ZIP);
+}
+
+/* ═══ CALCULATOR ═══ */
+function calcListing(net,cs){
+  var D=1-0.1325-0.1325*0.1011,S=0.1325+0.1325*0.1011,b=cs!=null?cs:0.74;
+  for(var i=0;i<10;i++){
+    var aL=(net+0.3+S*b)/D,tot=aL+b+0.1011*(aL+b),a,c;
+    if(tot>=10.01){c=0.4;a=(net+0.4+S*b)/D;}else{c=0.3;a=aL;}
+    if(cs!=null)return{lp:a,ship:b,c:c,cat:'CUSTOM',rule:'Custom $'+b.toFixed(2)};
+    var need=a<=20?0.74:5.89;
+    if(Math.abs(b-need)<0.001)return{lp:a,ship:b,c:c,cat:a<=20?'LOW':'HIGH',rule:a<=20?'≤$20 → $0.74':'> $20 → $5.89'};
+    b=need;
+  }
+  return null;
+}
+function vNet(a,b,c){return a*(1-0.1325-0.1325*0.1011)-c-(0.1325+0.1325*0.1011)*b;}
+function tcgImg(pid){return apiBase()+'/api/img-proxy?url='+encodeURIComponent('https://tcgplayer-cdn.tcgplayer.com/product/'+pid+'_in_1000x1000.jpg');}
+function proxyImg(url){if(!url)return'';return apiBase()+'/api/img-proxy?url='+encodeURIComponent(url);}
+function getCardImg(item){var img=(item&&item.customImage)?item.customImage:null;if(!img)return proxyImg('https://tcgplayer-cdn.tcgplayer.com/product/'+item.productId+'_in_1000x1000.jpg');if(img.startsWith('/img-cache/'))return apiBase()+img;return proxyImg(img);}
+function getCardImgGrid(item){return proxyImg('https://tcgplayer-cdn.tcgplayer.com/product/'+item.productId+'_200w.jpg');}
+function applyMod(p,m){switch(m){case 2:return Math.ceil(p*10)/10;case 3:return Math.ceil(p);case 4:return Math.ceil(p/5)*5;default:return p;}}
+function modName(m){return['Skip','Near 10¢','Near $1','Near $5'][m-1]||'?';}
+function finalPrice(mkt,opt,mod,disp,sp){
+  var o=opt===1?mkt:calcListing(mkt,sp).lp,mn=Math.max(0.99,o),md=applyMod(mn,mod);
+  if(disp){var d='$'+md.toFixed(2);if(o<0.99)d+=' (min $0.99)';else if(mn!==md)d+=' (orig $'+o.toFixed(2)+')';return d;}
+  return md;
+}
+
+/* ═══ CARD NAME ENGINE ═══ */
+function hasSub(a,b){a=a.toUpperCase().replace(/[^A-Z0-9]/g,'');b=b.toUpperCase().replace(/[^A-Z0-9]/g,'');for(var l=3;l<=Math.min(a.length,b.length);l++)for(var i=0;i<=a.length-l;i++)if(b.indexOf(a.substring(i,i+l))>=0)return true;return false;}
+function parseCardName(card){
+  var ext=card.extendedData||[],fn=(card.name||'').trim(),pC=[],pO=[],pR=/\s*\(([^)]+)\)\s*$/,m;
+  while((m=fn.match(pR))){pO.unshift(m[1].trim());pC.unshift(m[1].trim().toUpperCase());fn=fn.replace(pR,'').trim();}
+  var sfn='',sR=/\s*-\s*([A-Z0-9-]+)$/,sm=fn.match(sR);if(sm){sfn=sm[1].trim();fn=fn.replace(sR,'').trim();}
+  var bn=fn.trim(),numE=ext.find(function(e){return e.name==='Number';}),num=numE?numE.value.trim():(sfn||'');
+  var vars=[],ends=[],suf=[];
+  pC.forEach(function(pc,i){var orig=pO[i];if(hasSub(pc,num))return;if(pc.indexOf('REPRINT')>=0)ends.push(' (REPRINT)');else if(pc.indexOf('ALTERNATE ART')>=0||pc.indexOf('PARALLEL')>=0)vars.push('ALT ART ');else if(pc==='FULL ART')vars.push('FULL ART ');else if(pc==='MANGA')vars.push('MANGA ');else if(pc==='SP')vars.push('SP ');else if(pc.indexOf('WANTED POSTER')>=0){vars.push('SP ');suf.push(' ('+orig+')');}else if(/^\d+$/.test(pc)||pc.indexOf('OP-')>=0||pc.indexOf('ST-')>=0||pc.indexOf('P-')>=0){}else suf.push(' ('+orig+')');});
+  bn=bn.replace(/\s*\(([^)]+)\)/g,function(m2,c){var pc=c.trim().toUpperCase();if(hasSub(pc,num)||/^\d+$/.test(pc)||pc.indexOf('OP-')>=0||pc.indexOf('ST-')>=0||pc.indexOf('P-')>=0)return '';return m2;}).trim().replace(/-\s*[A-Z0-9-]+\s*$/g,'').trim();
+  var colE=ext.find(function(e){return e.name==='Color';}),col=colE?colE.value.toUpperCase():'';
+  return{bn:bn,suf:suf,vars:vars,ends:ends,num:num,col:col};
+}
+function shortName(c){var p=parseCardName(c);return p.bn+p.suf.join('')+' English ('+p.col+') '+p.vars.join('')+p.num+p.ends.join('');}
+function autoTitle(c){var p=parseCardName(c);return p.bn+p.suf.join('')+' English ('+p.col+') '+p.vars.join('')+p.num+' card One Piece CCG'+p.ends.join('');}
+function autoBodyCard(c,t){var ext=c.extendedData||[],eD=ext.find(function(e){return e.name==='Description';}),eff=eD?eD.value:'',sp='';ext.forEach(function(e){if(e.name!=='Description'&&e.value&&e.value.trim())sp+='* '+(e.displayName||e.name)+': '+e.value+'<br>';});return'<div><b>'+t+'</b></div><div><br></div><b>Card Specifications:</b><br>'+(eff?eff+'<br>':'')+sp+'<div><br><b>Shipping:</b><br>This card will be sleeved, sandwiched between cardboard, and sealed in a bag. The item will be shipped in an envelope during transport.</div>';}
+function autoBodyDon(p,t){var ext=p.extendedData||[],eD=ext.find(function(e){return e.name==='Description';}),eff=eD?eD.value:'',sp='';ext.forEach(function(e){if(e.name!=='Description'&&e.value&&e.value.trim())sp+='* '+(e.displayName||e.name)+': '+e.value+'<br>';});var d=(eff||sp)?'<b>Card Specifications:</b><br>'+(eff?'* Description: '+eff+'<br>':'')+sp:'';return'<div><b>'+t+'</b></div><div><br></div>'+(d?d+'<div><br></div>':'')+'<div><b>Shipping:</b><br>This card will be sleeved, sandwiched between cardboard, and sealed in a bag. The item will be shipped in an envelope during transport.</div>';}
+function autoBodySealed(p,t){var sl=p.setName?'* Set: '+p.setName+'<br>':'';return'<div><b>'+t+'</b></div><div><br></div>'+(sl?'<b>Product Details:</b><br>'+sl+'<div><br></div>':'')+'<div><b>Shipping:</b><br>This item will be securely packaged to prevent damage during transport.</div>';}
+function decodeHtmlEntities(str){if(str==null)return'';var ta=document.createElement('textarea');ta.innerHTML=String(str);return ta.value;}
+function sanitizeDetailHtml(str){if(str==null)return'';var html=decodeHtmlEntities(str);html=html.replace(/\r\n|\r|\n/g,'<br>');html=html.replace(/<script[\s\S]*?<\/script>/gi,'');html=html.replace(/on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,'');return html;}
+function isFoilVariantName(v){return /foil|holo|parallel/i.test(v||'');}
+function variantMatchesFilter(variant,wanted){var v=(variant||'').toLowerCase();if(wanted==='normal')return v==='normal';if(wanted==='foil')return v==='foil'||v.includes('foil')||v.includes('holo')||v.includes('parallel');return true;}
+
+/* ═══ UTILS ═══ */
+function $(id){return document.getElementById(id);}
+function h(t,c,i){var e=document.createElement(t);if(c)e.className=c;if(i!=null)e.innerHTML=i;return e;}
+function esc(s){if(s==null)return'';var d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+function showToast(m,ok){var t=h('div','toast',m);t.style.background=ok?'#16a34a':'#dc2626';$('toast-container').appendChild(t);setTimeout(function(){t.remove();},3000);}
+function copyTxt(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){showToast('Copied!',true);}).catch(function(){fbCp(t);});else fbCp(t);}
+function fbCp(t){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Copied!',true);}
+function openModal(c){var mr=$('modal-root');mr.innerHTML='';var bg=h('div','modal-bg');var m=h('div','modal');m.innerHTML=c;bg.appendChild(m);bg.onclick=function(e){if(e.target===bg)closeModal();};mr.appendChild(bg);return m;}
+function closeModal(){$('modal-root').innerHTML='';}
+function debounce(fn,ms){var t;return function(){var a=arguments,th=this;clearTimeout(t);t=setTimeout(function(){fn.apply(th,a);},ms);};}
+function apiBase(){
+  /* Priority: explicit config > file:// fallback > same-origin */
+  if(window.TCG_API_URL) return window.TCG_API_URL.replace(/\/+$/, '');
+  if(window.location.protocol === 'file:') return 'http://localhost:3000';
+  return window.location.origin;
+}
+function apiPost(url,body){return fetch(apiBase()+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
+function apiDel(url){return fetch(apiBase()+url,{method:'DELETE'}); }
+
+function openLightbox(imgSrc){var mr=$('modal-root');mr.innerHTML='';var bg=h('div','modal-bg lightbox');var img=document.createElement('img');img.src=imgSrc;img.className='lightbox-img';bg.appendChild(img);bg.onclick=function(e){if(e.target===bg)mr.innerHTML='';};mr.appendChild(bg);}
+async function saveImage(imgSrc,name){showToast('Downloading…',true);var blob=null;try{var r=await fetch(imgSrc,{mode:'cors'});if(r.ok)blob=await r.blob();}catch(e){}if(!blob){showToast('Download failed',false);return;}var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=(name||'card')+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url);},200);showToast('Downloaded!',true);}
+
+/* ═══ EBAY BADGE ═══ */
+function renderEbayBtn(){
+  var el=$('ebay-btn');if(!el)return;
+  var c=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt>Date.now(),x=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt<=Date.now();
+  if(c){el.className='ebay-btn connected';el.innerHTML='<span class="dot" style="background:#22c55e"></span><span>eBay: '+esc(EBAY_AUTH.username||'Connected')+'</span>';}
+  else if(x){el.className='ebay-btn expired';el.innerHTML='<span class="dot" style="background:#f59e0b"></span><span>Token Expired</span>';}
+  else{el.className='ebay-btn';el.innerHTML='<span>🔐</span><span>Sign in with eBay</span>';}
+}
+
+/* ═══ SERVER STATUS ═══ */
+var searchStatus='idle',serverStatus={},statusPollTimer=null;
+function updateSearchStatusEl(){
+  var el=$('sts-txt');if(!el)return;
+  var stColor=searchStatus==='ready'?'#22c55e':searchStatus.includes('Error')?'#ef4444':'#eab308';
+  var dot=el.parentNode&&el.parentNode.querySelector('.dot');if(dot)dot.style.background=stColor;
+  var base=searchStatus==='ready'?'One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)':searchStatus;
+  var extra='';
+  if(serverStatus.updateRunning)extra=' · Server: '+(serverStatus.updateLog||'Updating…');
+  else if(serverStatus.scrapeRunning)extra=' · '+serverStatus.scrapeLog;
+  else if(serverStatus.pendingUpdateAt&&serverStatus.pendingUpdateAt>Date.now()){var mins=Math.max(1,Math.round((serverStatus.pendingUpdateAt-Date.now())/60000));extra=' · Update pending ~'+mins+'min';}
+  el.textContent=base+extra;
+}
+function startStatusPolling(){if(statusPollTimer)return;statusPollTimer=setInterval(pollServerStatus,30000);}
+
+/* ═══ AUTH — server-backed, works across all devices ═══ */
+function hashStr(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h)^s.charCodeAt(i);return(h>>>0).toString(36);}
+async function authSignIn(identifier,password){
+  try{
+    var r=await fetch(apiBase()+'/api/auth/signin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:identifier,password:hashStr(password)})});
+    var d=await r.json();
+    if(!r.ok)return{error:d.error||'Sign in failed'};
+    currentUser={username:d.username,email:d.email,firstName:d.firstName,lastName:d.lastName,isAdmin:d.username.toLowerCase()===ADMIN_USERNAME.toLowerCase()};
+    localStorage.setItem('tcg_session',JSON.stringify(currentUser));
+    return{user:currentUser};
+  }catch(e){return{error:'Could not reach server'};}
+}
+async function authSignUp(email,firstName,lastName,username,password){
+  try{
+    var r=await fetch(apiBase()+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,firstName:firstName,lastName:lastName,username:username,password:hashStr(password)})});
+    var d=await r.json();
+    if(!r.ok)return d.error||'Sign up failed';
+    currentUser={username:d.username,email:d.email,firstName:d.firstName,lastName:d.lastName,isAdmin:d.username.toLowerCase()===ADMIN_USERNAME.toLowerCase()};
+    localStorage.setItem('tcg_session',JSON.stringify(currentUser));
+    return null;
+  }catch(e){return'Could not reach server';}
+}
+function authSignOut(){currentUser=null;localStorage.removeItem('tcg_session');renderAuthBtn();navigateTo('search');}
+function renderAuthBtn(){
+  var el=$('auth-btn');if(!el)return;
+  if(currentUser){
+    el.className='auth-btn signed-in';
+    el.innerHTML='<span>👤</span><span class="auth-lbl">'+esc(currentUser.username)+'</span>';
+    el.onclick=function(){navigateTo('signin');};
+  } else {
+    el.className='auth-btn';
+    el.innerHTML='<span>🔑</span><span class="auth-lbl">Sign In</span>';
+    el.onclick=function(){navigateTo('signin');};
+  }
+}
+
+/* ═══ ROUTING ═══ */
+var _pendingProductUid=null;
+function navigateTo(route,replace){
+  if(replace)history.replaceState(null,'','#'+route);
+  else history.pushState(null,'','#'+route);
+  applyRoute(route);
+}
+function applyRoute(route){
+  var parts=(route||'search/cards').split('/');
+  var tab=parts[0]||'search';
+  if(tab==='signin'){currentTab='signin';initSidebar();toggleMenu(false);clearFabListeners();renderSignIn($('main'));return;}
+  var adminOnly=['editcsv','settings'];
+  if(adminOnly.indexOf(tab)>=0&&(!currentUser||!currentUser.isAdmin)){navigateTo('search',true);return;}
+  var tabIds=TABS.map(function(t){return t.id;});
+  if(tabIds.indexOf(tab)<0)tab='search';
+  currentTab=tab;initSidebar();toggleMenu(false);clearFabListeners();
+  var m=$('main');m.innerHTML='';
+  if(tab==='search'){
+    // FIX 2: only restore searchSel if URL explicitly contains /p/
+    if(parts[1]&&['cards','don','sealed'].indexOf(parts[1])>=0)searchType=parts[1];
+    var hasProduct=parts[2]==='p'&&parts[3];
+    if(hasProduct){
+      if(DB){var p=DB.byUid.get(parts[3]);if(p){searchSel=p;searchCustShip='';} else searchSel=null;}
+      else{_pendingProductUid=parts[3];searchSel=null;}
+    } else {
+      searchSel=null; // always clear when no /p/ in URL
+    }
+    renderSearch(m);
+  } else {
+    document.body.classList.remove('st-cards','st-don','st-sealed');
+    ({editcsv:renderEditCSV,linked:renderLinked,presets:renderPresets,calc:renderCalc,quick:renderQuick,batch:renderBatch,ebay:renderEbay,settings:renderSettings,info:renderInfo})[tab](m);
+    initNonSearchFabs();
+  }
+}
+window.addEventListener('popstate',function(e){
+  var st=e.state;
+  if(st&&st._search){
+    searchType=st.st||'cards';searchPage=st.sp||0;searchQ=st.sq||'';
+    searchSel=null;currentTab='search';initSidebar();
+    setTypeBodyClass(searchType);renderSearch($('main'));
+  } else {
+    applyRoute(location.hash.slice(1)||'search/cards');
+  }
+});
+
+/* ═══ TABS ═══ */
+var TABS=[
+  {id:'search',  label:'Card Search',      icon:'🔍'},
+  {id:'editcsv', label:'Edit CSV Database', icon:'✏️', adminOnly:true},
+  {id:'linked',  label:'Linked Listings',   icon:'🔗'},
+  {id:'presets', label:'Box Presets',       icon:'📦'},
+  {id:'calc',    label:'Calculator',        icon:'🧮'},
+  {id:'quick',   label:'Quick Calc',        icon:'⚡'},
+  {id:'batch',   label:'Batch',             icon:'📊'},
+  {id:'ebay',    label:'eBay Auth',         icon:'🔐'},
+  {id:'settings',label:'Settings',          icon:'⚙️', adminOnly:true},
+  {id:'info',    label:'Fee Info',          icon:'📋'}
+];
+var currentTab='search';
+function initSidebar(){
+  var sb=$('sidebar');sb.innerHTML='';
+  TABS.forEach(function(t){
+    if(t.adminOnly&&(!currentUser||!currentUser.isAdmin))return;
+    var b=h('button',t.id===currentTab?'on':'','<span class="ico">'+t.icon+'</span> '+t.label);
+    b.onclick=function(){navigateTo(t.id);};sb.appendChild(b);
+  });
+}
+function switchTab(id){navigateTo(id);} // legacy alias
+function toggleMenu(open){
+  var sb=$('sidebar'),bd=$('side-backdrop'),mb=$('menu-btn');if(!sb||!bd)return;
+  if(open===undefined)open=!sb.classList.contains('open');
+  if(open){sb.classList.add('open');bd.classList.add('open');document.body.classList.add('drawer-open');if(mb)mb.setAttribute('aria-label','Close menu');}
+  else{sb.classList.remove('open');bd.classList.remove('open');document.body.classList.remove('drawer-open');if(mb)mb.setAttribute('aria-label','Open menu');}
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();var sb=$('sidebar');if(sb&&sb.classList.contains('open'))toggleMenu(false);}});
+
+/* ═══ SEARCH TAB ═══ */
+var searchQ='',searchSel=null,searchCustShip='';
+var searchType='cards',searchPage=0,searchSort='best';
+function setTypeBodyClass(t){document.body.classList.remove('st-cards','st-don','st-sealed');document.body.classList.add('st-'+t);}
+function pushSearchState(){history.pushState({_search:1,st:searchType,sp:searchPage,sq:searchQ},'','#search/'+searchType);}
+function replaceSearchState(){history.replaceState({_search:1,st:searchType,sp:searchPage,sq:searchQ},'','#search/'+searchType);}
+
+function imgFail(img){if(!img||!img.parentNode)return;img.parentNode.innerHTML='<div class="iw-fallback">Image Currently Unavailable</div>';}
+function detImgFail(){var img=$('det-img');if(img&&img.parentNode){var fb=document.createElement('div');fb.className='det-img-fb';fb.textContent='Image Currently Unavailable';img.parentNode.replaceChild(fb,img);}var btns=$('img-btns');if(btns)btns.style.display='none';}
+function sortLabel(){return searchSort==='best'?'Best Match':searchSort==='high-low'?'Price: High → Low':'Price: Low → High';}
+function searchPlaceholder(){return searchType==='cards'?'Type a serial (e.g. OP05-) or card name…':searchType==='don'?'Search DON!! cards…':'Search sealed products…';}
+function secBadge(type){if(type==='cards')return'<span class="badge badge-card">CARD</span>';if(type==='don')return'<span class="badge badge-don">DON!!</span>';return'<span class="badge badge-sealed">SEALED</span>';}
+
+/* FAB */
+var _fabTopVis=false,_fabBotVis=false,_fabObsSearch=null,_fabObsPg=null,_fabScrollFn=null;
+function updateFabs(){var wrap=$('fab-wrap'),up=$('fab-up'),dn=$('fab-down');if(!wrap||!up||!dn)return;up.classList.toggle('fab-on',_fabTopVis);dn.classList.toggle('fab-on',_fabBotVis);wrap.classList.toggle('fab-gone',!_fabTopVis&&!_fabBotVis);}
+function clearFabListeners(){if(_fabObsSearch){_fabObsSearch.disconnect();_fabObsSearch=null;}if(_fabObsPg){_fabObsPg.disconnect();_fabObsPg=null;}if(_fabScrollFn){window.removeEventListener('scroll',_fabScrollFn);_fabScrollFn=null;}_fabTopVis=false;_fabBotVis=false;updateFabs();}
+function initFabObservers(){
+  clearFabListeners();
+  var sq=$('sq-sentinel'),pg=$('pg-sentinel');
+  if(sq){_fabObsSearch=new IntersectionObserver(function(e){_fabTopVis=!e[0].isIntersecting;updateFabs();},{threshold:0});_fabObsSearch.observe(sq);}
+  if(pg){_fabObsPg=new IntersectionObserver(function(e){_fabBotVis=!e[0].isIntersecting;updateFabs();},{threshold:0});_fabObsPg.observe(pg);}
+}
+function initNonSearchFabs(){
+  clearFabListeners();
+  function check(){var sy=window.scrollY||document.documentElement.scrollTop,maxS=document.documentElement.scrollHeight-window.innerHeight;_fabTopVis=sy>=80;_fabBotVis=maxS>80&&sy<=maxS-80;updateFabs();}
+  _fabScrollFn=check;window.addEventListener('scroll',check,{passive:true});setTimeout(check,60);
+}
+
+/* Sign-in page */
+function renderSignIn(m){
+  var mode='signin';
+  function render(){
+    var html='<div class="signin-page">';
+    if(currentUser){
+      html+='<div class="signin-card"><div class="signin-title">👤 '+esc(currentUser.firstName||currentUser.username)+'</div>';
+      html+='<div class="signin-sub">@'+esc(currentUser.username)+(currentUser.isAdmin?' · Admin':'')+'</div>';
+      html+='<div class="dim" style="font-size:13px;margin-bottom:18px">'+esc(currentUser.email)+'</div>';
+      html+='<div class="signout-section"><button class="btn btn-out" id="si-signout">Sign Out</button></div></div>';
+    } else {
+      html+='<div class="signin-tabs"><div class="signin-tabs-inner">';
+      html+='<button class="signin-tab'+(mode==='signin'?' on':'')+'" id="si-tab-in">Sign In</button>';
+      html+='<button class="signin-tab'+(mode==='signup'?' on':'')+'" id="si-tab-up">Sign Up</button>';
+      html+='</div></div>';
+      if(mode==='signin'){
+        html+='<div class="signin-card"><div class="signin-title">Welcome back</div>';
+        html+='<div class="signin-sub">Sign in to your account</div>';
+        html+='<div class="signin-err" id="si-err"></div>';
+        html+='<div class="signin-field"><label>Email or Username</label><input class="inp" id="si-ident" placeholder="you@example.com or username" autocomplete="username"></div>';
+        html+='<div class="signin-field"><label>Password</label><input class="inp" id="si-pass" type="password" placeholder="••••••••" autocomplete="current-password"></div>';
+        html+='<button class="btn btn-ac" style="width:100%;justify-content:center;margin-top:4px" id="si-submit">Sign In</button></div>';
+      } else {
+        html+='<div class="signin-card"><div class="signin-title">Create account</div>';
+        html+='<div class="signin-sub">Join to save listings and settings</div>';
+        html+='<div class="signin-err" id="si-err"></div>';
+        html+='<div class="signin-field"><label>Email</label><input class="inp" id="su-email" type="email" placeholder="you@example.com" autocomplete="email"></div>';
+        html+='<div class="signin-row"><div class="signin-field"><label>First Name</label><input class="inp" id="su-first" placeholder="First" autocomplete="given-name"></div>';
+        html+='<div class="signin-field"><label>Last Name</label><input class="inp" id="su-last" placeholder="Last" autocomplete="family-name"></div></div>';
+        html+='<div class="signin-field"><label>Username</label><input class="inp" id="su-user" placeholder="cooltrader99" autocomplete="username"></div>';
+        html+='<div class="signin-field"><label>Password</label><input class="inp" id="su-pass" type="password" placeholder="Min. 6 characters" autocomplete="new-password"></div>';
+        html+='<div class="signin-field"><label>Confirm Password</label><input class="inp" id="su-pass2" type="password" placeholder="Repeat password" autocomplete="new-password"></div>';
+        html+='<button class="btn btn-ac" style="width:100%;justify-content:center;margin-top:4px" id="si-submit">Create Account</button></div>';
+      }
+    }
+    html+='</div>';
+    m.innerHTML=html;
+    var tabIn=$('si-tab-in'),tabUp=$('si-tab-up');
+    if(tabIn)tabIn.onclick=function(){mode='signin';render();};
+    if(tabUp)tabUp.onclick=function(){mode='signup';render();};
+    var soBtn=$('si-signout');
+    if(soBtn)soBtn.onclick=function(){authSignOut();};
+    function showErr(msg){var e=$('si-err');if(e){e.textContent=msg;e.classList.add('vis');}}
+    var sub=$('si-submit');
+    if(sub&&mode==='signin'){
+      async function doSignIn(){
+        var ident=$('si-ident'),pass=$('si-pass');
+        if(!ident||!pass||!ident.value.trim()||!pass.value){showErr('Please fill in all fields');return;}
+        sub.disabled=true;sub.textContent='Signing in…';
+        var result=await authSignIn(ident.value.trim(),pass.value);
+        sub.disabled=false;sub.textContent='Sign In';
+        if(result.error){showErr(result.error);return;}
+        renderAuthBtn();initSidebar();navigateTo('search');showToast('Welcome back, '+result.user.username+'! 👋',true);
+      }
+      sub.onclick=doSignIn;
+      [$('si-ident'),$('si-pass')].forEach(function(el){if(el)el.onkeydown=function(e){if(e.key==='Enter')doSignIn();};});
+      setTimeout(function(){if($('si-ident'))$('si-ident').focus();},50);
+    }
+    if(sub&&mode==='signup'){
+      async function doSignUp(){
+        var email=$('su-email'),first=$('su-first'),last=$('su-last'),user=$('su-user'),pass=$('su-pass'),pass2=$('su-pass2');
+        if(!email.value.trim()||!first.value.trim()||!last.value.trim()||!user.value.trim()||!pass.value){showErr('Please fill in all fields');return;}
+        if(pass.value!==pass2.value){showErr('Passwords do not match');return;}
+        sub.disabled=true;sub.textContent='Creating account…';
+        var err=await authSignUp(email.value.trim(),first.value.trim(),last.value.trim(),user.value.trim(),pass.value);
+        sub.disabled=false;sub.textContent='Create Account';
+        if(err){showErr(err);return;}
+        renderAuthBtn();initSidebar();navigateTo('search');showToast('Welcome, '+currentUser.username+'! 🎉',true);
+      }
+      sub.onclick=doSignUp;
+      setTimeout(function(){if($('su-email'))$('su-email').focus();},50);
+    }
+  }
+  render();
+}
+
+function renderSearch(m){
+  var stColor=searchStatus==='ready'?'#22c55e':searchStatus.includes('Error')?'#ef4444':'#eab308';
+  var stText=searchStatus==='ready'?'One Piece DB loaded ('+DB.cardMap.size+' serials, '+(DB.sealed.length+DB.don.length)+' products)':searchStatus;
+  var extra=serverStatus.updateRunning?' · Server: '+(serverStatus.updateLog||'Updating…'):'';
+  var html='<div class="st-'+searchType+'" id="search-type-wrap">';
+  setTypeBodyClass(searchType);
+  // Resolve pending product UID once DB loads
+  if(_pendingProductUid&&DB){var pp=DB.byUid.get(_pendingProductUid);if(pp){searchSel=pp;searchCustShip='';history.replaceState(null,'','#search/'+searchType+'/p/'+pp.uid);}_pendingProductUid=null;}
+  if(!searchSel){
+    html+='<div class="search-controls">';
+    html+='<div id="sq-sentinel" style="height:1px;margin-bottom:-1px"></div>';
+    html+='<div class="sts"><span class="dot" style="background:'+stColor+'"></span><span id="sts-txt">'+esc(stText+extra)+'</span></div>';
+    html+='<div class="type-tabs"><div class="type-tabs-inner">';
+    html+='<button class="type-tab'+(searchType==='cards'?' on':'')+'" data-type="cards">Cards</button>';
+    html+='<button class="type-tab'+(searchType==='don'?' on':'')+'" data-type="don">DON!!</button>';
+    html+='<button class="type-tab'+(searchType==='sealed'?' on':'')+'" data-type="sealed">Sealed</button>';
+    html+='</div></div>';
+    html+='<div class="search-row">';
+    html+='<div class="inp-wrap"><div class="sq-wrap"><input class="inp inp-big" id="sq" placeholder="'+esc(searchPlaceholder())+'" autocomplete="off" value="'+esc(searchQ)+'"><button class="sq-clear'+(searchQ?' vis':'')+'" id="sq-clear" type="button" aria-label="Clear">✕</button></div></div>';
+    html+='<div class="sort-wrap dropdown" id="sort-dd"><button class="inp dropdown-trigger" id="sort-trigger" type="button"><span class="dd-label">Sort: '+esc(sortLabel())+'</span><span class="dd-caret" style="margin-left:8px">▼</span></button>';
+    html+='<div class="dropdown-menu" id="sort-menu">';
+    [['best','Best Match'],['high-low','Price: High → Low'],['low-high','Price: Low → High']].forEach(function(pair){
+      var sv=pair[0],lab=pair[1],sel=searchSort===sv;
+      html+='<div class="dd-item'+(sel?' selected':'')+'" data-sv="'+sv+'" style="display:flex;align-items:center;gap:8px"><span class="dd-check" style="width:14px;text-align:center;flex-shrink:0;visibility:'+(sel?'visible':'hidden')+'">✓</span>'+lab+'</div>';
+    });
+    html+='</div></div>';
+    html+='</div></div>';
+  } else {
+    html+='<div class="sts"><span class="dot" style="background:'+stColor+'"></span><span id="sts-txt">'+esc(stText+extra)+'</span></div>';
+  }
+  html+='<div id="search-content"></div></div>';
+  m.innerHTML=html;
+  if(!searchSel){
+    var sqEl=$('sq'),clearBtn=$('sq-clear');
+    function updateClear(){if(clearBtn)clearBtn.classList.toggle('vis',sqEl.value.length>0);}
+    var debUp=debounce(function(){searchQ=sqEl.value;searchPage=0;renderLiveGrid();replaceSearchState();},120);
+    sqEl.oninput=function(){searchQ=this.value;updateClear();debUp();};
+    sqEl.onkeydown=function(e){if(e.key==='Escape'){this.value='';searchQ='';searchPage=0;updateClear();renderLiveGrid();replaceSearchState();}};
+    if(clearBtn)clearBtn.onclick=function(){sqEl.value='';searchQ='';searchPage=0;updateClear();renderLiveGrid();sqEl.focus();replaceSearchState();};
+    sqEl.focus();
+    m.querySelectorAll('.type-tab').forEach(function(btn){
+      btn.onclick=function(){
+        searchType=this.getAttribute('data-type');searchPage=0;searchQ='';
+        m.querySelectorAll('.type-tab').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-type')===searchType);});
+        var wrap=$('search-type-wrap');if(wrap){wrap.className='st-'+searchType;wrap.id='search-type-wrap';}
+        setTypeBodyClass(searchType);
+        var s2=$('sq');if(s2){s2.value='';s2.placeholder=searchPlaceholder();}
+        pushSearchState();
+        renderLiveGrid();
+      };
+    });
+    var sTrig=$('sort-trigger'),sMenu=$('sort-menu'),sDD=$('sort-dd');
+    sTrig.onclick=function(e){e.stopPropagation();sDD.classList.toggle('open');};
+    sMenu.querySelectorAll('[data-sv]').forEach(function(it){
+      it.onclick=function(e){
+        e.stopPropagation();searchSort=this.getAttribute('data-sv');searchPage=0;
+        sDD.classList.remove('open');
+        setTimeout(function(){
+          sMenu.querySelectorAll('[data-sv]').forEach(function(x){
+            var sel=x.getAttribute('data-sv')===searchSort;
+            x.classList.toggle('selected',sel);
+            var ck=x.querySelector('.dd-check');if(ck)ck.style.visibility=sel?'visible':'hidden';
+          });
+          var lbl=document.querySelector('#sort-trigger .dd-label');if(lbl)lbl.textContent='Sort: '+sortLabel();
+          renderLiveGrid();
+        },190);
+      };
+    });
+    if(!window._closeDropdowns){
+      window._closeDropdowns=function(e){var dd=$('sort-dd');if(dd&&dd.classList.contains('open')&&!dd.contains(e.target)){dd.classList.remove('open');}};
+      document.addEventListener('click',window._closeDropdowns);
+    }
+  }
+  if(searchSel){renderDetail($('search-content'));setTimeout(initNonSearchFabs,60);}
+  else{renderLiveGrid();setTimeout(initFabObservers,60);}
+}
+
+function renderLiveGrid(){
+  var el=$('search-content');if(!el)return;
+  if(!DB||searchStatus!=='ready'){el.innerHTML='<div class="empty"><span class="spinner"></span> Loading database…</div>';return;}
+  var q=searchQ.trim().toUpperCase(),qL=q.toLowerCase();
+  var PAGE=80,results=[];
+  if(searchType==='cards'){
+    if(!q){results=DB.allCards.slice();}
+    else{var seen={};DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)===0)cards.forEach(function(c){if(!seen[c.uid]){seen[c.uid]=1;results.push(c);}});});if(results.length===0)DB.cardMap.forEach(function(cards,key){if(key.indexOf(q)>=0)cards.forEach(function(c){if(!seen[c.uid]){seen[c.uid]=1;results.push(c);}});});if(results.length<500)for(var i=0;i<DB.allCards.length&&results.length<500;i++){var c=DB.allCards[i];if(!seen[c.uid]&&c.name.toLowerCase().indexOf(qL)>=0){seen[c.uid]=1;results.push(c);}}}
+  }else if(searchType==='don'){results=q?DB.don.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}):DB.don.slice();}
+  else{results=q?DB.sealed.filter(function(p){return p.name.toLowerCase().indexOf(qL)>=0;}):DB.sealed.slice();}
+  function pSort(a,b){var ap=a.marketPrice>0?a.marketPrice:null,bp=b.marketPrice>0?b.marketPrice:null;if(ap===null&&bp===null)return 0;if(ap===null)return 1;if(bp===null)return -1;return searchSort==='low-high'?ap-bp:bp-ap;}
+  function bms(item){if(!q)return 0;var name=item.name.toLowerCase(),number=(item.number||'').toLowerCase();if(number===qL)return 100;if(number.startsWith(qL))return 80;if(name===qL)return 70;if(name.startsWith(qL))return 60;if(name.includes(qL))return 30;return 0;}
+  if(searchSort==='best')results.sort(function(a,b){return bms(b)-bms(a);});else results.sort(pSort);
+  var total=results.length;
+  if(total===0){el.innerHTML='<div class="empty">No results'+(q?' for "'+esc(searchQ)+'"':'')+'</div>';setTimeout(initFabObservers,60);return;}
+  var maxPage=Math.max(0,Math.ceil(total/PAGE)-1);
+  if(searchPage>maxPage)searchPage=maxPage;
+  var page=results.slice(searchPage*PAGE,(searchPage+1)*PAGE);
+  var isSealed=searchType==='sealed';
+  function priceCell(p){return p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'<span class="dim">N/A</span>';}
+  function variantCell(p){if(isSealed||!p.variant||!p.isSplit)return'<span class="var"></span>';var isFoil=isFoilVariantName(p.variant);return'<span class="var'+(isFoil?' foil':'')+'">'+esc(p.variant)+'</span>';}
+  function imgTag(item){return'<img src="'+esc(getCardImgGrid(item))+'" onerror="imgFail(this)" loading="lazy">';}
+  var html='<div class="live-sec">'+secBadge(searchType)+'<span class="live-sec-count">('+total+')</span></div><div class="live-grid" id="live-grid-el">';
+  page.forEach(function(item){
+    var sub=searchType==='cards'?esc(item.number||''):esc(item.setName||'');
+    html+='<div class="live-card" data-uid="'+esc(item.uid)+'"><div class="iw'+(isSealed?' sealed':'')+'">'+imgTag(item)+'</div>';
+    html+='<div class="n" title="'+esc(item.name)+'">'+esc(item.name)+'</div><div class="s">'+sub+'</div>';
+    html+='<div class="pv">'+variantCell(item)+'<span class="p">'+priceCell(item)+'</span></div></div>';
+  });
+  html+='</div>';
+  if(total>PAGE){
+    var cur=searchPage,mp=maxPage,tp=mp+1,nums=[],seenN={};
+    function addN(n){if(n<0||n>mp||seenN[n])return;seenN[n]=1;nums.push(n);}
+    addN(0);if(cur-1>1)nums.push(-1);if(cur-1>0)addN(cur-1);addN(cur);if(cur+1<mp)addN(cur+1);if(cur+2<mp)nums.push(-1);if(cur<mp)addN(mp);
+    html+='<div id="pg-sentinel" style="height:1px"></div>';
+    html+='<div class="pg-wrap"><div class="pg-bar">';
+    html+='<button class="pg-btn" id="pg-prev"'+(cur===0?' disabled':'')+'>← Prev</button>';
+    nums.forEach(function(n){if(n===-1)html+='<span class="pg-ellipsis">…</span>';else html+='<button class="pg-btn'+(n===cur?' pg-cur':'')+'" data-pg="'+n+'">'+(n+1)+'</button>';});
+    html+='<button class="pg-btn" id="pg-next"'+(cur>=mp?' disabled':'')+'>Next →</button></div>';
+    html+='<div class="pg-sub"><span class="pg-info">Page '+(cur+1)+' of '+tp+'</span>';
+    html+='<span class="pg-jump"><span>Jump to:</span><input id="pg-jump-inp" inputmode="numeric" placeholder="#"><button class="pg-jump-go" id="pg-jump-go">Go</button></span></div></div>';
+  }else{html+='<div id="pg-sentinel" style="height:1px"></div>';}
+  el.innerHTML=html;
+  var grid=el.querySelector('#live-grid-el');
+  if(grid){var cols=window.getComputedStyle(grid).gridTemplateColumns.split(' ').length,rem=page.length%cols;if(rem>0)for(var si=0;si<cols-rem;si++){var sp=document.createElement('div');sp.className='live-card live-grid-spacer';grid.appendChild(sp);}}
+  el.querySelectorAll('[data-uid]').forEach(function(card){
+    card.onclick=function(){
+      var p=DB.byUid.get(this.getAttribute('data-uid'));
+      if(p){searchSel=p;searchCustShip='';replaceSearchState();history.pushState(null,'','#search/'+searchType+'/p/'+p.uid);renderSearch($('main'));window.scrollTo({top:0,behavior:'smooth'});}
+    };
+  });
+  function goPage(n){searchPage=Math.max(0,Math.min(maxPage,n));pushSearchState();renderLiveGrid();window.scrollTo({top:0,behavior:'smooth'});}
+  var pp=el.querySelector('#pg-prev'),pn=el.querySelector('#pg-next');
+  if(pp)pp.onclick=function(){goPage(searchPage-1);};
+  if(pn)pn.onclick=function(){goPage(searchPage+1);};
+  el.querySelectorAll('[data-pg]').forEach(function(btn){btn.onclick=function(){goPage(parseInt(this.getAttribute('data-pg')));};});
+  var ji=el.querySelector('#pg-jump-inp'),goBtn=el.querySelector('#pg-jump-go');
+  if(ji&&goBtn){
+    ji.oninput=function(){this.value=this.value.replace(/[^0-9]/g,'');goBtn.classList.toggle('vis',parseInt(this.value)>=1&&parseInt(this.value)<=maxPage+1);};
+    ji.onkeydown=function(e){if(e.key==='Enter'){var v=parseInt(this.value);if(!isNaN(v))goPage(v-1);}};
+    goBtn.onclick=function(){var v=parseInt(ji.value);if(!isNaN(v))goPage(v-1);};
+  }
+  setTimeout(initFabObservers,60);
+}
+
+/* ═══ DETAIL VIEW ═══ */
+function renderDetail(el){
+  var s=searchSel;if(!s)return;
+  var mp=s.marketPrice,shipN=searchCustShip!==''&&!isNaN(parseFloat(searchCustShip))?parseFloat(searchCustShip):null;
+  var calc=mp>0?calcListing(mp,shipN):null,vn=calc?vNet(calc.lp,calc.ship,calc.c):0;
+  var linked=LINKED_LISTINGS[s.uid]||[];
+  var imgSrc=getCardImg(s);
+  var aT,aB;
+  if(s.type==='card'){aT=autoTitle(s);aB=autoBodyCard(s,aT);}
+  else if(s.type==='don'){aT=s.name+' One Piece CCG';aB=autoBodyDon(s,aT);}
+  else{aT=s.name+' One Piece CCG (SEALED)';aB=autoBodySealed(s,aT);}
+  var aP=calc?calc.lp.toFixed(2):'—';
+  var html='<div style="animation:fadeIn .2s ease">';
+  html+='<div class="det-grid"><div class="det-iw">';
+  html+='<button class="btn-back" id="det-back" style="width:100%;text-align:center;margin-bottom:12px">← Back to Search Results</button>';
+  html+='<img src="'+esc(imgSrc)+'" class="det-img" id="det-img" onerror="detImgFail()">';
+  html+='<div class="img-btns" id="img-btns" style="display:flex;justify-content:center;margin-top:10px"><button class="btn btn-out" style="padding:8px 18px;font-size:13px" id="img-save">💾 Save Image</button></div></div><div>';
+  var tb=s.type==='card'?'<span class="badge badge-card">CARD</span>':s.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
+  var vb=(s.isSplit&&s.variant)?'<span class="badge badge-variant">'+esc(s.variant)+'</span>':'';
+  html+='<div class="det-t">'+tb+' '+esc(s.name)+vb+'</div><div class="det-m">';
+  if(s.type==='card')html+='Serial: '+esc(s.number)+' · Rarity: '+esc(s.rarity)+' · ';
+  if(s.isSplit&&s.variant)html+='Variant: '+esc(s.variant)+' · ';
+  html+='Set: '+esc(s.setName)+'</div>';
+  html+='<div class="card"><div class="hd3">📈 Market Price</div><div class="st-grid">';
+  html+=stat('Market Price',mp>0?'$'+mp.toFixed(2):'N/A','',true);
+  html+='</div></div>';
+  var ext=s.extendedData||[];
+  if(ext.length>0){html+='<div class="card"><div class="hd3">📋 Details</div><div class="ext-grid">';ext.filter(function(e){return e.name!=='Description';}).forEach(function(e){html+='<div><span class="dim">'+(e.displayName||e.name)+':</span> <b>'+esc(e.value)+'</b></div>';});html+='</div>';var dE=ext.find(function(e){return e.name==='Description';});if(dE)html+='<div class="desc-t">'+sanitizeDetailHtml(dE.value)+'</div>';html+='</div>';}
+  html+='<div class="card"><div class="hd3">💰 List At Price Breakdown</div><div id="listat-stats">'+buildListAtStats(calc,vn)+'</div>';
+  html+='<div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="dim">Custom shipping $:</span><input class="inp" style="width:90px;flex:0 0 auto" id="det-ship" placeholder="auto" value="'+esc(searchCustShip)+'"></div></div>';
+  html+='<div class="card"><div class="hd3">📝 Auto List Format</div>';
+  [{label:'Title',value:aT,id:'alf-title'},{label:'Listing Price',value:aP,id:'alf-price'},{label:'Body (HTML)',value:aB,id:'alf-body'}].forEach(function(f,i){html+='<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:12px;font-weight:700">'+f.label+'</span><button class="btn-sm" data-cp="'+i+'">Copy</button></div><div class="code-blk" id="'+f.id+'" data-cp="'+i+'">'+esc(f.value)+'</div></div>';});
+  html+='</div>';
+  html+='<div class="card"><div class="hd3">🔗 Linked Listings '+(linked.length>0?'('+linked.length+')':'')+'</div>';
+  if(linked.length===0)html+='<div class="dim" style="font-size:13px;margin-bottom:14px">Link eBay listings to this product for auto price updates.</div>';
+  else linked.forEach(function(l,li){var fp=finalPrice(s.marketPrice,l.option,l.modifier,true,l.shippingPrice);html+='<div class="link-card"><div class="link-title">Listing #'+(li+1)+': <a href="https://www.ebay.com/itm/'+l.itemId+'" target="_blank">'+esc(l.itemId)+'</a></div><div class="link-sub">Price: '+fp+'<br>Shipping: '+(l.shippingPrice!=null?'$'+l.shippingPrice.toFixed(2)+(l.service?' via '+esc(l.service):''):'<i>not set</i>')+'<br>Option: '+(l.option===1?'Market':'Calculated')+' · Mod: '+modName(l.modifier)+'</div><div class="link-actions"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-link-edit="'+li+'">✏️ Edit</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-link-del="'+li+'">🗑️ Delete</button></div></div>';});
+  html+='<button class="btn btn-ac" style="margin-top:6px" id="link-new">➕ Add Linked Listing</button></div>';
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><a href="https://www.tcgplayer.com/product/'+s.productId+'" target="_blank" class="btn btn-out">TCGPlayer ↗</a></div>';
+  html+='</div></div></div>';
+  el.innerHTML=html;
+  $('det-back').onclick=function(){searchSel=null;history.back();};
+  var saveBtn=$('img-save');if(saveBtn)saveBtn.onclick=function(){saveImage(imgSrc,s.name.replace(/[^a-zA-Z0-9]/g,'_'));};
+  var dImg=$('det-img');if(dImg)dImg.onclick=function(){openLightbox(imgSrc);};
+  var shipInp=$('det-ship');if(shipInp)shipInp.oninput=function(){searchCustShip=this.value;var sN=searchCustShip!==''&&!isNaN(parseFloat(searchCustShip))?parseFloat(searchCustShip):null;var c2=mp>0?calcListing(mp,sN):null,v2=c2?vNet(c2.lp,c2.ship,c2.c):0;var stats=$('listat-stats');if(stats)stats.innerHTML=buildListAtStats(c2,v2);var priceBlk=$('alf-price');if(priceBlk)priceBlk.textContent=c2?c2.lp.toFixed(2):'—';};
+  el.querySelectorAll('[data-cp]').forEach(function(btn){btn.onclick=function(){var i=parseInt(this.getAttribute('data-cp'));var txt;if(i===0)txt=aT;else if(i===1){var blk=$('alf-price');txt=blk?blk.textContent:aP;}else txt=aB;copyTxt(txt);};});
+  $('link-new').onclick=function(){openLinkModal(s,null);};
+  el.querySelectorAll('[data-link-edit]').forEach(function(btn){btn.onclick=function(){openLinkModal(s,parseInt(this.getAttribute('data-link-edit')));};});
+  el.querySelectorAll('[data-link-del]').forEach(function(btn){btn.onclick=function(){var li=parseInt(this.getAttribute('data-link-del'));if(!confirm('Delete this linked listing?'))return;LINKED_LISTINGS[s.uid].splice(li,1);if(LINKED_LISTINGS[s.uid].length===0)delete LINKED_LISTINGS[s.uid];saveStorage();showToast('Deleted',true);renderDetail(el);};});
+}
+function buildListAtStats(calc,vn){return'<div class="st-grid">'+stat('List At',calc?'$'+calc.lp.toFixed(2):'—','var(--ac)',true)+stat('Shipping',calc?'$'+calc.ship.toFixed(2):'—')+stat('eBay Fee',calc?'$'+calc.c.toFixed(2):'—','var(--ylw)')+stat('Net Return',calc?'$'+vn.toFixed(2):'—','var(--grn)')+stat('Rule',calc?calc.rule:'—')+'</div>';}
+function stat(l,v,c,big){return'<div><div class="st-l">'+l+'</div><div class="'+(big?'st-vb':'st-v')+'" style="'+(c?'color:'+c:'')+'">'+v+'</div></div>';}
+
+/* ═══ LINK MODAL ═══ */
+function openLinkModal(product,editIdx){
+  var existing=editIdx!=null?LINKED_LISTINGS[product.uid][editIdx]:null,isEdit=editIdx!=null;
+  var html='<div class="modal-t">'+(isEdit?'Edit':'Add')+' Linked Listing'+(product.variant&&product.isSplit?' <span class="badge badge-variant">'+esc(product.variant)+'</span>':'')+'</div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>eBay Item ID or URL</label><input class="inp" id="m-url" placeholder="1234567890" value="'+esc(existing?existing.itemId:'')+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Pricing Option</label><select class="inp" id="m-opt"><option value="1"'+(existing&&existing.option===1?' selected':'')+'>Market Price</option><option value="2"'+(!existing||existing.option===2?' selected':'')+'>Calculated</option></select></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Modifier</label><select class="inp" id="m-mod">';
+  [1,2,3,4].forEach(function(mi){html+='<option value="'+mi+'"'+(existing&&existing.modifier===mi?' selected':'')+'>'+modName(mi)+'</option>';});
+  html+='</select></div><div class="field" style="margin-bottom:12px"><label>Shipping $ (optional)</label><input class="inp" id="m-ship" placeholder="0.74" value="'+esc(existing&&existing.shippingPrice!=null?existing.shippingPrice:'')+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Service (optional)</label><input class="inp" id="m-svc" placeholder="USPS Ground" value="'+esc(existing&&existing.service?existing.service:'')+'"></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-out" id="m-cancel">Cancel</button><button class="btn btn-ac" id="m-save">'+(isEdit?'Save':'Add')+'</button></div>';
+  openModal(html);
+  $('m-cancel').onclick=closeModal;
+  $('m-save').onclick=function(){var url=$('m-url').value.trim(),itemId='',match=url.match(/\/itm\/(\d+)/);if(match)itemId=match[1];else if(/^\d+$/.test(url))itemId=url;else{showToast('Invalid eBay URL/ID',false);return;}var e={itemId:itemId,option:parseInt($('m-opt').value),modifier:parseInt($('m-mod').value),shippingPrice:isNaN(parseFloat($('m-ship').value))?null:parseFloat($('m-ship').value),service:$('m-svc').value.trim()||null};if(!LINKED_LISTINGS[product.uid])LINKED_LISTINGS[product.uid]=[];if(isEdit)LINKED_LISTINGS[product.uid][editIdx]=e;else LINKED_LISTINGS[product.uid].push(e);saveStorage();showToast(isEdit?'Updated!':'Added!',true);closeModal();if(currentTab==='search')renderDetail($('search-content'));else if(currentTab==='linked')renderLinked($('main'));};
+}
+
+/* ═══ EDIT CSV DATABASE TAB ═══ */
+var editItems=[], editSearchQ='', editPage=0, editTotal=0;
+var editTypeFilter='all', editSortMode='name', editTagFilter='all';
+var EDIT_PAGE=40;
+
+async function renderEditCSV(m){
+  m.innerHTML='<div class="hd">✏️ Edit CSV Database</div>'
+    +'<div class="row mb" style="gap:8px;flex-wrap:wrap;align-items:flex-end">'
+    +'<div class="field" style="flex:2;min-width:180px"><label>Search</label>'
+    +'<input class="inp" id="ev-search" placeholder="Name, set, serial…" value="'+esc(editSearchQ)+'"></div>'
+    +'<div class="field"><label>Type</label><select class="inp" id="ev-type">'
+    +'<option value="all"'+(editTypeFilter==='all'?' selected':'')+'>All Types</option>'
+    +'<option value="cards"'+(editTypeFilter==='cards'?' selected':'')+'>Cards</option>'
+    +'<option value="don"'+(editTypeFilter==='don'?' selected':'')+'>DON!!</option>'
+    +'<option value="sealed"'+(editTypeFilter==='sealed'?' selected':'')+'>Sealed</option>'
+    +'</select></div>'
+    +'<div class="field"><label>Sort</label><select class="inp" id="ev-sort">'
+    +'<option value="name"'+(editSortMode==='name'?' selected':'')+'>Name A→Z</option>'
+    +'<option value="price-high"'+(editSortMode==='price-high'?' selected':'')+'>Price High→Low</option>'
+    +'<option value="price-low"'+(editSortMode==='price-low'?' selected':'')+'>Price Low→High</option>'
+    +'</select></div></div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="ev-tag-pills">'
+    +renderTagPills()+'</div>'
+    +'<div id="ev-scrape-bar"></div>'
+    +'<div id="ev-img-bar"></div>'
+    +'<div id="ev-tcgimg-bar"></div>'
+    +'<div id="ev-content"></div>';
+
+  $('ev-search').oninput=debounce(function(){editSearchQ=$('ev-search').value;editPage=0;fetchEditItems();},300);
+  $('ev-type').onchange=function(){editTypeFilter=this.value;editPage=0;fetchEditItems();};
+  $('ev-sort').onchange=function(){editSortMode=this.value;editPage=0;fetchEditItems();};
+  wireTagPills();
+  await fetchEditItems();
+  renderScrapeBar();
+  renderImgBar();
+  renderTCGImgBar();
+}
+
+function renderTagPills(){
+  return[
+    {id:'all',label:'All'},
+    {id:'no-price',label:'⚠ No price'},
+    {id:'no-market-price',label:'💲 No mkt $'},
+    {id:'no-variant',label:'⚡ No variant'},
+    {id:'image-not-updated',label:'🖼 Image issue'},
+    {id:'completed',label:'✓ Completed'}
+  ].map(function(t){
+    return '<button class="dd-pill'+(editTagFilter===t.id?' on':'')+'" data-tf="'+t.id+'">'+t.label+'</button>';
+  }).join('');
+}
+function wireTagPills(){
+  var pills=$('ev-tag-pills');if(!pills)return;
+  pills.querySelectorAll('[data-tf]').forEach(function(btn){
+    btn.onclick=function(){
+      editTagFilter=this.getAttribute('data-tf');
+      editPage=0;
+      pills.querySelectorAll('[data-tf]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-tf')===editTagFilter);});
+      fetchEditItems();
+    };
+  });
+}
+
+async function renderScrapeBar(){
+  var el=$('ev-scrape-bar');if(!el)return;
+  var st=serverStatus;
+  if(st.scrapeRunning||st.scrapeLog){
+    el.innerHTML='<div class="info-bar" style="margin-bottom:10px">🔍 '+esc(st.scrapeLog||'Scraping…')+(st.scrapeRunning?'  <span class="spinner"></span>':'')+'</div>';
+  }else{
+    el.innerHTML='<div style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+      +'<button class="btn btn-out" style="padding:6px 14px;font-size:12px" id="ev-scrape-btn">🔍 Scrape Prices</button>'
+      +'<span class="dim" style="font-size:12px">Fetch missing prices from TCGPlayer</span></div>';
+    var sb=$('ev-scrape-btn');
+    if(sb)sb.onclick=async function(){this.disabled=true;this.textContent='Starting…';await apiPost('/api/scrape',{});setTimeout(function(){pollServerStatus();renderScrapeBar();},1500);};
+  }
+}
+async function renderImgBar(){
+  var el=$('ev-img-bar');if(!el)return;
+  var st=serverStatus;
+  if(st.imgFetchRunning){
+    el.innerHTML='<div class="info-bar" style="margin-bottom:10px">🖼 '+esc(st.imgFetchLog||'Fetching…')+' ('+st.imgFetchDone+'/'+st.imgFetchTotal+') <span class="spinner"></span></div>';
+  }else{
+    var log=st.imgFetchLog?'<span class="dim" style="font-size:11px;margin-left:4px">'+esc(st.imgFetchLog)+'</span>':'';
+    el.innerHTML='<div style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+      +'<button class="btn btn-out" style="padding:6px 14px;font-size:12px" id="ev-img-new-btn">🖼 Check New Images</button>'
+      +'<button class="btn btn-out" style="padding:6px 14px;font-size:12px" id="ev-img-all-btn">⬇ Full Fetch</button>'
+      +log+'</div>';
+    var nb=$('ev-img-new-btn');
+    if(nb)nb.onclick=async function(){this.disabled=true;this.textContent='Starting…';await apiPost('/api/images/fetch',{refresh:true});setTimeout(function(){pollServerStatus();renderImgBar();},1500);};
+    var ab=$('ev-img-all-btn');
+    if(ab)ab.onclick=async function(){if(!confirm('Check ALL serials (10–20 min)?'))return;this.disabled=true;this.textContent='Starting…';await apiPost('/api/images/fetch',{refresh:false});setTimeout(function(){pollServerStatus();renderImgBar();},1500);};
+  }
+}
+
+async function renderTCGImgBar(){
+  var el=$('ev-tcgimg-bar');if(!el)return;
+  var st=serverStatus;
+  if(st.imgProcessRunning){
+    el.innerHTML='<div class="info-bar" style="margin-bottom:10px">🎴 TCGPlayer Images: '+esc(st.imgProcessLog||'Processing…')+' ('+st.imgProcessDone+'/'+st.imgProcessTotal+') <span class="spinner"></span></div>';
+  }else{
+    var log=st.imgProcessLog?'<span class="dim" style="font-size:11px;margin-left:4px">'+esc(st.imgProcessLog)+'</span>':'';
+    el.innerHTML='<div style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+      +'<button class="btn btn-out" style="padding:6px 14px;font-size:12px" id="ev-tcgimg-btn">🎴 Process TCG Images</button>'
+      +log+'</div>';
+    var btn=$('ev-tcgimg-btn');
+    if(btn)btn.onclick=async function(){this.disabled=true;this.textContent='Starting…';await apiPost('/api/images/process-tcg',{});setTimeout(function(){pollServerStatus();renderTCGImgBar();},1500);};
+  }
+}
+
+async function fetchEditItems(){
+  var el=$('ev-content');if(!el)return;
+  el.innerHTML='<div class="empty"><span class="spinner"></span> Loading…</div>';
+  try{
+    // FIX: always pass the tag to the server — including 'completed'
+    var tagParam = editTagFilter === 'all' ? '' : editTagFilter;
+    var params='?q='+encodeURIComponent(editSearchQ)
+      +'&type='+editTypeFilter+'&sort='+editSortMode
+      +'&tag='+encodeURIComponent(tagParam)
+      +'&page='+editPage;
+    var r=await fetch(apiBase()+'/api/items'+params);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    var data=await r.json();
+    editItems=data.items||[];
+    editTotal=data.total||0;
+    renderEditList();
+  }catch(e){
+    var el2=$('ev-content');
+    if(el2)el2.innerHTML='<div class="err">Failed: '+esc(e.message)+'</div>';
+  }
+}
+
+/* ── Pagination bar HTML ──────────────────────────────────────────────────── */
+function paginationBar(id_suffix){
+  var totalPages=Math.ceil(editTotal/EDIT_PAGE)||1;
+  var cur=editPage;
+  var showing=editItems.length;
+  var from=cur*EDIT_PAGE+1, to=Math.min((cur+1)*EDIT_PAGE,editTotal);
+  var html='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 0" id="ev-pgbar-'+id_suffix+'">';
+  html+='<button class="btn btn-out" style="padding:5px 10px;font-size:12px" data-pg="first" '+(cur===0?'disabled':'')+'>«</button>';
+  html+='<button class="btn btn-out" style="padding:5px 10px;font-size:12px" data-pg="prev"  '+(cur===0?'disabled':'')+'>‹</button>';
+  html+='<span class="dim" style="font-size:12px;padding:0 6px">Page '+(cur+1)+' / '+totalPages+'  ('+from+'–'+to+' of '+editTotal+')</span>';
+  html+='<button class="btn btn-out" style="padding:5px 10px;font-size:12px" data-pg="next" '+(cur>=totalPages-1?'disabled':'')+'>›</button>';
+  html+='<button class="btn btn-out" style="padding:5px 10px;font-size:12px" data-pg="last" '+(cur>=totalPages-1?'disabled':'')+'>»</button>';
+  html+='</div>';
+  return html;
+}
+function wirePagination(container){
+  container.querySelectorAll('[data-pg]').forEach(function(btn){
+    btn.onclick=function(){
+      var totalPages=Math.ceil(editTotal/EDIT_PAGE)||1;
+      var action=this.getAttribute('data-pg');
+      var np=editPage;
+      if(action==='first')np=0;
+      else if(action==='prev')np=Math.max(0,editPage-1);
+      else if(action==='next')np=Math.min(totalPages-1,editPage+1);
+      else if(action==='last')np=totalPages-1;
+      if(np!==editPage){editPage=np;fetchEditItems();window.scrollTo({top:0});}
+    };
+  });
+}
+
+function renderEditList(){
+  var el=$('ev-content');if(!el)return;
+  if(!editItems.length){
+    el.innerHTML='<div class="empty">'+(editTagFilter!=='all'?'No items match this filter.':'No items found.')+'</div>';
+    return;
+  }
+  var html=paginationBar('top');
+  editItems.forEach(function(it){html+=buildItemRow(it);});
+  html+=paginationBar('bot');
+  el.innerHTML=html;
+
+  // Wire edit-overlay buttons
+  el.querySelectorAll('[data-edit-pid]').forEach(function(btn){
+    btn.onclick=function(){openEditOverlay(this.getAttribute('data-edit-pid'));};
+  });
+  // Wire inline save
+  el.querySelectorAll('[data-inline-save]').forEach(function(btn){
+    btn.onclick=function(){saveInlinePrice(this.getAttribute('data-inline-save'));};
+  });
+  // FIX: wire Normal/Foil toggle IMMEDIATELY after innerHTML is set
+  el.querySelectorAll('[data-st-pid]').forEach(function(btn){
+    var pid=btn.getAttribute('data-st-pid');
+    btn.onclick=function(){
+      var v=this.getAttribute('data-st-v');
+      var row=$('eitem-'+pid);
+      if(row)row.querySelectorAll('[data-st-pid="'+pid+'"]').forEach(function(b){
+        b.classList.toggle('on',b.getAttribute('data-st-v')===v);
+      });
+    };
+  });
+  // Wire complete/review buttons
+  el.querySelectorAll('[data-complete-pid]').forEach(function(btn){
+    btn.onclick=function(){toggleComplete(this.getAttribute('data-complete-pid'),this.getAttribute('data-complete-action'));};
+  });
+  // Wire pagination
+  wirePagination(el);
+  // Load OP images for all card rows
+  setTimeout(loadAllInlineOPImages, 50);
+}
+
+function buildItemRow(it){
+  var isCard=(it.type==='cards'||it.type==='don');
+  var imgSrc=proxyImg(it.imageUrl||('https://tcgplayer-cdn.tcgplayer.com/product/'+it.productId+'_in_1000x1000.jpg'));
+  var typeBadge=it.type==='cards'?'<span class="badge badge-card">CARD</span>'
+    :it.type==='don'?'<span class="badge badge-don">DON!!</span>'
+    :'<span class="badge badge-sealed">SEALED</span>';
+  var tags='';
+  if((it.tags||[]).includes('no-price'))tags+='<span class="tag-badge tag-no-price">⚠ No price</span> ';
+  if((it.tags||[]).includes('no-market-price')&&!(it.tags||[]).includes('no-price'))tags+='<span class="tag-badge tag-no-price">💲 No mkt $</span> ';
+  if((it.tags||[]).includes('image-not-updated'))tags+='<span class="tag-badge tag-img">🖼 Image</span> ';
+  if((it.tags||[]).includes('no-variant'))tags+='<span class="tag-badge tag-variant">⚡ No variant</span> ';
+  if(it.hasCustomImage)tags+='<span class="tag-badge tag-fixed">✓ Img</span> ';
+  if(it.completed)tags+='<span class="tag-badge" style="background:rgba(147,51,234,.12);color:#c084fc">✓ Done</span> ';
+  var price=it.marketPrice>0?'$'+it.marketPrice.toFixed(2):'—';
+  var pid=it.productId;
+  var st=it.subTypeName||'';
+
+  // Inline price edit (cards + don)
+  var inlineEdit='';
+  if(isCard){
+    inlineEdit='<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)">'
+      +'<button class="stype-btn'+(st==='Normal'?' on':'')+'" style="padding:4px 10px;font-size:11px" data-st-pid="'+pid+'" data-st-v="Normal">Normal</button>'
+      +'<button class="stype-btn'+(st==='Foil'?' on':'')+'" style="padding:4px 10px;font-size:11px" data-st-pid="'+pid+'" data-st-v="Foil">Foil</button>'
+      +'<input class="inp" id="il-mkt-'+pid+'" placeholder="Mkt $" value="'+esc(it.marketPrice>0?it.marketPrice:'')+'" style="width:65px;padding:4px 7px;font-size:11px">'
+      +'<input class="inp" id="il-low-'+pid+'" placeholder="Low $" value="'+esc(it.lowPrice>0?it.lowPrice:'')+'" style="width:65px;padding:4px 7px;font-size:11px">'
+      +'<input class="inp" id="il-mid-'+pid+'" placeholder="Mid $" value="'+esc(it.midPrice>0?it.midPrice:'')+'" style="width:65px;padding:4px 7px;font-size:11px">'
+      +'<input class="inp" id="il-hip-'+pid+'" placeholder="Hi $" value="'+esc(it.highPrice>0?it.highPrice:'')+'" style="width:65px;padding:4px 7px;font-size:11px">'
+      +'<button class="btn btn-ac" style="padding:4px 12px;font-size:11px" data-inline-save="'+pid+'">💾</button>'
+      +'</div>';
+  }
+
+  // OP images inline — only shown for cards that still need an image (TCGPlayer 404'd)
+  var opImgBlock='';
+  var needsImgChange=(it.tags||[]).includes('image-not-updated');
+  if(it.type==='cards'&&it.number&&needsImgChange){
+    opImgBlock='<div id="opimg-'+pid+'" class="dim" style="font-size:11px;margin-top:6px">Loading images… <span class="spinner" style="width:10px;height:10px;border-width:1.5px"></span></div>';
+  }
+
+  // Action buttons column
+  var actionBtns='<div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;align-self:flex-start">'
+    +'<button class="btn btn-out" style="padding:4px 10px;font-size:11px;white-space:nowrap" data-edit-pid="'+pid+'">Edit ↗</button>'
+    +(it.completed
+      ?'<button class="btn btn-out" style="padding:4px 10px;font-size:11px;white-space:nowrap;color:var(--ylw);border-color:rgba(245,158,11,.3)" data-complete-pid="'+pid+'" data-complete-action="uncomplete">↩ Review</button>'
+      :'<button class="btn btn-out" style="padding:4px 10px;font-size:11px;white-space:nowrap;color:var(--grn);border-color:rgba(34,197,94,.3)" data-complete-pid="'+pid+'" data-complete-action="complete">✅ Done</button>'
+    )
+    +'</div>';
+
+  return '<div class="edit-item" id="eitem-'+pid+'" style="flex-direction:column;gap:0;padding:12px">'
+    +'<div style="display:flex;gap:10px;align-items:flex-start;width:100%">'
+    +'<img src="'+imgSrc+'" style="width:68px;flex-shrink:0;border-radius:6px;background:var(--bg3);cursor:pointer;aspect-ratio:.716;object-fit:cover" onerror="this.style.opacity=\'0.15\'" onclick="openEditOverlay(\''+pid+'\')" title="Click for full edit">'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="display:flex;gap:5px;align-items:baseline;flex-wrap:wrap;margin-bottom:2px">'+typeBadge
+    +'<span style="font-weight:700;font-size:13px">'+esc(it.name)+'</span></div>'
+    +'<div class="dim" style="font-size:11px;margin-bottom:5px">'+esc(it.setName)+(it.number?' · <b>'+esc(it.number)+'</b>':'')
+    +(it.url?'  <a href="'+esc(it.url)+'" target="_blank" style="color:var(--dim)">↗</a>':'')+'</div>'
+    +'<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">'+tags
+    +'<span style="font-size:12px;color:var(--ac);font-weight:700;margin-left:2px">'+price+'</span></div>'
+    +opImgBlock+inlineEdit
+    +'</div>'
+    +actionBtns
+    +'</div></div>';
+}
+
+async function toggleComplete(pid, action){
+  var ep=action==='complete'?'/api/edits/complete':'/api/edits/uncomplete';
+  var r=await apiPost(ep,{productId:pid});
+  var j=await r.json();
+  if(j.ok){
+    showToast(action==='complete'?'Marked completed ✅':'Moved to review',true);
+    await refreshSingleItem(pid);
+  }else showToast('Failed',false);
+}
+
+async function saveInlinePrice(pid){
+  var el=$('eitem-'+pid);if(!el)return;
+  var stBtn=el.querySelector('[data-st-pid="'+pid+'"].on');
+  var st=stBtn?stBtn.getAttribute('data-st-v'):'';
+  var body={productId:pid,subTypeName:st,
+    marketPrice:($('il-mkt-'+pid)||{value:''}).value,
+    lowPrice:   ($('il-low-'+pid)||{value:''}).value,
+    midPrice:   ($('il-mid-'+pid)||{value:''}).value,
+    highPrice:  ($('il-hip-'+pid)||{value:''}).value};
+  var btn=el.querySelector('[data-inline-save="'+pid+'"]');
+  if(btn){btn.disabled=true;btn.textContent='…';}
+  var r=await apiPost('/api/edits/price',body);
+  var j=await r.json();
+  if(j.ok){showToast('Saved!',true);await refreshSingleItem(pid);await reloadDBAfterEdit();}
+  else{showToast('Save failed',false);if(btn){btn.disabled=false;btn.textContent='💾';}}
+}
+
+async function refreshSingleItem(pid){
+  try{
+    var r=await fetch(apiBase()+'/api/item/'+pid);
+    if(!r.ok)return;
+    var fresh=await r.json();
+    var idx=editItems.findIndex(function(i){return i.productId===pid;});
+    if(idx>=0){
+      editItems[idx]=fresh;
+      var oldEl=$('eitem-'+pid);
+      if(oldEl){
+        var tmp=document.createElement('div');
+        tmp.innerHTML=buildItemRow(fresh);
+        var newEl=tmp.firstChild;
+        oldEl.replaceWith(newEl);
+        // Re-wire all buttons on new element
+        newEl.querySelectorAll('[data-edit-pid]').forEach(function(b){b.onclick=function(){openEditOverlay(b.getAttribute('data-edit-pid'));};});
+        newEl.querySelectorAll('[data-inline-save]').forEach(function(b){b.onclick=function(){saveInlinePrice(b.getAttribute('data-inline-save'));};});
+        newEl.querySelectorAll('[data-st-pid]').forEach(function(b){
+          b.onclick=function(){
+            var v=b.getAttribute('data-st-v'), p2=b.getAttribute('data-st-pid');
+            var row=$('eitem-'+p2);
+            if(row)row.querySelectorAll('[data-st-pid="'+p2+'"]').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-st-v')===v);});
+          };
+        });
+        newEl.querySelectorAll('[data-complete-pid]').forEach(function(b){b.onclick=function(){toggleComplete(b.getAttribute('data-complete-pid'),b.getAttribute('data-complete-action'));};});
+        // Load OP images for new element
+        if(fresh.type==='cards'&&fresh.number) loadInlineOPImages(fresh.productId,fresh.number);
+      }
+    }
+  }catch(e){}
+}
+
+// Image usage cache — maps customImageUrl → productId across all products
+var _imgUsageCache=null,_imgUsagePending=null;
+async function getImageUsage(){
+  if(_imgUsageCache)return _imgUsageCache;
+  if(!_imgUsagePending)_imgUsagePending=fetch(apiBase()+'/api/image-usage').then(function(r){return r.json();}).then(function(d){_imgUsageCache=d;_imgUsagePending=null;return d;}).catch(function(){_imgUsageCache={};_imgUsagePending=null;return{};});
+  return _imgUsagePending;
+}
+function invalidateImgUsageCache(){_imgUsageCache=null;_imgUsagePending=null;}
+
+// Load OP images into the inline placeholder inside a row
+async function loadInlineOPImages(pid,serial){
+  var el=$('opimg-'+pid);if(!el)return;
+  try{
+    var r=await fetch(apiBase()+'/api/card-images?serial='+encodeURIComponent(serial.toUpperCase()));
+    var data=await r.json();
+    var urls=data.urls||[];
+    if(!urls.length){el.textContent='No cached images';el.style.opacity='0.4';return;}
+    var usage=await getImageUsage();
+    function labelFor(url){
+      var m=url.match(/_p(\d+)\.png/i);if(m)return'_p'+m[1];
+      var mr=url.match(/_r(\d+)\.png/i);if(mr)return'_r'+mr[1];
+      return'FIRST';
+    }
+    function borderFor(url){
+      var owner=usage[url];
+      if(!owner)return'var(--bd)';
+      return owner===String(pid)?'2px solid rgba(34,197,94,.8)':'2px solid rgba(245,158,11,.8)';
+    }
+    function labelColor(url){
+      var owner=usage[url];
+      if(!owner)return'var(--dim)';
+      return owner===String(pid)?'var(--grn)':'var(--ylw)';
+    }
+    function tipFor(url){
+      var owner=usage[url];
+      if(!owner)return'';
+      return owner===String(pid)?'✓ Used by this card':'Used by product #'+owner;
+    }
+    var html='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">';
+    urls.forEach(function(url){
+      var border=borderFor(url);
+      html+='<div style="text-align:center;cursor:pointer" title="'+esc(tipFor(url))+'" data-op-url="'+esc(url)+'" data-op-pid="'+esc(pid)+'">'
+        +'<img src="'+esc(proxyImg(url))+'" style="width:54px;border-radius:5px;background:var(--bg3);border:'+border+'" onerror="this.style.opacity=\'0.2\'" onmouseover="this.style.borderColor=\'var(--ac)\'" onmouseout="this.style.border=\''+border+'\'">'
+        +'<div style="font-size:9px;color:'+labelColor(url)+';margin-top:2px;font-weight:700">'+labelFor(url)+'</div>'
+        +'</div>';
+    });
+    html+='</div>';
+    el.innerHTML=html;
+    el.querySelectorAll('[data-op-url]').forEach(function(div){
+      div.onclick=async function(){
+        var url=this.getAttribute('data-op-url'), p=this.getAttribute('data-op-pid');
+        if(!confirm('Use this image?\n'+url))return;
+        var rr=await apiPost('/api/edits/image',{productId:p,imageUrl:url});
+        var jj=await rr.json();
+        if(jj.ok){showToast('Image set! ✅',true);invalidateImgUsageCache();await refreshSingleItem(p);await reloadDBAfterEdit();}
+        else showToast('Failed',false);
+      };
+    });
+  }catch(e){el.textContent='';} 
+}
+
+// After renderEditList, load OP images for all card rows on the page
+function loadAllInlineOPImages(){
+  editItems.forEach(function(it){
+    if(it.type==='cards'&&it.number&&(it.tags||[]).includes('image-not-updated')) loadInlineOPImages(it.productId,it.number);
+  });
+}
+
+// Override fetchEditItems to also load images after render
+var _origFetch=null;
+var _fetchEditItemsWithImages=fetchEditItems;
+
+/* ── Edit overlay ─────────────────────────────────────────────────────────── */
+async function openEditOverlay(productId){
+  var issue=editItems.find(function(i){return i.productId===productId;});
+  if(!issue)return;
+  var isCompleted=issue.completed;
+  var ep=issue.manualPrice||{subTypeName:issue.subTypeName||'',lowPrice:issue.lowPrice||'',midPrice:issue.midPrice||'',highPrice:issue.highPrice||'',marketPrice:issue.marketPrice||''};
+  var currentSubType=ep.subTypeName||issue.subTypeName||'';
+  var displayImg=issue.imageUrl||issue.originalImageUrl||('https://tcgplayer-cdn.tcgplayer.com/product/'+issue.productId+'_in_1000x1000.jpg');
+  var tcgUrl=issue.url||('https://www.tcgplayer.com/product/'+issue.productId);
+  var serial=(issue.number||'').toUpperCase().trim();
+
+  var needsPrice=(issue.tags||[]).includes('no-price')||(issue.tags||[]).includes('no-variant')||(issue.tags||[]).includes('no-market-price')||issue.hasManualPrice;
+
+  var imgSection='<div class="card" style="margin-bottom:14px"><div class="hd3">🖼️ Image</div>'
+    +'<div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap">'
+    +'<div style="flex-shrink:0"><div class="dim" style="font-size:10px;text-align:center;margin-bottom:3px">CURRENT</div>'
+    +'<img id="ov-cur-img" src="'+esc(proxyImg(displayImg))+'" style="width:90px;border-radius:8px;background:var(--bg3)" onerror="this.style.opacity=\'0.2\'">'
+    +'</div><div style="flex:1;min-width:160px">'
+    +(issue.hasCustomImage?'<div style="font-size:11px;color:var(--grn);margin-bottom:5px">✓ Custom URL active</div>':'')
+    +'<div class="dim" style="font-size:10px;word-break:break-all;margin-bottom:8px">'+esc(displayImg)+'</div>'
+    +'<a href="'+esc(tcgUrl)+'" target="_blank" class="btn btn-out" style="padding:5px 10px;font-size:11px">TCGPlayer ↗</a>'
+    +'</div></div>'
+    // OP image variants (loaded async)
+    +(serial?'<div id="ov-op-imgs"><div class="dim" style="font-size:11px">Loading One Piece images for <b>'+esc(serial)+'</b>… <span class="spinner"></span></div></div><br>':'')
+    +'<div class="field" style="margin-bottom:10px"><label>Paste new image URL</label>'
+    +'<input class="inp" id="ov-imgurl" placeholder="https://en.onepiece-cardgame.com/images/…"></div>'
+    +'<div id="ov-img-preview" style="display:none;margin-bottom:10px">'
+    +'<div class="dim" style="font-size:10px;margin-bottom:3px">Preview:</div>'
+    +'<img id="ov-preview-img" style="max-width:90px;border-radius:6px;background:var(--bg3)" onerror="this.parentNode.innerHTML=\'<div class=\\\"err\\\" style=\\\"font-size:11px\\\">URL doesn\'t load</div>\'">'
+    +'</div>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button class="btn btn-ac" id="ov-save-img">💾 Save URL</button>'
+    +(issue.hasCustomImage?'<button class="btn btn-out" id="ov-del-img">🗑️ Remove</button>':'')
+    +'</div></div>';
+
+  var priceSection='';
+  if(needsPrice){
+    priceSection='<div class="card" style="margin-bottom:14px"><div class="hd3">💰 Price Entry</div>';
+    if((issue.tags||[]).includes('no-price'))priceSection+='<div class="dim" style="font-size:12px;margin-bottom:10px">No price row in CSV.</div>';
+    if((issue.tags||[]).includes('no-variant'))priceSection+='<div class="dim" style="font-size:12px;margin-bottom:10px">Missing Normal/Foil subTypeName.</div>';
+    if((issue.tags||[]).includes('no-market-price')&&!(issue.tags||[]).includes('no-price'))priceSection+='<div class="dim" style="font-size:12px;margin-bottom:10px">Market price is empty.</div>';
+    priceSection+='<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">'
+      +'<button class="stype-btn'+(currentSubType==='Normal'?' on':'')+'" id="ov-snorm">Normal</button>'
+      +'<button class="stype-btn'+(currentSubType==='Foil'?' on':'')+'" id="ov-sfoil">Foil</button>'
+      +'<span id="ov-st-disp" style="margin-left:4px;font-size:13px;font-weight:700;color:var(--ac)">'+esc(currentSubType||'(not set)')+'</span></div>';
+    priceSection+='<div class="row" style="margin-bottom:10px">'
+      +'<div class="field"><label>Market $</label><input class="inp" id="ov-mktp" value="'+esc(ep.marketPrice||'')+'"></div>'
+      +'<div class="field"><label>Low $</label><input class="inp" id="ov-lowp" value="'+esc(ep.lowPrice||'')+'"></div>'
+      +'</div><div class="row" style="margin-bottom:12px">'
+      +'<div class="field"><label>Mid $</label><input class="inp" id="ov-midp" value="'+esc(ep.midPrice||'')+'"></div>'
+      +'<div class="field"><label>High $</label><input class="inp" id="ov-hip" value="'+esc(ep.highPrice||'')+'"></div></div>';
+    priceSection+='<div style="display:flex;gap:8px"><button class="btn btn-ac" id="ov-save-price">💾 Save</button>'
+      +(issue.hasManualPrice?'<button class="btn btn-out" id="ov-del-price">🗑️ Remove</button>':'')
+      +'</div></div>';
+  }
+
+  var html='<div class="modal-t" style="font-size:15px">'+esc(issue.name)+'</div>'
+    +'<div class="dim" style="font-size:11px;margin-bottom:14px">'+esc(issue.setName)+(issue.number?' · <b>'+esc(issue.number)+'</b>':'')+'  ·  ID: '+esc(issue.productId)+'</div>'
+    +imgSection+priceSection
+    +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:4px">'
+    +'<button class="btn '+(isCompleted?'btn-out':'btn-grn')+'" id="ov-complete">'+(isCompleted?'↩️ Move to Review':'✅ Mark Completed')+'</button>'
+    +'<button class="btn btn-out" id="ov-close">Close</button></div>';
+
+  openModal(html);
+  $('ov-close').onclick=closeModal;
+
+  if(serial) loadOverlayOPImages(serial,issue.productId);
+
+  var imgInput=$('ov-imgurl');
+  if(imgInput)imgInput.oninput=debounce(function(){
+    var v=imgInput.value.trim(),pv=$('ov-img-preview'),pi=$('ov-preview-img');
+    if(v&&pv&&pi){pv.style.display='block';pi.src=proxyImg(v);}else if(pv)pv.style.display='none';
+  },400);
+
+  if($('ov-save-img'))$('ov-save-img').onclick=async function(){
+    var url=imgInput?imgInput.value.trim():'';
+    if(!url){showToast('Enter a URL first',false);return;}
+    var rr=await apiPost('/api/edits/image',{productId:issue.productId,imageUrl:url});
+    var jj=await rr.json();
+    if(jj.ok){showToast('Image saved! ✅',true);invalidateImgUsageCache();closeModal();await refreshSingleItem(issue.productId);await reloadDBAfterEdit();}
+    else showToast('Save failed',false);
+  };
+  if($('ov-del-img'))$('ov-del-img').onclick=async function(){
+    if(!confirm('Remove custom image?'))return;
+    await apiDel('/api/edits/image/'+issue.productId);
+    showToast('Removed',true);invalidateImgUsageCache();closeModal();await refreshSingleItem(issue.productId);await reloadDBAfterEdit();
+  };
+
+  function setSubType(v){currentSubType=v;var d=$('ov-st-disp');if(d)d.textContent=v;[$('ov-snorm'),$('ov-sfoil')].forEach(function(b){if(b)b.classList.toggle('on',b.id==='ov-snorm'?v==='Normal':v==='Foil');});}
+  if($('ov-snorm'))$('ov-snorm').onclick=function(){setSubType('Normal');};
+  if($('ov-sfoil'))$('ov-sfoil').onclick=function(){setSubType('Foil');};
+
+  if($('ov-save-price'))$('ov-save-price').onclick=async function(){
+    var body={productId:issue.productId,subTypeName:currentSubType,
+      marketPrice:$('ov-mktp')?$('ov-mktp').value:'',lowPrice:$('ov-lowp')?$('ov-lowp').value:'',
+      midPrice:$('ov-midp')?$('ov-midp').value:'',highPrice:$('ov-hip')?$('ov-hip').value:''};
+    var rr=await apiPost('/api/edits/price',body);
+    var jj=await rr.json();
+    if(jj.ok){showToast('Saved! ✅',true);closeModal();await refreshSingleItem(issue.productId);await reloadDBAfterEdit();}
+    else showToast('Save failed',false);
+  };
+  if($('ov-del-price'))$('ov-del-price').onclick=async function(){
+    if(!confirm('Remove price entry?'))return;
+    await apiDel('/api/edits/price/'+issue.productId);
+    showToast('Removed',true);closeModal();await refreshSingleItem(issue.productId);await reloadDBAfterEdit();
+  };
+
+  $('ov-complete').onclick=async function(){
+    var ep2=isCompleted?'/api/edits/uncomplete':'/api/edits/complete';
+    await apiPost(ep2,{productId:issue.productId});
+    showToast(isCompleted?'Moved to review':'Completed ✅',true);closeModal();await refreshSingleItem(issue.productId);
+  };
+}
+
+// OP images for the overlay (larger thumbnails)
+async function loadOverlayOPImages(serial,pid){
+  var el=$('ov-op-imgs');if(!el)return;
+  try{
+    var r=await fetch(apiBase()+'/api/card-images?serial='+encodeURIComponent(serial));
+    var data=await r.json();
+    var urls=data.urls||[];
+    if(!urls.length){el.innerHTML='<div class="dim" style="font-size:11px">No cached images. Use "Check New Images" to fetch.</div>';return;}
+    var usage=await getImageUsage();
+    function labelFor(url){
+      var m=url.match(/_p(\d+)\.png/i);if(m)return'_p'+m[1];
+      var mr=url.match(/_r(\d+)\.png/i);if(mr)return'_r'+mr[1];
+      return'FIRST';
+    }
+    function borderFor(url){
+      var owner=usage[url];
+      if(!owner)return'2px solid var(--bd)';
+      return owner===String(pid)?'2px solid rgba(34,197,94,.8)':'2px solid rgba(245,158,11,.8)';
+    }
+    function labelColor(url){
+      var owner=usage[url];
+      if(!owner)return'var(--dim)';
+      return owner===String(pid)?'var(--grn)':'var(--ylw)';
+    }
+    function tipFor(url){
+      var owner=usage[url];
+      if(!owner)return'';
+      return owner===String(pid)?'✓ Used by this card':'Used by product #'+owner;
+    }
+    var html='<div style="font-size:11px;color:var(--dim);margin-bottom:6px">'
+      +'Click to use · <span style="color:var(--grn);font-weight:700">■</span> this card · <span style="color:var(--ylw);font-weight:700">■</span> another card</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    urls.forEach(function(url){
+      var border=borderFor(url);
+      html+='<div style="text-align:center;cursor:pointer" title="'+esc(tipFor(url))+'" data-op-url="'+esc(url)+'" data-op-pid="'+esc(pid)+'">'
+        +'<img src="'+esc(proxyImg(url))+'" style="width:80px;border-radius:6px;background:var(--bg3);'+border+';transition:.15s" onerror="this.style.opacity=\'0.2\'" onmouseover="this.style.borderColor=\'var(--ac)\'" onmouseout="this.style.border=\''+border+'\'">'
+        +'<div style="font-size:10px;color:'+labelColor(url)+';margin-top:3px;font-weight:700">'+labelFor(url)+'</div>'
+        +'</div>';
+    });
+    html+='</div>';
+    el.innerHTML=html;
+    el.querySelectorAll('[data-op-url]').forEach(function(div){
+      div.onclick=async function(){
+        var url=this.getAttribute('data-op-url'),p=this.getAttribute('data-op-pid');
+        if(!confirm('Use this image?\n'+url))return;
+        var rr=await apiPost('/api/edits/image',{productId:p,imageUrl:url});
+        var jj=await rr.json();
+        if(jj.ok){showToast('Image set! ✅',true);invalidateImgUsageCache();var ci=$('ov-cur-img');if(ci)ci.src=proxyImg(url);closeModal();await refreshSingleItem(p);await reloadDBAfterEdit();}
+        else showToast('Failed',false);
+      };
+    });
+  }catch(e){el.innerHTML='';}
+}
+
+
+/* ═══ LINKED LISTINGS ═══ */
+var lSort='high-low',lFilter='all';
+function renderLinked(m){
+  var uids=Object.keys(LINKED_LISTINGS),total=uids.reduce(function(a,u){return a+(LINKED_LISTINGS[u]||[]).length;},0);
+  var filtered=uids;
+  if(lFilter==='cards')filtered=uids.filter(function(u){var x=DB&&DB.byUid.get(u);return x&&x.type==='card';});
+  else if(lFilter==='don')filtered=uids.filter(function(u){var x=DB&&DB.byUid.get(u);return x&&x.type==='don';});
+  else if(lFilter==='sealed')filtered=uids.filter(function(u){var x=DB&&DB.byUid.get(u);return x&&x.type==='sealed';});
+  var sortable=filtered.map(function(uid){var p=DB&&DB.byUid.get(uid);return{uid:uid,name:p?(p.type==='card'?shortName(p):p.name).toLowerCase():'',price:p?p.marketPrice:0};});
+  if(lSort==='alpha')sortable.sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(lSort==='high-low')sortable.sort(function(a,b){return b.price-a.price;});
+  else sortable.sort(function(a,b){return a.price-b.price;});
+  var html='<div class="hd">🔗 Linked Listings <span class="dim" style="font-size:14px;font-weight:500">'+total+' across '+uids.length+' products</span></div>';
+  html+='<div class="row mb"><div class="field"><label>Sort</label><select class="inp" id="l-sort"><option value="alpha"'+(lSort==='alpha'?' selected':'')+'>Alphabetical</option><option value="high-low"'+(lSort==='high-low'?' selected':'')+'>Price High→Low</option><option value="low-high"'+(lSort==='low-high'?' selected':'')+'>Price Low→High</option></select></div>';
+  html+='<div class="field"><label>Filter</label><select class="inp" id="l-filter"><option value="all"'+(lFilter==='all'?' selected':'')+'>All</option><option value="cards"'+(lFilter==='cards'?' selected':'')+'>Cards</option><option value="don"'+(lFilter==='don'?' selected':'')+'>DON!!</option><option value="sealed"'+(lFilter==='sealed'?' selected':'')+'>Sealed</option></select></div></div>';
+  if(total===0)html+='<div class="empty">No linked listings yet.</div>';
+  else if(sortable.length===0)html+='<div class="empty">No listings match filter.</div>';
+  else sortable.forEach(function(s){
+    var p=DB&&DB.byUid.get(s.uid);if(!p){html+='<div class="card"><div class="dim">Unknown product (uid: '+esc(s.uid)+') — '+LINKED_LISTINGS[s.uid].length+' orphaned listings</div></div>';return;}
+    var ls=LINKED_LISTINGS[s.uid]||[];
+    var tb=p.type==='card'?'<span class="badge badge-card">CARD</span>':p.type==='don'?'<span class="badge badge-don">DON!!</span>':'<span class="badge badge-sealed">SEALED</span>';
+    var vb=p.type!=='sealed'&&p.variant&&p.isSplit?'<span class="badge badge-variant">'+esc(p.variant)+'</span>':'';
+    html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1"><div style="font-weight:700;font-size:15px;word-break:break-word">'+tb+' '+esc(p.type==='card'?shortName(p):p.name)+vb+'</div><div class="dim" style="font-size:12px">Market: '+(p.marketPrice>0?'$'+p.marketPrice.toFixed(2):'N/A')+'</div></div><button class="btn-sm" data-goto="'+esc(s.uid)+'">View →</button></div>';
+    ls.forEach(function(l,li){var fp=finalPrice(p.marketPrice,l.option,l.modifier,true,l.shippingPrice);html+='<div class="link-card"><div class="link-title"><a href="https://www.ebay.com/itm/'+l.itemId+'" target="_blank">'+esc(l.itemId)+'</a></div><div class="link-sub">Price: '+fp+' · '+modName(l.modifier);if(l.shippingPrice!=null)html+=' · Ship $'+l.shippingPrice.toFixed(2);html+='</div><div class="link-actions"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-ll-edit="'+esc(s.uid)+'|'+li+'">✏️</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-ll-del="'+esc(s.uid)+'|'+li+'">🗑️</button></div></div>';});
+    html+='</div>';
+  });
+  m.innerHTML=html;
+  $('l-sort').onchange=function(){lSort=this.value;renderLinked(m);};
+  $('l-filter').onchange=function(){lFilter=this.value;renderLinked(m);};
+  m.querySelectorAll('[data-goto]').forEach(function(b){b.onclick=function(){if(!DB)return;searchSel=DB.byUid.get(this.getAttribute('data-goto'));searchCustShip='';searchQ=searchSel?(searchSel.number||searchSel.name):'';switchTab('search');};});
+  m.querySelectorAll('[data-ll-edit]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-edit').split('|');var p=DB&&DB.byUid.get(ps[0]);if(p)openLinkModal(p,parseInt(ps[1]));};});
+  m.querySelectorAll('[data-ll-del]').forEach(function(b){b.onclick=function(){var ps=this.getAttribute('data-ll-del').split('|'),uid=ps[0],li=parseInt(ps[1]);if(!confirm('Delete?'))return;LINKED_LISTINGS[uid].splice(li,1);if(!LINKED_LISTINGS[uid].length)delete LINKED_LISTINGS[uid];saveStorage();showToast('Deleted',true);renderLinked(m);};});
+}
+
+/* ═══ BOX PRESETS ═══ */
+function renderPresets(m){
+  var html='<div class="hd">📦 Box Size Presets</div><button class="btn btn-ac mb" id="p-new">➕ Create New</button>';
+  if(!BOX_PRESETS.length)html+='<div class="empty">No presets yet.</div>';
+  else BOX_PRESETS.forEach(function(p,i){html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1"><b>'+esc(p.name)+'</b><br><span class="dim" style="font-size:13px">'+p.lengthIn+'" × '+p.widthIn+'" × '+p.heightIn+'" · '+p.weightLbs+'lb '+p.weightOz+'oz</span></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn btn-out" style="padding:6px 12px;font-size:12px" data-pe="'+i+'">✏️</button><button class="btn btn-dng" style="padding:6px 12px;font-size:12px" data-pd="'+i+'">🗑️</button></div></div></div>';});
+  m.innerHTML=html;
+  $('p-new').onclick=function(){openPresetModal(null);};
+  m.querySelectorAll('[data-pe]').forEach(function(b){b.onclick=function(){openPresetModal(parseInt(this.getAttribute('data-pe')));};});
+  m.querySelectorAll('[data-pd]').forEach(function(b){b.onclick=function(){var i=parseInt(this.getAttribute('data-pd'));if(!confirm('Delete "'+BOX_PRESETS[i].name+'"?'))return;BOX_PRESETS.splice(i,1);saveStorage();renderPresets(m);showToast('Deleted',true);};});
+}
+function openPresetModal(ei){
+  var ex=ei!=null?BOX_PRESETS[ei]:null,isE=ei!=null;
+  var html='<div class="modal-t">'+(isE?'Edit':'Create')+' Preset</div>';
+  html+='<div class="field" style="margin-bottom:10px"><label>Name</label><input class="inp" id="p-name" value="'+esc(ex?ex.name:'')+'"></div>';
+  html+='<div class="row" style="margin-bottom:10px"><div class="field"><label>Length"</label><input class="inp" id="p-l" value="'+esc(ex?ex.lengthIn:'')+'"></div><div class="field"><label>Width"</label><input class="inp" id="p-w" value="'+esc(ex?ex.widthIn:'')+'"></div><div class="field"><label>Height"</label><input class="inp" id="p-h" value="'+esc(ex?ex.heightIn:'')+'"></div></div>';
+  html+='<div class="row" style="margin-bottom:16px"><div class="field"><label>Lbs</label><input class="inp" id="p-wl" value="'+esc(ex?ex.weightLbs:'')+'"></div><div class="field"><label>Oz</label><input class="inp" id="p-wo" value="'+esc(ex?ex.weightOz:'')+'"></div></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-out" id="p-cancel">Cancel</button><button class="btn btn-ac" id="p-save">'+(isE?'Save':'Create')+'</button></div>';
+  openModal(html);$('p-cancel').onclick=closeModal;
+  $('p-save').onclick=function(){var n=$('p-name').value.trim(),l=parseFloat($('p-l').value),w=parseFloat($('p-w').value),hh=parseFloat($('p-h').value),wl=parseInt($('p-wl').value),wo=parseFloat($('p-wo').value);if(!n){showToast('Name required',false);return;}if(isNaN(l)||isNaN(w)||isNaN(hh)||l<=0||w<=0||hh<=0){showToast('Invalid dims',false);return;}if(isNaN(wl)||isNaN(wo)||wl<0||wo<0||wo>=16){showToast('Invalid weight',false);return;}if(wl===0&&wo===0){showToast('Weight=0',false);return;}var e={name:n,lengthIn:l,widthIn:w,heightIn:hh,weightLbs:wl,weightOz:wo};if(isE)BOX_PRESETS[ei]=e;else BOX_PRESETS.push(e);saveStorage();showToast(isE?'Updated':'Created',true);closeModal();renderPresets($('main'));};
+}
+
+/* ═══ CALC / QUICK / BATCH ═══ */
+function renderCalc(m){
+  m.innerHTML='<div class="hd">🧮 eBay Price Calculator</div><div class="tg mb"><button class="on" id="cm-a">Auto Shipping</button><button id="cm-c">Custom Shipping</button></div><div class="row mb" style="align-items:flex-end"><div class="field"><label>Desired Net ($)</label><input class="inp inp-big" id="cn" placeholder="0.00"></div><div class="field" id="csw" style="display:none"><label>Shipping ($)</label><input class="inp inp-big" id="cs" placeholder="0.00"></div><button class="btn btn-ac" style="padding:12px 32px" id="cgo">Calculate</button></div><div id="cr"></div>';
+  var mode='auto';$('cm-a').onclick=function(){mode='auto';this.className='on';$('cm-c').className='';$('csw').style.display='none';};$('cm-c').onclick=function(){mode='custom';this.className='on';$('cm-a').className='';$('csw').style.display='';};
+  function go(){var n=parseFloat($('cn').value),el=$('cr');if(!n||n<=0){el.innerHTML='<div class="err">❌ Enter net > 0</div>';return;}var s=mode==='custom'?parseFloat($('cs').value):null;if(mode==='custom'&&(isNaN(s)||s<0)){el.innerHTML='<div class="err">❌ Enter shipping ≥ 0</div>';return;}var r=calcListing(n,s);if(!r){el.innerHTML='<div class="err">❌ Error</div>';return;}var v=vNet(r.lp,r.ship,r.c);el.innerHTML='<div class="card" style="animation:fadeIn .2s"><div class="st-grid">'+stat('Desired','$'+n.toFixed(2),'',1)+stat('List At','$'+r.lp.toFixed(2),'var(--ac)',1)+stat('Shipping','$'+r.ship.toFixed(2))+stat('Fee','$'+r.c.toFixed(2),'var(--ylw)')+stat('Net','$'+v.toFixed(2),'var(--grn)')+stat('Rule',r.rule)+'</div></div>';}
+  $('cn').onkeydown=function(e){if(e.key==='Enter')go();};$('cs').onkeydown=function(e){if(e.key==='Enter')go();};$('cgo').onclick=go;
+}
+function renderQuick(m){
+  m.innerHTML='<div class="hd">⚡ Quick Calc</div><p class="dim" style="margin-bottom:14px">Live results as you type.</p><input class="inp inp-big" style="max-width:280px;margin-bottom:20px" id="qn" placeholder="Desired net $"><div id="qr"></div>';
+  $('qn').oninput=function(){var n=parseFloat(this.value),el=$('qr');if(!n||n<=0){el.innerHTML='';return;}var r=calcListing(n);if(!r){el.innerHTML='';return;}var v=vNet(r.lp,r.ship,r.c);el.innerHTML='<div class="card" style="font-size:15px;line-height:2.4"><div><span class="dim">Desired:</span> <b>$'+n.toFixed(2)+'</b></div><div><span class="dim">List at:</span> <b style="color:var(--ac)">$'+r.lp.toFixed(2)+'</b></div><div><span class="dim">Shipping:</span> <b>$'+r.ship.toFixed(2)+'</b> '+(r.cat==='LOW'?'📦':'🚚')+'</div><div><span class="dim">Fee:</span> <b style="color:var(--ylw)">$'+r.c.toFixed(2)+'</b></div><div><span class="dim">Net:</span> <b style="color:var(--grn)">$'+v.toFixed(2)+'</b></div><div><span class="dim">Rule:</span> '+r.rule+'</div></div>';};
+  $('qn').focus();
+}
+function renderBatch(m){
+  m.innerHTML='<div class="hd">📊 Batch Calculator</div><div class="row mb"><input class="inp" style="flex:1" id="bi" placeholder="5, 10, 15, 20, 50"><button class="btn btn-ac" id="bgo">Calculate</button></div><div id="br"></div>';
+  function go(){var ns=$('bi').value.split(',').map(function(s){return parseFloat(s.trim());}).filter(function(n){return n>0;});if(!ns.length)return;var rows=ns.map(function(n){var r=calcListing(n);if(!r)return{d:n,err:1};return{d:n,lp:r.lp,sh:r.ship,v:vNet(r.lp,r.ship,r.c),cat:r.cat};});var html='<div class="tbl-w"><table><thead><tr><th>Desired</th><th>List At</th><th>Shipping</th><th>Net</th></tr></thead><tbody>';rows.forEach(function(r){html+='<tr><td>$'+r.d.toFixed(2)+'</td><td style="color:'+(r.err?'#ef4444':'var(--ac)')+';font-weight:700">'+(r.err?'ERR':'$'+r.lp.toFixed(2))+'</td><td>'+(r.err?'—':'$'+r.sh.toFixed(2)+' '+(r.cat==='LOW'?'📦':'🚚'))+'</td><td style="color:var(--grn);font-weight:600">'+(r.err?'—':'$'+r.v.toFixed(2))+'</td></tr>';});html+='</tbody></table></div>';$('br').innerHTML=html;}
+  $('bi').onkeydown=function(e){if(e.key==='Enter')go();};$('bgo').onclick=go;
+}
+
+/* ═══ EBAY AUTH ═══ */
+function renderEbay(m){
+  var c=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt>Date.now(),x=EBAY_AUTH.accessToken&&EBAY_AUTH.expiresAt<=Date.now();
+  var html='<div class="hd">🔐 eBay Authentication</div>';
+  html+='<div class="info-bar">⚠️ Browsers cannot directly auth with eBay (CORS + client_secret). Generate a token from the <a href="https://developer.ebay.com/my/auth/?env=production" target="_blank">eBay Developer Portal</a> and paste it below.</div>';
+  if(c){var mins=Math.round((EBAY_AUTH.expiresAt-Date.now())/60000);html+='<div class="card" style="border-color:rgba(34,197,94,.3)"><div class="hd3" style="color:var(--grn)">✅ Connected</div><div style="font-size:13px;line-height:1.9"><div><span class="dim">Username:</span> <b>'+esc(EBAY_AUTH.username)+'</b></div><div><span class="dim">Token:</span> <code style="word-break:break-all">'+esc(EBAY_AUTH.accessToken.substring(0,30))+'...</code></div><div><span class="dim">Expires:</span> <b>'+mins+' min</b></div></div><div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-out" id="eb-edit">Update</button><button class="btn btn-dng" id="eb-out">Sign Out</button></div></div>';}
+  else{html+='<div class="card"><div class="hd3">'+(x?'⏰ Expired':'🔑 Not Signed In')+'</div><div class="dim" style="margin-bottom:14px;line-height:1.7;font-size:13px">1. Open <a href="https://developer.ebay.com/my/auth/?env=production" target="_blank">eBay Dev Portal</a><br>2. Get User Token → copy it<br>3. Paste below</div><button class="btn btn-ac" id="eb-in">Enter Token</button></div>';}
+  m.innerHTML=html;
+  if($('eb-in'))$('eb-in').onclick=openEbayModal;if($('eb-edit'))$('eb-edit').onclick=openEbayModal;
+  if($('eb-out'))$('eb-out').onclick=function(){if(!confirm('Sign out?'))return;EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};saveStorage();renderEbayBtn();renderEbay(m);showToast('Signed out',true);};
+}
+function openEbayModal(){
+  var html='<div class="modal-t">🔐 eBay Token</div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Access Token</label><input class="inp" id="ea-t" value="'+esc(EBAY_AUTH.accessToken)+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Refresh Token (optional)</label><input class="inp" id="ea-r" value="'+esc(EBAY_AUTH.refreshToken)+'"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Expires In (seconds)</label><input class="inp" id="ea-e" value="7200"></div>';
+  html+='<div class="field" style="margin-bottom:12px"><label>Username</label><input class="inp" id="ea-u" value="'+esc(EBAY_AUTH.username)+'"></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-out" id="ea-cancel">Cancel</button><button class="btn btn-ac" id="ea-save">Save</button></div>';
+  openModal(html);$('ea-cancel').onclick=closeModal;
+  $('ea-save').onclick=function(){var t=$('ea-t').value.trim();if(!t){showToast('Token required',false);return;}EBAY_AUTH={accessToken:t,refreshToken:$('ea-r').value.trim(),expiresAt:Date.now()+(parseInt($('ea-e').value)||7200)*1000,username:$('ea-u').value.trim()};saveStorage();renderEbayBtn();closeModal();renderEbay($('main'));showToast('Saved!',true);};
+}
+
+/* ═══ SETTINGS ═══ */
+function renderSettings(m){
+  m.innerHTML='<div class="hd">⚙️ Settings</div>'
+    +'<div class="card"><div class="hd3">📍 Ship-From ZIP</div><div class="row"><input class="inp" id="s-zip" style="max-width:200px" value="'+esc(USER_ZIP)+'"><button class="btn btn-ac" id="s-zs">Save</button></div></div>'
+    +'<div class="card"><div class="hd3">🔄 Database (server-managed)</div>'
+    +'<div class="dim" style="font-size:13px;line-height:1.8">The database is stored on the server and updated automatically when TCGCSV publishes new data (detected via <code>last-updated.txt</code>). Updates are applied 5 minutes after detection using incremental merging — existing corrections are preserved.</div>'
+    +'<div class="row" style="margin-top:12px"><button class="btn btn-out" id="s-refresh">Force Update Now</button><span id="s-upd-status" class="dim" style="align-self:center;font-size:12px"></span></div></div>'
+    +'<div class="card"><div class="hd3">🗑️ Data</div><div class="row"><button class="btn btn-out" id="s-cl">Clear Linked</button><button class="btn btn-out" id="s-cp">Clear Presets</button><button class="btn btn-dng" id="s-ca">Clear All</button></div></div>'
+    +'<div class="card"><div class="hd3">📊 Stats</div><div class="dim" style="font-size:13px;line-height:1.8">DB: '+(DB?DB.allCards.length+' cards, '+DB.sealed.length+' sealed, '+DB.don.length+' DON!!':'not loaded')+'<br>Linked: '+Object.keys(LINKED_LISTINGS).length+' products ('+Object.keys(LINKED_LISTINGS).reduce(function(a,k){return a+LINKED_LISTINGS[k].length;},0)+' listings)<br>Presets: '+BOX_PRESETS.length+'<br>eBay: '+(EBAY_AUTH.accessToken?(EBAY_AUTH.expiresAt>Date.now()?'connected':'expired'):'not signed in')+'</div></div>';
+  $('s-zs').onclick=function(){var z=$('s-zip').value.trim();if(!/^\d{5}$/.test(z)){showToast('Invalid ZIP',false);return;}USER_ZIP=z;saveStorage();showToast('ZIP: '+z,true);};
+  $('s-refresh').onclick=async function(){
+    if(!confirm('Force-update database from TCGCSV now? This may take several minutes.'))return;
+    this.disabled=true;$('s-upd-status').textContent='Starting…';
+    try{var r=await apiPost('/api/update',{});var j=await r.json();$('s-upd-status').textContent=j.message;}catch(e){$('s-upd-status').textContent='Error: '+e.message;}
+    this.disabled=false;
+  };
+  $('s-cl').onclick=function(){if(!confirm('Clear linked?'))return;LINKED_LISTINGS={};saveStorage();showToast('Cleared',true);renderSettings(m);};
+  $('s-cp').onclick=function(){if(!confirm('Clear presets?'))return;BOX_PRESETS=[];saveStorage();showToast('Cleared',true);renderSettings(m);};
+  $('s-ca').onclick=function(){if(!confirm('Clear EVERYTHING?'))return;LINKED_LISTINGS={};BOX_PRESETS=[];USER_ZIP='';EBAY_AUTH={accessToken:'',refreshToken:'',expiresAt:0,username:''};localStorage.clear();saveStorage();showToast('All cleared',true);renderEbayBtn();renderSettings(m);};
+}
+
+/* ═══ FEE INFO ═══ */
+function renderInfo(m){
+  var items=[
+    {i:'💰',t:'eBay FVF',d:'13.25% of item + 13.25% × 10.11% of shipping',d2:'≈14.59% effective rate'},
+    {i:'💳',t:'Fixed Fee',d:'$0.30 if total ≤ $10',d2:'$0.40 if total ≥ $10.01'},
+    {i:'📦',t:'Shipping',d:'≤ $20 → $0.74',d2:'> $20 → $5.89'},
+    {i:'🔢',t:'Formula',d:'a = (n + c + S×b) / (1 − S)',d2:'a=listing  b=ship  n=net  S=0.1325+0.1325×0.1011',mono:1}
+  ];
+  var html='<div class="hd">📋 Fee Info</div><div style="display:grid;gap:14px">';
+  items.forEach(function(it){html+='<div class="card"><div style="font-size:16px;font-weight:700;margin-bottom:6px">'+it.i+' '+it.t+'</div><div class="dim" style="line-height:1.7">'+it.d+'</div><div class="dim" style="opacity:.65;margin-top:4px;font-size:12px'+(it.mono?';font-family:JetBrains Mono,monospace':'')+'">'+it.d2+'</div></div>';});
+  html+='</div>';m.innerHTML=html;
+}
+
+/* ═══ DB LOADER (from server API) ═══ */
+
+// After any CSV edit: silently refresh the in-memory DB without disturbing the current tab
+async function reloadDBAfterEdit(){
+  try{
+    var r=await fetch(apiBase()+'/api/db');
+    if(!r.ok)return;
+    var raw=await r.json();
+    if(raw.error||(!raw.allCards&&!raw.sealed&&!raw.don))return;
+    var cardMap=new Map(),byUid=new Map();
+    Object.entries(raw.cardMapObj||{}).forEach(function(e){cardMap.set(e[0],e[1]);});
+    Object.entries(raw.byUidObj||{}).forEach(function(e){byUid.set(e[0],e[1]);});
+    DB={cardMap:cardMap,byUid:byUid,sealed:raw.sealed||[],don:raw.don||[],allCards:raw.allCards||[]};
+    searchStatus='ready';
+    // Refresh searchSel to new DB object so card detail shows updated data
+    if(searchSel&&DB.byUid){var f=DB.byUid.get(searchSel.uid);if(f){searchSel=f;if(currentTab==='search')renderDetail($('search-content'));}} 
+    updateSearchStatusEl();
+  }catch(e){console.warn('reloadDBAfterEdit:',e);}
+}
+
+var dbLoadTimer = null;
+var dbConnectAttempts = 0;
+
+async function loadDB(){
+  // Show a helpful error if opened as file:// AND no API URL is configured
+  if(window.location.protocol === 'file:' && !window.TCG_API_URL) {
+    var m = $('main');
+    if(m) m.innerHTML = '<div style="padding:40px 28px"><div class="empty">'
+      + '<div style="font-size:36px;margin-bottom:14px">🚫</div>'
+      + '<div style="font-size:16px;font-weight:700;margin-bottom:10px">Wrong URL</div>'
+      + '<div class="dim" style="font-size:13px;line-height:1.9">You opened this file directly.<br>'
+      + 'Either run <code>npm start</code> and visit '
+      + '<a href="http://localhost:3000">http://localhost:3000</a>,<br>'
+      + 'or set <code>TCG_API_URL</code> in the config block at the top of this file.</div>'
+      + '</div></div>';
+    return;
+  }
+
+  // Use absolute URL so it works regardless of how the page was reached
+  var API = apiBase();
+
+  dbConnectAttempts++;
+  searchStatus = dbConnectAttempts > 1
+    ? 'Connecting to server… (attempt '+dbConnectAttempts+')'
+    : 'Connecting to server…';
+  updateSearchStatusEl();
+  if(currentTab==='search') renderSearch($('main'));
+
+  // ── 1. Check server status ──
+  var status = {};
+  try {
+    var sr = await fetch(API+'/api/status');
+    if(!sr.ok) throw new Error('HTTP '+sr.status);
+    status = await sr.json();
+    serverStatus = status;
+    dbConnectAttempts = 0; // reset on success
+  } catch(e) {
+    // Server unreachable — keep retrying every 3s (server may still be starting)
+    searchStatus = 'Waiting for server… ('+e.message+')';
+    updateSearchStatusEl();
+    if(currentTab==='search'){
+      var m = $('main');
+      if(m) m.innerHTML = '<div style="padding:40px 28px">'
+        + '<div class="sts"><span class="dot" style="background:#ef4444"></span>'
+        + '<span id="sts-txt">'+esc(searchStatus)+'</span></div>'
+        + '<div class="empty" style="padding-top:24px">'
+        + '<div style="font-size:32px;margin-bottom:12px">⚙️</div>'
+        + '<div style="font-size:15px;font-weight:700;margin-bottom:8px">Waiting for server</div>'
+        + '<div class="dim" style="font-size:13px;margin-bottom:20px">Make sure <code>npm start</code> is running,<br>then this page will connect automatically.</div>'
+        + '<button class="btn btn-ac" onclick="loadDB()">Retry Now</button>'
+        + '</div></div>';
+    }
+    clearTimeout(dbLoadTimer);
+    dbLoadTimer = setTimeout(loadDB, 3000);
+    return;
+  }
+
+  // ── 2. Server is still downloading / no data yet ──
+  if(status.updateRunning || status.sets === 0){
+    var msg = status.updateRunning
+      ? 'Server downloading DB… ' + (status.updateLog || '')
+      : 'Waiting for initial download…';
+    searchStatus = msg;
+    updateSearchStatusEl();
+    if(currentTab==='search') renderSearch($('main'));
+    clearTimeout(dbLoadTimer);
+    dbLoadTimer = setTimeout(loadDB, 4000);
+    return;
+  }
+
+  // ── 3. Fetch the full DB ──
+  try {
+    searchStatus = 'Loading database…';
+    updateSearchStatusEl();
+    if(currentTab==='search') renderSearch($('main'));
+
+    var r = await fetch(API+'/api/db');
+    if(!r.ok) throw new Error('HTTP '+r.status+' from /api/db — check server console');
+    var raw = await r.json();
+    if(raw.error) throw new Error(raw.error);
+
+    var cardMap = new Map(), byUid = new Map();
+    Object.entries(raw.cardMapObj||{}).forEach(function(e){ cardMap.set(e[0],e[1]); });
+    Object.entries(raw.byUidObj||{}).forEach(function(e){ byUid.set(e[0],e[1]); });
+    DB = { cardMap:cardMap, byUid:byUid, sealed:raw.sealed||[], don:raw.don||[], allCards:raw.allCards||[] };
+    // Normalize: replace "Super Alternate Art" with "Manga"
+    function normName(n){return(n||'').replace(/Super Alternate Art/gi,'Manga');}
+    function normItem(item){if(item&&item.name)item.name=normName(item.name);return item;}
+    DB.allCards.forEach(normItem);DB.don.forEach(normItem);DB.sealed.forEach(normItem);
+    DB.byUid.forEach(normItem);DB.cardMap.forEach(function(arr){arr.forEach(normItem);});
+
+    if(!DB.allCards.length && !DB.sealed.length && !DB.don.length){
+      // Empty DB — server may have just wiped corrupt files; wait and retry
+      searchStatus = 'DB empty — re-download in progress…';
+      updateSearchStatusEl();
+      if(currentTab==='search') renderSearch($('main'));
+      clearTimeout(dbLoadTimer);
+      dbLoadTimer = setTimeout(loadDB, 5000);
+      return;
+    }
+
+    searchStatus = 'ready';
+    lastUpdateAt = status.lastUpdatedAt || 0;
+    // Refresh searchSel reference to the new DB object (so detail view gets fresh data)
+    if(searchSel && DB && DB.byUid) {
+      var fresh = DB.byUid.get(searchSel.uid);
+      if(fresh) searchSel = fresh;
+    }
+    if(currentTab==='search') renderSearch($('main'));
+    else updateSearchStatusEl();
+    startStatusPolling();
+  } catch(e) {
+    searchStatus = 'Error loading DB: ' + e.message;
+    updateSearchStatusEl();
+    if(currentTab==='search') renderSearch($('main'));
+    // Retry after 8s in case the DB is still being built
+    clearTimeout(dbLoadTimer);
+    dbLoadTimer = setTimeout(loadDB, 8000);
+  }
+}
+
+// Polls every 30s; reloads DB if server ran an update since last load
+var lastUpdateAt = 0;
+var lastEditSeen = 0;
+async function pollServerStatus(){
+  try {
+    var r = await fetch(API+'/api/status');
+    if(!r.ok) return;
+    serverStatus = await r.json();
+    updateSearchStatusEl();
+    if((serverStatus.lastUpdatedAt && serverStatus.lastUpdatedAt > lastUpdateAt) && DB !== null){
+      lastUpdateAt = serverStatus.lastUpdatedAt;
+      console.log('[poll] Server updated — reloading DB');
+      clearTimeout(dbLoadTimer);
+      loadDB();
+    }
+    if(serverStatus.lastEditAt && serverStatus.lastEditAt > lastEditSeen && DB !== null){
+      lastEditSeen = serverStatus.lastEditAt;
+    }
+    // Refresh bars if on edit tab
+    if(currentTab==='editcsv'){renderScrapeBar();renderImgBar();renderTCGImgBar();}
+    // If server started a new update, reflect that in the status bar
+    if(serverStatus.updateRunning) updateSearchStatusEl();
+  } catch(e) {}
+}
+
+/* ═══ INIT ═══ */
+window.onload=function(){
+  loadStorage();
+  renderAuthBtn();
+  applyRoute(location.hash.slice(1)||'search/cards');
+  loadDB();
+  startStatusPolling();
+};
+</script>
+</body>
+</html>
